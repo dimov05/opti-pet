@@ -85,6 +85,30 @@ CREATE TABLE "discount"
     "is_active"          BOOLEAN                                             NOT NULL DEFAULT TRUE
 );
 
+CREATE TABLE "note"
+(
+    "id"          UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
+    "message"     TEXT,
+    "date_added"  DATE             NOT NULL,
+    "patient_id"  UUID             NOT NULL,
+    "location_id" UUID             NOT NULL,
+    "employee_id" UUID             NOT NULL,
+    "is_public"   BOOLEAN          NOT NULL DEFAULT TRUE
+
+);
+
+CREATE TABLE "bill"
+(
+    "id"               UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
+    "amount"           DECIMAL(9, 2) CHECK (amount >= 0),
+    "amount_after_tax" DECIMAL(9, 2) CHECK (amount_after_tax >= 0),
+    "paid_amount" DECIMAL(9,2) NOT NULL,
+    "remaining_amount" DECIMAL(9,2) NOT NULL,
+    "has_invoice" BOOLEAN NOT NULL DEFAULT FALSE,
+    "note" TEXT,
+    "patient_id" UUID NOT NULL,
+    "location_id" UUID NOT NULL
+);
 
 CREATE TABLE "patient_location"
 (
@@ -142,6 +166,26 @@ ALTER TABLE "vaccination"
 
 ALTER TABLE "discount"
     ADD CONSTRAINT "discount_fk_location"
+        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+
+ALTER TABLE "note"
+    ADD CONSTRAINT "note_fk_patient"
+        FOREIGN KEY ("patient_id") REFERENCES "patient" ("id");
+
+ALTER TABLE "note"
+    ADD CONSTRAINT "note_fk_location"
+        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+
+ALTER TABLE "note"
+    ADD CONSTRAINT "note_fk_employee"
+        FOREIGN KEY ("employee_id") REFERENCES "employee" ("id");
+
+ALTER TABLE "bill"
+    ADD CONSTRAINT "bill_fk_patient"
+        FOREIGN KEY ("patient_id") REFERENCES "patient" ("id");
+
+ALTER TABLE "bill"
+    ADD CONSTRAINT "bill_fk_location"
         FOREIGN KEY ("location_id") REFERENCES "location" ("id");
 
 INSERT INTO "role" ("id", "name", "description")
