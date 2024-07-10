@@ -102,11 +102,29 @@ CREATE TABLE "bill"
     "id"               UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
     "amount"           DECIMAL(9, 2) CHECK (amount >= 0),
     "amount_after_tax" DECIMAL(9, 2) CHECK (amount_after_tax >= 0),
-    "paid_amount" DECIMAL(9,2) NOT NULL,
-    "remaining_amount" DECIMAL(9,2) NOT NULL,
-    "has_invoice" BOOLEAN NOT NULL DEFAULT FALSE,
-    "note" TEXT,
-    "patient_id" UUID NOT NULL,
+    "paid_amount"      DECIMAL(9, 2)    NOT NULL,
+    "remaining_amount" DECIMAL(9, 2)    NOT NULL,
+    "has_invoice"      BOOLEAN          NOT NULL DEFAULT FALSE,
+    "note"             TEXT,
+    "patient_id"       UUID             NOT NULL,
+    "location_id"      UUID             NOT NULL
+);
+
+CREATE TABLE "item"
+(
+    "id"               UUID PRIMARY KEY NOT NULL                   DEFAULT gen_random_uuid(),
+    "name"             VARCHAR(255)     NOT NULL,
+    "description"      VARCHAR(255),
+    "price"            DECIMAL(9, 2) CHECK (price >= 0),
+    "tax_rate_percent" DECIMAL(5, 2) CHECK (tax_rate_percent >= 0) DEFAULT 20.00,
+    "date_added"       DATE             NOT NULL,
+    "date_updated"     DATE             NOT NULL,
+    "is_active"        BOOLEAN          NOT NULL                   DEFAULT TRUE
+);
+
+CREATE TABLE "item_location"
+(
+    "item_id"     UUID NOT NULL,
     "location_id" UUID NOT NULL
 );
 
@@ -186,6 +204,17 @@ ALTER TABLE "bill"
 
 ALTER TABLE "bill"
     ADD CONSTRAINT "bill_fk_location"
+        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+
+ALTER TABLE "item_location"
+    ADD PRIMARY KEY ("item_id", "location_id");
+
+ALTER TABLE "item_location"
+    ADD CONSTRAINT "item_location_fk_item"
+        FOREIGN KEY ("item_id") REFERENCES "item" ("id");
+
+ALTER TABLE "item_location"
+    ADD CONSTRAINT "item_location_fk_location"
         FOREIGN KEY ("location_id") REFERENCES "location" ("id");
 
 INSERT INTO "role" ("id", "name", "description")
