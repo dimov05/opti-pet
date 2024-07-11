@@ -112,6 +112,19 @@ CREATE TABLE "bill"
 
 CREATE TABLE "item"
 (
+    "id"                 UUID PRIMARY KEY NOT NULL                   DEFAULT gen_random_uuid(),
+    "name"               VARCHAR(255)     NOT NULL,
+    "description"        VARCHAR(255),
+    "available_quantity" BIGINT           NOT NULL                   DEFAULT 0,
+    "price"              DECIMAL(9, 2) CHECK (price >= 0),
+    "tax_rate_percent"   DECIMAL(5, 2) CHECK (tax_rate_percent >= 0) DEFAULT 20.00,
+    "date_added"         DATE             NOT NULL,
+    "date_updated"       DATE             NOT NULL,
+    "is_active"          BOOLEAN          NOT NULL                   DEFAULT TRUE
+);
+
+CREATE TABLE "procedure"
+(
     "id"               UUID PRIMARY KEY NOT NULL                   DEFAULT gen_random_uuid(),
     "name"             VARCHAR(255)     NOT NULL,
     "description"      VARCHAR(255),
@@ -120,6 +133,42 @@ CREATE TABLE "item"
     "date_added"       DATE             NOT NULL,
     "date_updated"     DATE             NOT NULL,
     "is_active"        BOOLEAN          NOT NULL                   DEFAULT TRUE
+);
+
+CREATE TABLE "billed_item"
+(
+    "id"               UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
+    "name"             VARCHAR(255)     NOT NULL,
+    "description"      VARCHAR(255),
+    "billed_price"     DECIMAL(9, 2)    NOT NULL,
+    "tax_rate_percent" DECIMAL(5, 2)    NOT NULL,
+    "quantity"         BIGINT           NOT NULL DEFAULT 1,
+    "billed_date"      DATE             NOT NULL,
+    "bill_id"          UUID             NOT NULL,
+    "employee_id"      UUID             NOT NULL,
+    "location_id"      UUID             NOT NULL,
+    "discount_id"      BIGINT
+);
+
+CREATE TABLE "billed_procedure"
+(
+    "id"               UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
+    "name"             VARCHAR(255)     NOT NULL,
+    "description"      VARCHAR(255),
+    "message"          TEXT,
+    "billed_price"     DECIMAL(9, 2)    NOT NULL,
+    "tax_rate_percent" DECIMAL(5, 2)    NOT NULL,
+    "billed_date"      DATE             NOT NULL,
+    "bill_id"          UUID             NOT NULL,
+    "employee_id"      UUID             NOT NULL,
+    "location_id"      UUID             NOT NULL,
+    "discount_id"      BIGINT
+);
+
+CREATE TABLE "procedure_location"
+(
+    "procedure_id" UUID NOT NULL,
+    "location_id"  UUID NOT NULL
 );
 
 CREATE TABLE "item_location"
@@ -215,6 +264,49 @@ ALTER TABLE "item_location"
 
 ALTER TABLE "item_location"
     ADD CONSTRAINT "item_location_fk_location"
+        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+
+ALTER TABLE "procedure_location"
+    ADD PRIMARY KEY ("procedure_id", "location_id");
+
+ALTER TABLE "procedure_location"
+    ADD CONSTRAINT "procedure_location_fk_procedure"
+        FOREIGN KEY ("procedure_id") REFERENCES "procedure" ("id");
+
+ALTER TABLE "procedure_location"
+    ADD CONSTRAINT "procedure_location_fk_location"
+        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+
+ALTER TABLE "billed_item"
+    ADD CONSTRAINT "billed_item_fk_bill"
+        FOREIGN KEY ("bill_id") REFERENCES "bill" ("id");
+
+ALTER TABLE "billed_item"
+    ADD CONSTRAINT "billed_item_fk_employee"
+        FOREIGN KEY ("employee_id") REFERENCES "employee" ("id");
+
+ALTER TABLE "billed_item"
+    ADD CONSTRAINT "billed_item_fk_discount"
+        FOREIGN KEY ("discount_id") REFERENCES "discount" ("id");
+
+ALTER TABLE "billed_item"
+    ADD CONSTRAINT "billed_item_fk_location"
+        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+
+ALTER TABLE "billed_procedure"
+    ADD CONSTRAINT "billed_procedure_fk_bill"
+        FOREIGN KEY ("bill_id") REFERENCES "bill" ("id");
+
+ALTER TABLE "billed_procedure"
+    ADD CONSTRAINT "billed_procedure_fk_employee"
+        FOREIGN KEY ("employee_id") REFERENCES "employee" ("id");
+
+ALTER TABLE "billed_procedure"
+    ADD CONSTRAINT "billed_procedure_fk_discount"
+        FOREIGN KEY ("discount_id") REFERENCES "discount" ("id");
+
+ALTER TABLE "billed_procedure"
+    ADD CONSTRAINT "billed_procedure_fk_location"
         FOREIGN KEY ("location_id") REFERENCES "location" ("id");
 
 INSERT INTO "role" ("id", "name", "description")
