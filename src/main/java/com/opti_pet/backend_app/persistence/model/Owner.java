@@ -5,8 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +13,11 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "location", schema = "opti-pet")
+@Table(name = "owner", schema = "opti-pet")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Location {
+public class Owner {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
@@ -31,28 +29,19 @@ public class Location {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "city")
-    private String city;
-
-    @Column(name = "address")
-    private String address;
-
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "location_restrictions_enabled")
-    private Boolean locationRestrictionsEnabled;
+    @Column(name = "home_address")
+    private String homeAddress;
 
-    @Column(name = "latitude")
-    private double latitude;
+    @Column(name = "bulstat")
+    private String bulstat;
 
-    @Column(name = "longitude")
-    private double longitude;
+    @Column(name = "notes")
+    private String notes;
 
     @Column(name = "is_active")
     private boolean isActive;
 
-    @ManyToOne
-    @JoinColumn(name = "clinic_id")
-    private Clinic clinic;
 }

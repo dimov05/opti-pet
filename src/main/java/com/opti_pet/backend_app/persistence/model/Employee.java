@@ -39,5 +39,5 @@ public class Employee {
     private String jobTitle;
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private boolean isActive;
 }

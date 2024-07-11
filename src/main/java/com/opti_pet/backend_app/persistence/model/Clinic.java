@@ -38,7 +38,7 @@ public class Clinic {
     private String ownerPhoneNumber;
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private boolean isActive;
 
     @OneToMany(mappedBy = "clinic")
     private List<Location> locations;
