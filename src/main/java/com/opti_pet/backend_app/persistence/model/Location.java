@@ -60,4 +60,13 @@ public class Location {
 
     @OneToMany(mappedBy = "location")
     private List<Vaccination> vaccinations;
+
+    @OneToMany(mappedBy = "location")
+    private List<Discount> discounts;
+
+    @OneToMany(mappedBy = "location")
+    private List<Note> notes;
+
+    @OneToMany(mappedBy = "location")
+    private List<Bill> bills;
 }

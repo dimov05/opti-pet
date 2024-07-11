@@ -55,4 +55,10 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient")
     private List<Vaccination> vaccinations;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Note> notes;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Bill> bills;
 }

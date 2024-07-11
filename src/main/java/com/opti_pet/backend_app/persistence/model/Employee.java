@@ -45,4 +45,7 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee")
     private List<Vaccination> vaccinations;
+
+    @OneToMany(mappedBy = "employee")
+    private List<Note> notes;
 }
