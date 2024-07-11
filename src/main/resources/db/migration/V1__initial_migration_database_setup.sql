@@ -2,6 +2,7 @@ CREATE TABLE "clinic"
 (
     "id"                 UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
     "name"               VARCHAR(255)     NOT NULL UNIQUE,
+    "email"              VARCHAR(255)     NOT NULL,
     "owner_name"         VARCHAR(255)     NOT NULL,
     "owner_phone_number" VARCHAR(255)     NOT NULL,
     "is_active"          BOOLEAN          NOT NULL DEFAULT TRUE
@@ -9,16 +10,17 @@ CREATE TABLE "clinic"
 
 CREATE TABLE "location"
 (
-    "id"                   UUID PRIMARY KEY    NOT NULL DEFAULT gen_random_uuid(),
-    "clinic_id"            UUID                NOT NULL,
-    "name"                 VARCHAR(255) UNIQUE NOT NULL,
-    "city"                 VARCHAR(255)        NOT NULL,
-    "address"              VARCHAR(255)        NOT NULL,
-    "phone_number"         VARCHAR(255)        NOT NULL,
-    "restrictions_enabled" BOOLEAN             NOT NULL DEFAULT FALSE,
-    "latitude"             DOUBLE PRECISION,
-    "longitude"            DOUBLE PRECISION,
-    "is_active"            BOOLEAN             NOT NULL DEFAULT TRUE
+    "id"                            UUID PRIMARY KEY    NOT NULL DEFAULT gen_random_uuid(),
+    "clinic_id"                     UUID                NOT NULL,
+    "name"                          VARCHAR(255) UNIQUE NOT NULL,
+    "email"                         VARCHAR(255)        NOT NULL,
+    "city"                          VARCHAR(255)        NOT NULL,
+    "address"                       VARCHAR(255)        NOT NULL,
+    "phone_number"                  VARCHAR(255)        NOT NULL,
+    "location_restrictions_enabled" BOOLEAN             NOT NULL DEFAULT FALSE,
+    "latitude"                      DOUBLE PRECISION,
+    "longitude"                     DOUBLE PRECISION,
+    "is_active"                     BOOLEAN             NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE "employee"
@@ -27,7 +29,7 @@ CREATE TABLE "employee"
     "email"        VARCHAR(255)     NOT NULL UNIQUE,
     "password"     VARCHAR(255)     NOT NULL,
     "phone_number" VARCHAR(255)     NOT NULL,
-    "display_name" VARCHAR(255)     NOT NULL,
+    "name"         VARCHAR(255)     NOT NULL,
     "job_title"    VARCHAR(255)     NOT NULL,
     "is_active"    BOOLEAN          NOT NULL DEFAULT TRUE
 );
