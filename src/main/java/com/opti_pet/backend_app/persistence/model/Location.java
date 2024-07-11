@@ -69,4 +69,16 @@ public class Location {
 
     @OneToMany(mappedBy = "location")
     private List<Bill> bills;
+
+    @OneToMany(mappedBy = "location")
+    private List<Item> items;
+
+    @OneToMany(mappedBy = "location")
+    private List<Procedure> procedures;
+
+    @OneToMany(mappedBy = "location")
+    private List<BilledItem> billedItems;
+
+    @OneToMany(mappedBy = "location")
+    private List<BilledProcedure> billedProcedures;
 }

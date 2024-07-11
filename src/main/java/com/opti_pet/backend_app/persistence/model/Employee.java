@@ -48,4 +48,10 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee")
     private List<Note> notes;
+
+    @OneToMany(mappedBy = "employee")
+    private List<BilledItem> billedItems;
+
+    @OneToMany(mappedBy = "employee")
+    private List<BilledProcedure> billedProcedures;
 }

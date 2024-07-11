@@ -122,7 +122,8 @@ CREATE TABLE "item"
     "tax_rate_percent"   DECIMAL(5, 2) CHECK (tax_rate_percent >= 0) DEFAULT 20.00,
     "date_added"         DATE             NOT NULL,
     "date_updated"       DATE             NOT NULL,
-    "is_active"          BOOLEAN          NOT NULL                   DEFAULT TRUE
+    "is_active"          BOOLEAN          NOT NULL                   DEFAULT TRUE,
+    "location_id"        UUID             NOT NULL
 );
 
 CREATE TABLE "procedure"
@@ -134,7 +135,8 @@ CREATE TABLE "procedure"
     "tax_rate_percent" DECIMAL(5, 2) CHECK (tax_rate_percent >= 0) DEFAULT 20.00,
     "date_added"       DATE             NOT NULL,
     "date_updated"     DATE             NOT NULL,
-    "is_active"        BOOLEAN          NOT NULL                   DEFAULT TRUE
+    "is_active"        BOOLEAN          NOT NULL                   DEFAULT TRUE,
+    "location_id"      UUID             NOT NULL
 );
 
 CREATE TABLE "billed_item"
@@ -165,18 +167,6 @@ CREATE TABLE "billed_procedure"
     "employee_id"      UUID             NOT NULL,
     "location_id"      UUID             NOT NULL,
     "discount_id"      BIGINT
-);
-
-CREATE TABLE "procedure_location"
-(
-    "procedure_id" UUID NOT NULL,
-    "location_id"  UUID NOT NULL
-);
-
-CREATE TABLE "item_location"
-(
-    "item_id"     UUID NOT NULL,
-    "location_id" UUID NOT NULL
 );
 
 CREATE TABLE "patient_location"
@@ -257,26 +247,12 @@ ALTER TABLE "bill"
     ADD CONSTRAINT "bill_fk_location"
         FOREIGN KEY ("location_id") REFERENCES "location" ("id");
 
-ALTER TABLE "item_location"
-    ADD PRIMARY KEY ("item_id", "location_id");
-
-ALTER TABLE "item_location"
-    ADD CONSTRAINT "item_location_fk_item"
-        FOREIGN KEY ("item_id") REFERENCES "item" ("id");
-
-ALTER TABLE "item_location"
-    ADD CONSTRAINT "item_location_fk_location"
+ALTER TABLE "item"
+    ADD CONSTRAINT "item_fk_location"
         FOREIGN KEY ("location_id") REFERENCES "location" ("id");
 
-ALTER TABLE "procedure_location"
-    ADD PRIMARY KEY ("procedure_id", "location_id");
-
-ALTER TABLE "procedure_location"
-    ADD CONSTRAINT "procedure_location_fk_procedure"
-        FOREIGN KEY ("procedure_id") REFERENCES "procedure" ("id");
-
-ALTER TABLE "procedure_location"
-    ADD CONSTRAINT "procedure_location_fk_location"
+ALTER TABLE "procedure"
+    ADD CONSTRAINT "procedure_fk_location"
         FOREIGN KEY ("location_id") REFERENCES "location" ("id");
 
 ALTER TABLE "billed_item"

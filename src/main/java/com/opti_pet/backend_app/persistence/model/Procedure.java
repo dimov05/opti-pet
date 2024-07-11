@@ -7,33 +7,43 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Date;
+import java.util.UUID;
 
 @Entity
-@Table(name = "discount", schema = "opti-pet")
+@Table(name = "procedure", schema = "opti-pet")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Discount {
+public class Procedure {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
+    private UUID id;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "percent_items")
-    private BigDecimal percentItems;
+    @Column(name = "description")
+    private String description;
 
-    @Column(name = "percent_procedures")
-    private BigDecimal percentProcedures;
+    @Column(name = "price")
+    private BigDecimal price;
+
+    @Column(name = "tax_rate_percent")
+    private BigDecimal taxRatePercent;
+
+    @Column(name = "date_added")
+    private Date dateAdded;
+
+    @Column(name = "date_updated")
+    private Date dateUpdated;
 
     @Column(name = "is_active")
     private boolean isActive;
@@ -41,10 +51,4 @@ public class Discount {
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
-
-    @OneToMany(mappedBy = "discount")
-    private List<BilledItem> billedItems;
-
-    @OneToMany(mappedBy = "discount")
-    private List<BilledProcedure> billedProcedures;
 }

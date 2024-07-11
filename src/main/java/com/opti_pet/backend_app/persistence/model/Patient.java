@@ -1,5 +1,6 @@
 package com.opti_pet.backend_app.persistence.model;
 
+import com.opti_pet.backend_app.persistence.enums.PetType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,7 +34,7 @@ public class Patient {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "pet_type")
-    private String petType;
+    private PetType petType;
 
     @Column(name = "microchip")
     private String microchip;
