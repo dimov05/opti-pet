@@ -1,0 +1,36 @@
+DBConnectionString: jdbc:postgresql://localhost:5432/opti-pet?user=postgres&password=postgres
+server:
+  port: 8080
+management:
+  endpoints:
+    web:
+      exposure:
+        include: openapi, swagger-ui, *
+  info:
+    env:
+      enabled: true
+  server:
+    port: 9090
+springdoc:
+  show-actuator: true
+  use-management-port: true
+spring:
+  application:
+    name: opti-pet.v1
+    datasource:
+      password: postgres
+      url: jdbc:postgresql://localhost:5432/opti-pet
+      username: postgres
+      driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    group: false
+    out-of-order: true
+    password: ''
+    schemas: opti-pet
+    url: jdbc:postgresql://localhost:5432/opti-pet
+    user: postgres
+  sql:
+    init:
+      mode: always
+      platform: postgres
