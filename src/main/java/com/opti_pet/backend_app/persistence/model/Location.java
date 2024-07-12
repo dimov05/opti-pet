@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -81,4 +82,7 @@ public class Location {
 
     @OneToMany(mappedBy = "location")
     private List<BilledProcedure> billedProcedures;
+
+    @ManyToMany(mappedBy = "locations")
+    private List<Patient> patients;
 }

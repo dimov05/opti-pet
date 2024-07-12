@@ -1,6 +1,7 @@
 package com.opti_pet.backend_app.persistence.model;
 
 import com.opti_pet.backend_app.persistence.enums.PetType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +9,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -62,4 +66,10 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient")
     private List<Bill> bills;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "patient_location", schema = "opti-pet",
+    joinColumns = @JoinColumn(name = "patient_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "location_id", referencedColumnName = "id"))
+    private List<Location> locations;
 }
