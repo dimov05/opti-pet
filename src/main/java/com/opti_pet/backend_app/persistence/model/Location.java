@@ -85,4 +85,7 @@ public class Location {
 
     @ManyToMany(mappedBy = "locations")
     private List<Patient> patients;
+
+    @OneToMany(mappedBy = "location")
+    private List<EmployeeRoleLocation> employeeRoleLocations;
 }

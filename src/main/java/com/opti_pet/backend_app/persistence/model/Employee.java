@@ -54,4 +54,7 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee")
     private List<BilledProcedure> billedProcedures;
+
+    @OneToMany(mappedBy = "employee")
+    private List<EmployeeRoleLocation> employeeRoleLocations;
 }

@@ -15,11 +15,6 @@ public enum PetType {
         this.petType = petType;
     }
 
-    @JsonValue
-    public String getPetType() {
-        return petType;
-    }
-
     @JsonCreator
     public static PetType fromValue(String value) {
         for (PetType petTypeEnum : values()) {
@@ -30,5 +25,10 @@ public enum PetType {
         }
 
         throw new IllegalArgumentException("Invalid value for Pet Type Enum: " + value);
+    }
+
+    @JsonValue
+    public String getPetType() {
+        return petType;
     }
 }

@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
