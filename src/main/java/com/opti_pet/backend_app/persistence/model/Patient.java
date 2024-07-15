@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -66,6 +67,10 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient")
     private List<Bill> bills;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "patient_location", schema = "opti-pet",

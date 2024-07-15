@@ -87,5 +87,5 @@ public class Location {
     private List<Patient> patients;
 
     @OneToMany(mappedBy = "location")
-    private List<EmployeeRoleLocation> employeeRoleLocations;
+    private List<UserRoleLocation> userRoleLocations;
 }

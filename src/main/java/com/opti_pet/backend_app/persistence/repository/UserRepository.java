@@ -1,9 +1,9 @@
 package com.opti_pet.backend_app.persistence.repository;
 
-import com.opti_pet.backend_app.persistence.model.Employee;
+import com.opti_pet.backend_app.persistence.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
+public interface UserRepository extends JpaRepository<User, UUID> {
 }

@@ -15,15 +15,15 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "employee_role_location", schema = "opti-pet")
+@Table(name = "user_role_location", schema = "opti-pet")
 @Getter
 @Setter
 @NoArgsConstructor
-@IdClass(EmployeeRoleLocationId.class)
-public class EmployeeRoleLocation {
+@IdClass(UserRoleLocationId.class)
+public class UserRoleLocation {
     @Id
-    @Column(name = "employee_id", nullable = false)
-    private UUID employeeId;
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
 
     @Id
     @Column(name = "role_id", nullable = false)
@@ -34,9 +34,9 @@ public class EmployeeRoleLocation {
     private UUID locationId;
 
     @ManyToOne
-    @MapsId("employeeId")
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    @MapsId("userId")
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
     @MapsId("roleId")

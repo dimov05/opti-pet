@@ -10,8 +10,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EmployeeRoleLocationId implements Serializable {
-    private UUID employeeId;
+public class UserRoleLocationId implements Serializable {
+    private UUID userId;
     private Long roleId;
     private UUID locationId;
 }

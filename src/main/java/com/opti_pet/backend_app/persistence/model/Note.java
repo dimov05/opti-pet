@@ -44,6 +44,6 @@ public class Note {
     private Location location;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    @JoinColumn(name = "user_id")
+    private User user;
 }

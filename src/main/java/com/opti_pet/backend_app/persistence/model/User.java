@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "employee", schema = "opti-pet")
+@Table(name = "user", schema = "opti-pet")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Employee {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
@@ -43,18 +43,21 @@ public class Employee {
     @Column(name = "is_active")
     private boolean isActive;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "user")
     private List<Vaccination> vaccinations;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "user")
     private List<Note> notes;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "user")
     private List<BilledItem> billedItems;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "user")
     private List<BilledProcedure> billedProcedures;
 
-    @OneToMany(mappedBy = "employee")
-    private List<EmployeeRoleLocation> employeeRoleLocations;
+    @OneToMany(mappedBy = "owner")
+    private List<Patient> patients;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserRoleLocation> userRoleLocations;
 }
