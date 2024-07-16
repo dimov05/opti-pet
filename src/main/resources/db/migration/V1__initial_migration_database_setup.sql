@@ -290,3 +290,12 @@ VALUES (1, 'OWNER', 'Role for Pet Owners'),
        (4, 'PEOPLE_MANAGER', 'Role for People/Human Resource Manager'),
        (5, 'CLINIC_MANAGER', 'Role for Clinic Managers - pricing, procedures, items and etc'),
        (6, 'ADMINISTRATOR', 'Role for Application Administrator');
+
+INSERT INTO "clinic" ("id", "name", "email", "owner_name", "owner_phone_number", "is_active")
+VALUES ('7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 'DEFAULT CLINIC', 'defaultClinic@email.com', 'Default owner',
+        'Default phone number', true);
+
+INSERT INTO "location" ("id", "clinic_id", "name", "email", "city", "address", "phone_number",
+                        "location_restrictions_enabled", "latitude", "longitude", "is_active")
+VALUES ('3837ce44-ff3f-4b63-8833-7193be3aa4c3', '7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 'DEFAULT LOCATION',
+        'defaultEmail@email.com', 'Default City', 'Default Address', 'Default Phone Number', false, null, null, true)

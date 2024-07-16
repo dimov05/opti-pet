@@ -47,10 +47,10 @@ public class Location {
     private Boolean locationRestrictionsEnabled;
 
     @Column(name = "latitude")
-    private double latitude;
+    private Double latitude;
 
     @Column(name = "longitude")
-    private double longitude;
+    private Double longitude;
 
     @Column(name = "is_active")
     private boolean isActive;

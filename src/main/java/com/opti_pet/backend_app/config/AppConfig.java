@@ -1,12 +1,16 @@
 package com.opti_pet.backend_app.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opti_pet.backend_app.persistence.repository.UserRepository;
+import com.opti_pet.backend_app.service.CustomUserDetailsService;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.sql.DataSource;
 
@@ -39,5 +43,15 @@ public class AppConfig {
         mapper.findAndRegisterModules();
 
         return mapper;
+    }
+
+    @Bean
+    BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        return new CustomUserDetailsService(userRepository);
     }
 }
