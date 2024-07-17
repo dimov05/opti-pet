@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +20,9 @@ import java.util.UUID;
 @Table(name = "clinic", schema = "opti-pet")
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Clinic {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -36,6 +40,8 @@ public class Clinic {
 
     @Column(name = "owner_phone_number")
     private String ownerPhoneNumber;
+    @Column(name = "owner_email")
+    private String ownerEmail;
 
     @Column(name = "is_active")
     private boolean isActive;

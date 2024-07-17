@@ -43,6 +43,12 @@ public class User implements UserDetails {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "home_address")
+    private String homeAddress;
+
+    @Column(name = "bulstat")
+    private String bulstat;
+
     @Column(name = "name")
     private String name;
 
