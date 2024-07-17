@@ -1,8 +1,10 @@
-package com.opti_pet.backend_app.service;
+package com.opti_pet.backend_app.util;
 
+import com.opti_pet.backend_app.exception.BadRequestException;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.repository.UserRepository;
 import com.opti_pet.backend_app.rest.request.UserLoginRequest;
+import com.opti_pet.backend_app.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,6 +27,7 @@ import java.util.function.Function;
 public class JwtService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final UserService userService;
     @Value("${JwtSecretKey}")
     private String secretKey;
 
@@ -36,7 +39,8 @@ public class JwtService {
     }
 
     public String generateToken(UserLoginRequest userLoginRequest) {
-        User user = userRepository.findByEmail(userLoginRequest.email()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userService.getUserByEmailOrThrowException(userLoginRequest.email());
+
         if (passwordEncoder.matches(userLoginRequest.password(), user.getPassword())) {
             Map<String, Object> claims = new HashMap<>();
             claims.put("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
@@ -46,7 +50,7 @@ public class JwtService {
 
             return generateToken(claims, user);
         } else {
-            throw new RuntimeException("Username or password is incorrect");
+            throw new BadRequestException("Username or password is incorrect!");
         }
     }
 

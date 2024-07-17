@@ -3,6 +3,7 @@ package com.opti_pet.backend_app.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opti_pet.backend_app.persistence.repository.UserRepository;
 import com.opti_pet.backend_app.service.CustomUserDetailsService;
+import com.opti_pet.backend_app.service.UserService;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -51,7 +52,7 @@ public class AppConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepository) {
-        return new CustomUserDetailsService(userRepository);
+    public UserDetailsService userDetailsService(UserService userService) {
+        return new CustomUserDetailsService(userService);
     }
 }

@@ -1,5 +1,6 @@
 package com.opti_pet.backend_app.service;
 
+import com.opti_pet.backend_app.exception.BadRequestException;
 import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.repository.ClinicRepository;
@@ -18,8 +19,15 @@ public class ClinicService {
 @Transactional
     public ClinicResponse createClinic(ClinicCreateRequest clinicCreateRequest) {
         User owner = userService.getUserByEmailOrThrowException(clinicCreateRequest.ownerEmail());
+        checkIfClinicAlreadyExists(clinicCreateRequest);
         Clinic clinic = ClinicTransformer.toEntity(clinicCreateRequest,owner);
 
         return ClinicTransformer.toResponse(clinicRepository.save(clinic));
+    }
+
+    private void checkIfClinicAlreadyExists(ClinicCreateRequest clinicCreateRequest) {
+        if(clinicRepository.existsByName(clinicCreateRequest.name())){
+            throw new BadRequestException("Clinic with this name already exists");
+        }
     }
 }
