@@ -7,19 +7,21 @@ import com.opti_pet.backend_app.rest.response.UserResponse;
 import java.util.ArrayList;
 
 public class UserTransformer {
-    public static User fromRegisterRequest(UserRegisterRequest userRegisterRequest, String encodedPassword) {
+    public static User toEntity(UserRegisterRequest userRegisterRequest, String encodedPassword) {
         return User.builder()
                 .email(userRegisterRequest.email())
-                .isActive(true)
                 .name(userRegisterRequest.name())
+                .password(encodedPassword)
+                .phoneNumber(userRegisterRequest.phoneNumber())
+                .jobTitle(userRegisterRequest.jobTitle())
+                .homeAddress(userRegisterRequest.homeAddress())
+                .bulstat(userRegisterRequest.bulstat())
+                .isActive(true)
                 .notes(new ArrayList<>())
                 .billedItems(new ArrayList<>())
-                .password(encodedPassword)
                 .patients(new ArrayList<>())
-                .jobTitle(userRegisterRequest.jobTitle())
                 .vaccinations(new ArrayList<>())
                 .billedProcedures(new ArrayList<>())
-                .phoneNumber(userRegisterRequest.phoneNumber())
                 .build();
     }
 
@@ -29,6 +31,8 @@ public class UserTransformer {
                 .email(user.getEmail())
                 .name(user.getName())
                 .phoneNumber(user.getPhoneNumber())
+                .homeAddress(user.getHomeAddress())
+                .bulstat(user.getBulstat())
                 .isActive(user.isActive())
                 .build();
     }

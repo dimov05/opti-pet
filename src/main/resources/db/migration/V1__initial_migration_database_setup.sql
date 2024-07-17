@@ -5,6 +5,7 @@ CREATE TABLE "clinic"
     "email"              VARCHAR(255)     NOT NULL,
     "owner_name"         VARCHAR(255)     NOT NULL,
     "owner_phone_number" VARCHAR(255)     NOT NULL,
+    "owner_email"        VARCHAR(255)     NOT NULL,
     "is_active"          BOOLEAN          NOT NULL DEFAULT TRUE
 );
 
@@ -291,9 +292,9 @@ VALUES (1, 'OWNER', 'Role for Pet Owners'),
        (5, 'CLINIC_MANAGER', 'Role for Clinic Managers - pricing, procedures, items and etc'),
        (6, 'ADMINISTRATOR', 'Role for Application Administrator');
 
-INSERT INTO "clinic" ("id", "name", "email", "owner_name", "owner_phone_number", "is_active")
+INSERT INTO "clinic" ("id", "name", "email", "owner_name", "owner_phone_number", "owner_email", "is_active")
 VALUES ('7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 'DEFAULT CLINIC', 'defaultClinic@email.com', 'Default owner',
-        'Default phone number', true);
+        'Default phone number', 'ownerDefaultEmail@email.com', true);
 
 INSERT INTO "location" ("id", "clinic_id", "name", "email", "city", "address", "phone_number",
                         "location_restrictions_enabled", "latitude", "longitude", "is_active")

@@ -20,9 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.opti_pet.backend_app.util.AppConstants.LOCATION_UUID;
 
 @Service
@@ -43,14 +40,19 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public UserResponse registerUser(UserRegisterRequest userRegisterRequest) {
-        User user = UserTransformer.fromRegisterRequest(userRegisterRequest,passwordEncoder.encode(userRegisterRequest.password()));
+        User user = UserTransformer.toEntity(userRegisterRequest, passwordEncoder.encode(userRegisterRequest.password()));
 
         user = userRepository.save(user);
         Location location = locationRepository.findById(LOCATION_UUID).orElseThrow();
         Role role = roleRepository.findById(1L).orElseThrow();
-        UserRoleLocation userRoleLocation = UserRoleLocationTransformer.fromData(user,location,role);
+        UserRoleLocation userRoleLocation = UserRoleLocationTransformer.fromData(user, location, role);
         userRoleLocationRepository.save(userRoleLocation);
 
         return UserTransformer.toResponse(user);
+    }
+
+    public User getUserByEmailOrThrowException(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found " + email));
     }
 }
