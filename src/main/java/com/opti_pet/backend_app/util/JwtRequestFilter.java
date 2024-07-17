@@ -1,6 +1,5 @@
 package com.opti_pet.backend_app.util;
 
-import com.opti_pet.backend_app.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
