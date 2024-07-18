@@ -4,6 +4,7 @@ import com.opti_pet.backend_app.exception.NotFoundException;
 import com.opti_pet.backend_app.persistence.model.Location;
 import com.opti_pet.backend_app.persistence.model.Role;
 import com.opti_pet.backend_app.persistence.model.User;
+import com.opti_pet.backend_app.persistence.repository.LocationRepository;
 import com.opti_pet.backend_app.persistence.repository.UserRepository;
 import com.opti_pet.backend_app.rest.request.UserRegisterRequest;
 import com.opti_pet.backend_app.rest.response.UserResponse;
@@ -16,9 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.opti_pet.backend_app.util.AppConstants.EMAIL_FIELD_NAME;
-import static com.opti_pet.backend_app.util.AppConstants.LOCATION_UUID;
-import static com.opti_pet.backend_app.util.AppConstants.USER_ENTITY;
+import static com.opti_pet.backend_app.util.AppConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private final UserRoleLocationService userRoleLocationService;
-    private final LocationService locationService;
+    private final LocationRepository locationRepository;
 
 
     @Override
@@ -41,7 +40,8 @@ public class UserService implements UserDetailsService {
 
         user = userRepository.save(user);
 
-        Location location = locationService.getLocationByIdOrThrowException(LOCATION_UUID);
+        Location location = locationRepository.findById(LOCATION_UUID)
+                .orElseThrow(() -> new NotFoundException(LOCATION_ENTITY, UUID_FIELD_NAME, LOCATION_UUID.toString()));
         Role role = roleService.getRoleByIdOrThrowException(1L);
 
         userRoleLocationService.saveNewUserRoleLocation(user, location, role);

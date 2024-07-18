@@ -3,6 +3,7 @@ package com.opti_pet.backend_app.rest.transformer;
 import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.rest.request.ClinicCreateRequest;
+import com.opti_pet.backend_app.rest.response.ClinicExtendedResponse;
 import com.opti_pet.backend_app.rest.response.ClinicResponse;
 
 import java.util.ArrayList;
@@ -29,6 +30,21 @@ public class ClinicTransformer {
                 .ownerPhoneNumber(clinic.getOwnerPhoneNumber())
                 .ownerEmail(clinic.getOwnerEmail())
                 .isActive(clinic.isActive())
+                .build();
+    }
+
+    public static ClinicExtendedResponse toExtendedResponse(Clinic clinic) {
+        return ClinicExtendedResponse.builder()
+                .id(clinic.getId().toString())
+                .name(clinic.getName())
+                .clinicEmail(clinic.getEmail())
+                .ownerName(clinic.getOwnerName())
+                .ownerPhoneNumber(clinic.getOwnerPhoneNumber())
+                .ownerEmail(clinic.getOwnerEmail())
+                .isActive(clinic.isActive())
+                .locations(clinic.getLocations().stream()
+                        .map(LocationTransformer::toResponse)
+                        .toList())
                 .build();
     }
 }
