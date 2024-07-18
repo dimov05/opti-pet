@@ -15,4 +15,5 @@ public class AppConstants {
     public static final String USER_ENTITY = "User";
     public static final String LOCATION_ENTITY = "Location";
     public static final String ROLE_ENTITY = "Role";
+    public static final String CLINIC_ENTITY = "Clinic";
 }
