@@ -1,7 +1,6 @@
 package com.opti_pet.backend_app.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.opti_pet.backend_app.persistence.repository.UserRepository;
 import com.opti_pet.backend_app.service.CustomUserDetailsService;
 import com.opti_pet.backend_app.service.UserService;
 import org.flywaydb.core.Flyway;

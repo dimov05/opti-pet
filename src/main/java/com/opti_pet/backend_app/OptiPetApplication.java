@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class OptiPetApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(OptiPetApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(OptiPetApplication.class, args);
+    }
 
 }

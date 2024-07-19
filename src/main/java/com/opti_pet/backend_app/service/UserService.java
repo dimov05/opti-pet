@@ -7,6 +7,7 @@ import com.opti_pet.backend_app.persistence.model.Role;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.repository.LocationRepository;
 import com.opti_pet.backend_app.persistence.repository.UserRepository;
+import com.opti_pet.backend_app.rest.request.LocationCreateUserRequest;
 import com.opti_pet.backend_app.rest.request.UserChangePasswordRequest;
 import com.opti_pet.backend_app.rest.request.UserEditProfileRequest;
 import com.opti_pet.backend_app.rest.request.UserRegisterRequest;
@@ -43,6 +44,9 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public UserResponse registerUser(UserRegisterRequest userRegisterRequest) {
+        if (!userRegisterRequest.password().equals(userRegisterRequest.confirmPassword())) {
+            throw new BadRequestException("Password and confirm password does not match!");
+        }
         User user = UserTransformer.toEntity(userRegisterRequest, passwordEncoder.encode(userRegisterRequest.password()));
 
         user = userRepository.save(user);
@@ -57,6 +61,23 @@ public class UserService implements UserDetailsService {
         return UserTransformer.toResponse(user);
     }
 
+    @Transactional
+    public User registerUserAsManager(LocationCreateUserRequest locationCreateUserRequest) {
+        if (!locationCreateUserRequest.userPassword().equals(locationCreateUserRequest.userConfirmPassword())) {
+            throw new BadRequestException("Password and confirm password does not match!");
+        }
+        User user = UserTransformer.toEntity(locationCreateUserRequest, passwordEncoder.encode(locationCreateUserRequest.userPassword()));
+        user = userRepository.save(user);
+
+        Location location = locationRepository.findById(LOCATION_UUID)
+                .orElseThrow(() -> new NotFoundException(LOCATION_ENTITY, UUID_FIELD_NAME, LOCATION_UUID.toString()));
+        Role role = roleService.getRoleByIdOrThrowException(1L);
+        userRoleLocationService.saveNewUserRoleLocation(user, location, role);
+
+        return user;
+    }
+
+    @Transactional
     public UserResponse editProfile(String userId, UserEditProfileRequest userEditProfileRequest) {
         User user = getUserByIdOrThrowException(userId);
 
@@ -69,6 +90,7 @@ public class UserService implements UserDetailsService {
         return UserTransformer.toResponse(userRepository.save(user));
     }
 
+    @Transactional
     public UserResponse changePassword(String userId, UserChangePasswordRequest userChangePasswordRequest) {
         User user = getUserByIdOrThrowException(userId);
         String newPassword = userChangePasswordRequest.newPassword();

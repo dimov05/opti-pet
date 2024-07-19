@@ -2,10 +2,12 @@ package com.opti_pet.backend_app.rest.transformer;
 
 import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Location;
+import com.opti_pet.backend_app.persistence.model.UserRoleLocation;
 import com.opti_pet.backend_app.rest.request.LocationCreateRequest;
 import com.opti_pet.backend_app.rest.response.LocationResponse;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class LocationTransformer {
     public static Location toEntity(LocationCreateRequest locationCreateRequest, Clinic clinic) {
@@ -45,6 +47,9 @@ public class LocationTransformer {
                 .locationRestrictionsEnabled(location.getLocationRestrictionsEnabled())
                 .latitude(location.getLatitude())
                 .longitude(location.getLongitude())
+                .employeesCount(location.getUserRoleLocations().stream()
+                        .map(UserRoleLocation::getUserId)
+                        .collect(Collectors.toSet()).size())
                 .isActive(location.isActive())
                 .build();
     }
