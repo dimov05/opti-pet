@@ -8,6 +8,7 @@ import com.opti_pet.backend_app.persistence.model.Role;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.repository.LocationRepository;
 import com.opti_pet.backend_app.persistence.repository.RoleRepository;
+import com.opti_pet.backend_app.rest.request.LocationAddUserRequest;
 import com.opti_pet.backend_app.rest.request.LocationCreateRequest;
 import com.opti_pet.backend_app.rest.request.LocationCreateUserRequest;
 import com.opti_pet.backend_app.rest.response.LocationResponse;
@@ -61,6 +62,16 @@ public class LocationService {
         Location location = getLocationByIdOrThrowException(UUID.fromString(locationId));
         User user = userService.registerUserAsManager(locationCreateUserRequest);
         List<Role> roles = roleRepository.findAllById(locationCreateUserRequest.roleIdsToSet());
+        roles.forEach(role -> userRoleLocationService.saveNewUserRoleLocation(user, location, role));
+
+        return LocationTransformer.toResponse(location);
+    }
+
+    @Transactional
+    public LocationResponse addExistingEmployee(String locationId, LocationAddUserRequest locationAddUserRequest) {
+        Location location = getLocationByIdOrThrowException(UUID.fromString(locationId));
+        User user = userService.getUserByEmailOrThrowException(locationAddUserRequest.userEmail());
+        List<Role> roles = roleRepository.findAllById(locationAddUserRequest.roleIdsToSet());
         roles.forEach(role -> userRoleLocationService.saveNewUserRoleLocation(user, location, role));
 
         return LocationTransformer.toResponse(location);
