@@ -12,6 +12,7 @@ public class TestController {
     public String userProfile(@PathVariable(name = "locationId") String locationId) {
         return "Welcome to User Profile";
     }
+
     @GetMapping("/clinic-manager/test/{locationId}")
     @PreAuthorize("hasAuthority('CLINIC_MANAGER_' + #locationId) || @securityService.hasAdministratorAuthority()")
     public String managerProfile(@PathVariable(name = "locationId") String locationId) {

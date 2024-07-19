@@ -27,13 +27,13 @@ public class UserController {
 
     @PutMapping("/{userId}/change-password")
     @PreAuthorize("@securityService.userIdEqualsAuthenticatedUser(#userId) || @securityService.hasAdministratorAuthority()")
-    public UserResponse changePassword(@PathVariable(name = "userId") String userId, @RequestBody UserChangePasswordRequest userChangePasswordRequest){
-        return userService.changePassword(userId,userChangePasswordRequest);
+    public UserResponse changePassword(@PathVariable(name = "userId") String userId, @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
+        return userService.changePassword(userId, userChangePasswordRequest);
     }
 
     @PutMapping("/{userId}/edit-profile")
     @PreAuthorize("@securityService.userIdEqualsAuthenticatedUser(#userId) || @securityService.hasAdministratorAuthority()")
-    public UserResponse editProfile(@PathVariable(name = "userId") String userId, @RequestBody UserEditProfileRequest userEditProfileRequest){
-        return userService.editProfile(userId,userEditProfileRequest);
+    public UserResponse editProfile(@PathVariable(name = "userId") String userId, @RequestBody UserEditProfileRequest userEditProfileRequest) {
+        return userService.editProfile(userId, userEditProfileRequest);
     }
 }

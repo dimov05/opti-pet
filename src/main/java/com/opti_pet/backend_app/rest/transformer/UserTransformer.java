@@ -1,6 +1,7 @@
 package com.opti_pet.backend_app.rest.transformer;
 
 import com.opti_pet.backend_app.persistence.model.User;
+import com.opti_pet.backend_app.rest.request.LocationCreateUserRequest;
 import com.opti_pet.backend_app.rest.request.UserRegisterRequest;
 import com.opti_pet.backend_app.rest.response.UserResponse;
 
@@ -16,6 +17,22 @@ public class UserTransformer {
                 .jobTitle(userRegisterRequest.jobTitle())
                 .homeAddress(userRegisterRequest.homeAddress())
                 .bulstat(userRegisterRequest.bulstat())
+                .isActive(true)
+                .notes(new ArrayList<>())
+                .billedItems(new ArrayList<>())
+                .patients(new ArrayList<>())
+                .vaccinations(new ArrayList<>())
+                .billedProcedures(new ArrayList<>())
+                .build();
+    }
+
+    public static User toEntity(LocationCreateUserRequest locationCreateUserRequest, String encodedPassword) {
+        return User.builder()
+                .email(locationCreateUserRequest.userEmail())
+                .name(locationCreateUserRequest.userName())
+                .password(encodedPassword)
+                .phoneNumber(locationCreateUserRequest.userPhoneNumber())
+                .jobTitle(locationCreateUserRequest.userJobTitle())
                 .isActive(true)
                 .notes(new ArrayList<>())
                 .billedItems(new ArrayList<>())
