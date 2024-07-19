@@ -1,5 +1,6 @@
 package com.opti_pet.backend_app.rest.controller;
 
+import com.opti_pet.backend_app.rest.request.LocationAddUserRequest;
 import com.opti_pet.backend_app.rest.request.LocationCreateRequest;
 import com.opti_pet.backend_app.rest.request.LocationCreateUserRequest;
 import com.opti_pet.backend_app.rest.response.LocationResponse;
@@ -29,6 +30,11 @@ public class LocationController {
     @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #locationId) || @securityService.hasAdministratorAuthority()")
     public LocationResponse addNewEmployee(@PathVariable("locationId") String locationId, @RequestBody LocationCreateUserRequest locationCreateUserRequest) {
         return locationService.addNewEmployee(locationId, locationCreateUserRequest);
+    }
+    @PostMapping("/{locationId}/add-existing-employee")
+    @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #locationId) || @securityService.hasAdministratorAuthority()")
+    public LocationResponse addNewEmployee(@PathVariable("locationId") String locationId, @RequestBody LocationAddUserRequest locationAddUserRequest) {
+        return locationService.addExistingEmployee(locationId, locationAddUserRequest);
     }
 
     @GetMapping("/{locationId}")
