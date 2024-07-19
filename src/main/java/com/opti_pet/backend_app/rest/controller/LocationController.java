@@ -1,12 +1,14 @@
 package com.opti_pet.backend_app.rest.controller;
 
-import com.opti_pet.backend_app.rest.request.LocationAddUserRequest;
+import com.opti_pet.backend_app.rest.request.LocationAddUserRolesRequest;
 import com.opti_pet.backend_app.rest.request.LocationCreateRequest;
 import com.opti_pet.backend_app.rest.request.LocationCreateUserRequest;
+import com.opti_pet.backend_app.rest.request.LocationUserRolesEditRequest;
 import com.opti_pet.backend_app.rest.response.LocationResponse;
 import com.opti_pet.backend_app.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,10 +33,17 @@ public class LocationController {
     public LocationResponse addNewEmployee(@PathVariable("locationId") String locationId, @RequestBody LocationCreateUserRequest locationCreateUserRequest) {
         return locationService.addNewEmployee(locationId, locationCreateUserRequest);
     }
-    @PostMapping("/{locationId}/add-existing-employee")
+
+    @PostMapping("/{locationId}/add-roles-employee")
     @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #locationId) || @securityService.hasAdministratorAuthority()")
-    public LocationResponse addNewEmployee(@PathVariable("locationId") String locationId, @RequestBody LocationAddUserRequest locationAddUserRequest) {
-        return locationService.addExistingEmployee(locationId, locationAddUserRequest);
+    public LocationResponse addNewEmployee(@PathVariable("locationId") String locationId, @RequestBody LocationAddUserRolesRequest locationAddUserRolesRequest) {
+        return locationService.addRolesToExistingEmployee(locationId, locationAddUserRolesRequest);
+    }
+
+    @DeleteMapping("/{locationId}/remove-roles-employee")
+    @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #locationId) || @securityService.hasAdministratorAuthority()")
+    public LocationResponse removeRolesFromEmployee(@PathVariable("locationId") String locationId, @RequestBody LocationUserRolesEditRequest locationUserRolesEditRequest) {
+        return locationService.removeRolesFromEmployee(locationId, locationUserRolesEditRequest);
     }
 
     @GetMapping("/{locationId}")

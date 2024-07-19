@@ -40,4 +40,11 @@ public class UserRoleLocationService {
         rolesToSet.forEach(role ->
                 userRoleLocationRepository.save(UserRoleLocationTransformer.fromData(owner, location, role)));
     }
+
+    @Transactional
+    public void deleteUserRoleLocation(User user, Location location, Role role) {
+        userRoleLocationRepository
+                .findByUserIdAndRoleIdAndLocationId(user.getId(), role.getId(), location.getId())
+                .ifPresent(userRoleLocationRepository::delete);
+    }
 }

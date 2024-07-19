@@ -8,9 +8,10 @@ import com.opti_pet.backend_app.persistence.model.Role;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.repository.LocationRepository;
 import com.opti_pet.backend_app.persistence.repository.RoleRepository;
-import com.opti_pet.backend_app.rest.request.LocationAddUserRequest;
+import com.opti_pet.backend_app.rest.request.LocationAddUserRolesRequest;
 import com.opti_pet.backend_app.rest.request.LocationCreateRequest;
 import com.opti_pet.backend_app.rest.request.LocationCreateUserRequest;
+import com.opti_pet.backend_app.rest.request.LocationUserRolesEditRequest;
 import com.opti_pet.backend_app.rest.response.LocationResponse;
 import com.opti_pet.backend_app.rest.transformer.LocationTransformer;
 import jakarta.transaction.Transactional;
@@ -68,11 +69,21 @@ public class LocationService {
     }
 
     @Transactional
-    public LocationResponse addExistingEmployee(String locationId, LocationAddUserRequest locationAddUserRequest) {
+    public LocationResponse addRolesToExistingEmployee(String locationId, LocationAddUserRolesRequest locationAddUserRolesRequest) {
         Location location = getLocationByIdOrThrowException(UUID.fromString(locationId));
-        User user = userService.getUserByEmailOrThrowException(locationAddUserRequest.userEmail());
-        List<Role> roles = roleRepository.findAllById(locationAddUserRequest.roleIdsToSet());
+        User user = userService.getUserByEmailOrThrowException(locationAddUserRolesRequest.userEmail());
+        List<Role> roles = roleRepository.findAllById(locationAddUserRolesRequest.roleIdsToSet());
         roles.forEach(role -> userRoleLocationService.saveNewUserRoleLocation(user, location, role));
+
+        return LocationTransformer.toResponse(location);
+    }
+
+    @Transactional
+    public LocationResponse removeRolesFromEmployee(String locationId, LocationUserRolesEditRequest locationUserRolesEditRequest) {
+        Location location = getLocationByIdOrThrowException(UUID.fromString(locationId));
+        User user = userService.getUserByEmailOrThrowException(locationUserRolesEditRequest.userEmail());
+        List<Role> roles = roleRepository.findAllById(locationUserRolesEditRequest.roleIdsToSet());
+        roles.forEach(role -> userRoleLocationService.deleteUserRoleLocation(user, location, role));
 
         return LocationTransformer.toResponse(location);
     }
