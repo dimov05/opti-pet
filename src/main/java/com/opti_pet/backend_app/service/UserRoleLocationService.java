@@ -47,4 +47,9 @@ public class UserRoleLocationService {
                 .findByUserIdAndRoleIdAndLocationId(user.getId(), role.getId(), location.getId())
                 .ifPresent(userRoleLocationRepository::delete);
     }
+
+    @Transactional
+    public void deleteUserRoleLocationByUserAndLocation(User user, Location location) {
+        userRoleLocationRepository.deleteByUserIdAndLocationId(user.getId(), location.getId());
+    }
 }

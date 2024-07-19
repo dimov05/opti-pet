@@ -88,6 +88,16 @@ public class LocationService {
         return LocationTransformer.toResponse(location);
     }
 
+    @Transactional
+    public LocationResponse removeEmployeeFromLocation(String locationId, String employeeEmail) {
+        Location location = getLocationByIdOrThrowException(UUID.fromString(locationId));
+        User user = userService.getUserByEmailOrThrowException(employeeEmail);
+
+        userRoleLocationService.deleteUserRoleLocationByUserAndLocation(user, location);
+
+        return LocationTransformer.toResponse(location);
+    }
+
     public LocationResponse getLocationById(String locationId) {
         return LocationTransformer.toResponse(getLocationByIdOrThrowException(UUID.fromString(locationId)));
     }
