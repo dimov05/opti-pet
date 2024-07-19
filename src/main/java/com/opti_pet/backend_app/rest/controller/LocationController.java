@@ -8,10 +8,10 @@ import com.opti_pet.backend_app.rest.response.LocationResponse;
 import com.opti_pet.backend_app.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,10 +40,16 @@ public class LocationController {
         return locationService.addRolesToExistingEmployee(locationId, locationAddUserRolesRequest);
     }
 
-    @DeleteMapping("/{locationId}/remove-roles-employee")
+    @PutMapping("/{locationId}/remove-roles-employee")
     @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #locationId) || @securityService.hasAdministratorAuthority()")
     public LocationResponse removeRolesFromEmployee(@PathVariable("locationId") String locationId, @RequestBody LocationUserRolesEditRequest locationUserRolesEditRequest) {
         return locationService.removeRolesFromEmployee(locationId, locationUserRolesEditRequest);
+    }
+
+    @PutMapping("/{locationId}/remove-employee/{employeeEmail}")
+    @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #locationId) || @securityService.hasAdministratorAuthority()")
+    public LocationResponse removeEmployeeFromLocation(@PathVariable("locationId") String locationId, @PathVariable("employeeEmail") String employeeEmail) {
+        return locationService.removeEmployeeFromLocation(locationId, employeeEmail);
     }
 
     @GetMapping("/{locationId}")

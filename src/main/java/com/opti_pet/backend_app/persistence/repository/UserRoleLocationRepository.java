@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface UserRoleLocationRepository extends JpaRepository<UserRoleLocation, UUID> {
     Optional<UserRoleLocation> findByUserIdAndRoleIdAndLocationId(UUID userId, Long roleId, UUID locationId);
+
+    void deleteByUserIdAndLocationId(UUID userId, UUID locationId);
 }
