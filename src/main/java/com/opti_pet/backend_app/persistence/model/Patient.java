@@ -15,11 +15,13 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +29,8 @@ import java.util.UUID;
 @Table(name = "patient", schema = "opti-pet")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Patient {
     @Id
@@ -44,8 +48,14 @@ public class Patient {
     @Column(name = "microchip")
     private String microchip;
 
+    @Column(name = "pendant")
+    private String pendant;
+
+    @Column(name = "passport")
+    private String passport;
+
     @Column(name = "birthdate")
-    private Date birthdate;
+    private LocalDate birthdate;
 
     @Column(name = "weight")
     private double weight;
@@ -58,6 +68,9 @@ public class Patient {
 
     @Column(name = "note")
     private String note;
+
+    @Column(name = "patient_access_code")
+    private String patientAccessCode;
 
     @OneToMany(mappedBy = "patient")
     private List<Vaccination> vaccinations;

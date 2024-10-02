@@ -51,8 +51,8 @@ public class UserService implements UserDetailsService {
 
         user = userRepository.save(user);
 
-        Location location = locationRepository.findById(LOCATION_UUID)
-                .orElseThrow(() -> new NotFoundException(LOCATION_ENTITY, UUID_FIELD_NAME, LOCATION_UUID.toString()));
+        Location location = locationRepository.findById(DEFAULT_LOCATION_UUID)
+                .orElseThrow(() -> new NotFoundException(LOCATION_ENTITY, UUID_FIELD_NAME, DEFAULT_LOCATION_UUID.toString()));
         Role role = roleService.getRoleByIdOrThrowException(1L);
 
         userRoleLocationService.saveNewUserRoleLocation(user, location, role);
@@ -69,8 +69,8 @@ public class UserService implements UserDetailsService {
         User user = UserTransformer.toEntity(locationCreateUserRequest, passwordEncoder.encode(locationCreateUserRequest.userPassword()));
         user = userRepository.save(user);
 
-        Location location = locationRepository.findById(LOCATION_UUID)
-                .orElseThrow(() -> new NotFoundException(LOCATION_ENTITY, UUID_FIELD_NAME, LOCATION_UUID.toString()));
+        Location location = locationRepository.findById(DEFAULT_LOCATION_UUID)
+                .orElseThrow(() -> new NotFoundException(LOCATION_ENTITY, UUID_FIELD_NAME, DEFAULT_LOCATION_UUID.toString()));
         Role role = roleService.getRoleByIdOrThrowException(1L);
         userRoleLocationService.saveNewUserRoleLocation(user, location, role);
 

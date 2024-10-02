@@ -47,16 +47,19 @@ CREATE TABLE "role"
 
 CREATE TABLE "patient"
 (
-    "id"          UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
-    "name"        VARCHAR(255)     NOT NULL,
-    "pet_type"    VARCHAR(255)     NOT NULL,
-    "microchip"   VARCHAR(255) UNIQUE,
-    "birthdate"   DATE             NOT NULL,
-    "weight"      DECIMAL(5, 2) CHECK (weight >= 0),
-    "is_deceased" BOOLEAN          NOT NULL DEFAULT FALSE,
-    "is_neutered" BOOLEAN          NOT NULL DEFAULT FALSE,
-    "note"        TEXT,
-    "owner_id"    UUID             NOT NULL
+    "id"                  UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
+    "name"                VARCHAR(255)     NOT NULL,
+    "pet_type"            VARCHAR(255)     NOT NULL,
+    "microchip"           VARCHAR(255) UNIQUE,
+    "pendant"             VARCHAR(255) UNIQUE,
+    "passport"            VARCHAR(255) UNIQUE,
+    "birthdate"           DATE             NOT NULL,
+    "weight"              DECIMAL(5, 2) CHECK (weight >= 0),
+    "is_deceased"         BOOLEAN          NOT NULL DEFAULT FALSE,
+    "is_neutered"         BOOLEAN          NOT NULL DEFAULT FALSE,
+    "patient_access_code" VARCHAR(4)       NOT NULL DEFAULT '0000',
+    "note"                TEXT,
+    "owner_id"            UUID             NOT NULL
 );
 
 CREATE TABLE "vaccination"
