@@ -19,17 +19,17 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
-    private final JwtService jwtService;
+    private final JwtServiceHelper jwtServiceHelper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = extractJwtFromRequest(request);
-        String username = jwt != null ? jwtService.extractUsername(jwt) : null;
+        String username = jwt != null ? jwtServiceHelper.extractUsername(jwt) : null;
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            if (jwtService.isTokenValid(jwt, userDetails.getUsername())) {
+            if (jwtServiceHelper.isTokenValid(jwt, userDetails.getUsername())) {
                 setAuthentication(request, userDetails);
             }
         }

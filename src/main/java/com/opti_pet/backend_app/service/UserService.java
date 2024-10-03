@@ -35,7 +35,7 @@ public class UserService implements UserDetailsService {
     private final RoleService roleService;
     private final UserRoleLocationService userRoleLocationService;
     private final LocationRepository locationRepository;
-
+    private final JwtService jwtService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -108,6 +108,13 @@ public class UserService implements UserDetailsService {
         }
 
         return UserTransformer.toResponse(user);
+    }
+
+    @Transactional
+    public UserResponse getMyInformation() {
+        String email = jwtService.extractEmailFromToken();
+
+        return UserTransformer.toResponse(getUserByEmailOrThrowException(email));
     }
 
     private void updateUserField(Supplier<String> newField, Supplier<String> currentField, Consumer<String> updateField) {

@@ -1,7 +1,7 @@
 package com.opti_pet.backend_app.rest.controller;
 
 import com.opti_pet.backend_app.rest.request.UserLoginRequest;
-import com.opti_pet.backend_app.util.JwtService;
+import com.opti_pet.backend_app.util.JwtServiceHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final JwtService jwtService;
+    private final JwtServiceHelper jwtServiceHelper;
 
     @PostMapping("/generateToken")
     public String generateToken(@RequestBody UserLoginRequest userLoginRequest) {
-        return jwtService.generateToken(userLoginRequest);
+        return jwtServiceHelper.generateToken(userLoginRequest);
     }
 }

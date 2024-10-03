@@ -50,6 +50,7 @@ public class UserTransformer {
                 .phoneNumber(user.getPhoneNumber())
                 .homeAddress(user.getHomeAddress())
                 .bulstat(user.getBulstat())
+                .jobTitle(user.getJobTitle())
                 .isActive(user.isActive())
                 .build();
     }

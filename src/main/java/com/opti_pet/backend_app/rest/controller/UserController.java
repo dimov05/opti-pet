@@ -7,12 +7,7 @@ import com.opti_pet.backend_app.rest.response.UserResponse;
 import com.opti_pet.backend_app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -35,5 +30,10 @@ public class UserController {
     @PreAuthorize("@securityService.userIdEqualsAuthenticatedUser(#userId) || @securityService.hasAdministratorAuthority()")
     public UserResponse editProfile(@PathVariable(name = "userId") String userId, @RequestBody UserEditProfileRequest userEditProfileRequest) {
         return userService.editProfile(userId, userEditProfileRequest);
+    }
+
+    @GetMapping("/me")
+    public UserResponse getMyInformation() {
+        return userService.getMyInformation();
     }
 }

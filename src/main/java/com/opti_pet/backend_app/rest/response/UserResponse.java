@@ -4,5 +4,5 @@ import lombok.Builder;
 
 @Builder
 public record UserResponse(String id, String name, String email, String phoneNumber, String homeAddress, String bulstat,
-                           Boolean isActive) {
+                           String jobTitle, Boolean isActive) {
 }
