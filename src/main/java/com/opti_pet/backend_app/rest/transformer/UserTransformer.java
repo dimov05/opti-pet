@@ -51,7 +51,9 @@ public class UserTransformer {
                 .homeAddress(user.getHomeAddress())
                 .bulstat(user.getBulstat())
                 .jobTitle(user.getJobTitle())
+                .locations(UserRoleLocationTransformer.toLocationRoleResponse(user.getUserRoleLocations()))
                 .isActive(user.isActive())
                 .build();
     }
+
 }
