@@ -277,7 +277,7 @@ ALTER TABLE "patient"
         FOREIGN KEY ("owner_id") REFERENCES "user" ("id");
 
 INSERT INTO "user" (id, email, password, phone_number, name, home_address, bulstat, notes, job_title, is_active)
-VALUES ('7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 'admin@opti-pet.com', '123456', '0877779992', 'Dimo Dimov', 'Plovdiv',
+VALUES ('7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 'admin@opti-pet.com', '$2a$10$NUcmf.jEHWbhcdLAUavpAeWLrYyqEJVVnkt2kwsU7YuBDy/eCCF3e', '0877779992', 'Dimo Dimov', 'Plovdiv',
         null, null, 'Application Administrator', true);
 
 INSERT INTO "role" ("id", "name", "description")
