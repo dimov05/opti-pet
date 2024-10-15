@@ -7,7 +7,7 @@ import lombok.Builder;
 import org.hibernate.validator.constraints.UUID;
 
 @Builder
-public record LocationCreateRequest(@UUID String clinicId, @NotBlank String name, @Email String email,
+public record LocationCreateRequest(@NotBlank String name,@NotBlank String ownerEmail, @Email String email,
                                     @NotBlank String city, @NotBlank String address,
                                     @NotBlank String phoneNumber, @NotNull Boolean locationRestrictionsEnabled,
                                     Double latitude,

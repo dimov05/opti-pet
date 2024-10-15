@@ -5,6 +5,7 @@ import com.opti_pet.backend_app.exception.NotFoundException;
 import com.opti_pet.backend_app.persistence.model.Location;
 import com.opti_pet.backend_app.persistence.model.Role;
 import com.opti_pet.backend_app.persistence.model.User;
+import com.opti_pet.backend_app.persistence.model.UserRoleLocation;
 import com.opti_pet.backend_app.persistence.repository.LocationRepository;
 import com.opti_pet.backend_app.persistence.repository.UserRepository;
 import com.opti_pet.backend_app.rest.request.LocationCreateUserRequest;
@@ -21,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -55,10 +57,10 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new NotFoundException(LOCATION_ENTITY, UUID_FIELD_NAME, DEFAULT_LOCATION_UUID.toString()));
         Role role = roleService.getRoleByIdOrThrowException(1L);
 
-        userRoleLocationService.saveNewUserRoleLocation(user, location, role);
+        List<UserRoleLocation> userRoleLocations = userRoleLocationService.saveNewUserRoleLocation(user, location, role);
+        user.setUserRoleLocations(userRoleLocations);
 
-
-        return UserTransformer.toResponse(user);
+        return UserTransformer.toResponse(userRepository.save(user));
     }
 
     @Transactional
@@ -72,9 +74,10 @@ public class UserService implements UserDetailsService {
         Location location = locationRepository.findById(DEFAULT_LOCATION_UUID)
                 .orElseThrow(() -> new NotFoundException(LOCATION_ENTITY, UUID_FIELD_NAME, DEFAULT_LOCATION_UUID.toString()));
         Role role = roleService.getRoleByIdOrThrowException(1L);
-        userRoleLocationService.saveNewUserRoleLocation(user, location, role);
+        List<UserRoleLocation> userRoleLocations = userRoleLocationService.saveNewUserRoleLocation(user, location, role);
+        user.setUserRoleLocations(userRoleLocations);
 
-        return user;
+        return userRepository.save(user);
     }
 
     @Transactional

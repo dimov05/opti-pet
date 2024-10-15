@@ -53,6 +53,7 @@ public class UserTransformer {
                 .jobTitle(user.getJobTitle())
                 .locations(UserRoleLocationTransformer.toLocationRoleResponse(user.getUserRoleLocations()))
                 .isActive(user.isActive())
+                .isAdministrator(user.getUserRoleLocations().stream().anyMatch(userRoleLocation -> userRoleLocation.getRole().getName().startsWith("ADMINISTRATOR")))
                 .build();
     }
 

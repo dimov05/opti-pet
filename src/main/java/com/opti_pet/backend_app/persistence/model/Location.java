@@ -60,8 +60,8 @@ public class Location {
     private boolean isActive;
 
     @ManyToOne
-    @JoinColumn(name = "clinic_id")
-    private Clinic clinic;
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     @OneToMany(mappedBy = "location")
     private List<Vaccination> vaccinations;

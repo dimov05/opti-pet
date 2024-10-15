@@ -1,6 +1,5 @@
 package com.opti_pet.backend_app.rest.transformer;
 
-import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Location;
 import com.opti_pet.backend_app.persistence.model.UserRoleLocation;
 import com.opti_pet.backend_app.rest.request.LocationCreateRequest;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class LocationTransformer {
-    public static Location toEntity(LocationCreateRequest locationCreateRequest, Clinic clinic) {
+    public static Location toEntity(LocationCreateRequest locationCreateRequest) {
         return Location.builder()
                 .name(locationCreateRequest.name())
                 .email(locationCreateRequest.email())
@@ -21,7 +20,6 @@ public class LocationTransformer {
                 .latitude(locationCreateRequest.latitude())
                 .longitude(locationCreateRequest.longitude())
                 .isActive(true)
-                .clinic(clinic)
                 .vaccinations(new ArrayList<>())
                 .discounts(new ArrayList<>())
                 .notes(new ArrayList<>())
@@ -38,7 +36,6 @@ public class LocationTransformer {
     public static LocationResponse toResponse(Location location) {
         return LocationResponse.builder()
                 .id(location.getId().toString())
-                .clinicId(location.getClinic().getId().toString())
                 .name(location.getName())
                 .email(location.getEmail())
                 .city(location.getCity())

@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.opti_pet.backend_app.util.AppConstants.EMAIL_FIELD_NAME;
@@ -26,9 +27,11 @@ public class UserRoleLocationService {
     private final RoleRepository roleRepository;
 
     @Transactional
-    public void saveNewUserRoleLocation(User user, Location location, Role role) {
+    public List<UserRoleLocation> saveNewUserRoleLocation(User user, Location location, Role role) {
         UserRoleLocation userRoleLocation = UserRoleLocationTransformer.fromData(user, location, role);
-        userRoleLocationRepository.save(userRoleLocation);
+        List<UserRoleLocation> userRoleLocations = new ArrayList<>();
+        userRoleLocations.add(userRoleLocationRepository.save(userRoleLocation));
+        return userRoleLocations;
     }
 
     @Transactional

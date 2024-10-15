@@ -1,18 +1,6 @@
-CREATE TABLE "clinic"
-(
-    "id"                 UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
-    "name"               VARCHAR(255)     NOT NULL UNIQUE,
-    "email"              VARCHAR(255)     NOT NULL,
-    "owner_name"         VARCHAR(255)     NOT NULL,
-    "owner_phone_number" VARCHAR(255)     NOT NULL,
-    "owner_email"        VARCHAR(255)     NOT NULL,
-    "is_active"          BOOLEAN          NOT NULL DEFAULT TRUE
-);
-
 CREATE TABLE "location"
 (
     "id"                            UUID PRIMARY KEY    NOT NULL DEFAULT gen_random_uuid(),
-    "clinic_id"                     UUID                NOT NULL,
     "name"                          VARCHAR(255) UNIQUE NOT NULL,
     "email"                         VARCHAR(255)        NOT NULL,
     "city"                          VARCHAR(255)        NOT NULL,
@@ -21,7 +9,8 @@ CREATE TABLE "location"
     "location_restrictions_enabled" BOOLEAN             NOT NULL DEFAULT FALSE,
     "latitude"                      DOUBLE PRECISION,
     "longitude"                     DOUBLE PRECISION,
-    "is_active"                     BOOLEAN             NOT NULL DEFAULT TRUE
+    "is_active"                     BOOLEAN             NOT NULL DEFAULT TRUE,
+    "owner_id"                      UUID                NOT NULL
 );
 
 CREATE TABLE "user"
@@ -205,7 +194,7 @@ ALTER TABLE "user_role_location"
         FOREIGN KEY ("location_id") REFERENCES "location" ("id");
 
 ALTER TABLE "location"
-    ADD CONSTRAINT "location_fk_clinic" FOREIGN KEY ("clinic_id") REFERENCES "clinic" ("id");
+    ADD CONSTRAINT "location_fk_owner" FOREIGN KEY ("owner_id") REFERENCES "user" ("id");
 
 ALTER TABLE "vaccination"
     ADD CONSTRAINT "vaccination_fk_patient"
@@ -287,6 +276,10 @@ ALTER TABLE "patient"
     ADD CONSTRAINT "patient_fk_user"
         FOREIGN KEY ("owner_id") REFERENCES "user" ("id");
 
+INSERT INTO "user" (id, email, password, phone_number, name, home_address, bulstat, notes, job_title, is_active)
+VALUES ('7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 'admin@opti-pet.com', '123456', '0877779992', 'Dimo Dimov', 'Plovdiv',
+        null, null, 'Application Administrator', true);
+
 INSERT INTO "role" ("id", "name", "description")
 VALUES (1, 'OWNER', 'Role for Pet Owners'),
        (2, 'VETERINARIAN', 'Role for Veterinarians'),
@@ -295,11 +288,11 @@ VALUES (1, 'OWNER', 'Role for Pet Owners'),
        (5, 'CLINIC_MANAGER', 'Role for Clinic Managers - pricing, procedures, items and etc'),
        (6, 'ADMINISTRATOR', 'Role for Application Administrator');
 
-INSERT INTO "clinic" ("id", "name", "email", "owner_name", "owner_phone_number", "owner_email", "is_active")
-VALUES ('7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 'DEFAULT CLINIC', 'defaultClinic@email.com', 'Default owner',
-        'Default phone number', 'ownerDefaultEmail@email.com', true);
-
-INSERT INTO "location" ("id", "clinic_id", "name", "email", "city", "address", "phone_number",
+INSERT INTO "location" ("id", "owner_id", "name", "email", "city", "address", "phone_number",
                         "location_restrictions_enabled", "latitude", "longitude", "is_active")
 VALUES ('3837ce44-ff3f-4b63-8833-7193be3aa4c3', '7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 'DEFAULT LOCATION',
-        'defaultEmail@email.com', 'Default City', 'Default Address', 'Default Phone Number', false, null, null, true)
+        'defaultEmail@email.com', 'Default City', 'Default Address', 'Default Phone Number', false, null, null, true);
+
+INSERT INTO "user_role_location" (user_id, role_id, location_id)
+VALUES ('7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 1, '3837ce44-ff3f-4b63-8833-7193be3aa4c3'),
+       ('7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 6, '3837ce44-ff3f-4b63-8833-7193be3aa4c3')

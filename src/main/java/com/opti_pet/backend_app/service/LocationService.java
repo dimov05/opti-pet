@@ -2,7 +2,6 @@ package com.opti_pet.backend_app.service;
 
 import com.opti_pet.backend_app.exception.BadRequestException;
 import com.opti_pet.backend_app.exception.NotFoundException;
-import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Location;
 import com.opti_pet.backend_app.persistence.model.Role;
 import com.opti_pet.backend_app.persistence.model.User;
@@ -28,7 +27,6 @@ import static com.opti_pet.backend_app.util.AppConstants.UUID_FIELD_NAME;
 @RequiredArgsConstructor
 public class LocationService {
     private final LocationRepository locationRepository;
-    private final ClinicService clinicService;
     private final UserRoleLocationService userRoleLocationService;
     private final UserService userService;
     private final RoleRepository roleRepository;
@@ -41,12 +39,12 @@ public class LocationService {
 
     @Transactional
     public LocationResponse createLocation(LocationCreateRequest locationCreateRequest) {
-        Clinic clinic = clinicService.getClinicByIdOrThrowException(locationCreateRequest.clinicId());
+        User owner = userService.getUserByEmailOrThrowException(locationCreateRequest.ownerEmail() != null ? locationCreateRequest.ownerEmail() : "admin@opti-pet.com");
 
         checkIfLocationAlreadyExists(locationCreateRequest);
-        Location location = locationRepository.save(LocationTransformer.toEntity(locationCreateRequest, clinic));
+        Location location = locationRepository.save(LocationTransformer.toEntity(locationCreateRequest));
 
-        userRoleLocationService.createRoleForOwnerOfLocation(location, clinic.getOwnerEmail());
+        userRoleLocationService.createRoleForOwnerOfLocation(location, owner.getEmail());
 
         return LocationTransformer.toResponse(location);
 
