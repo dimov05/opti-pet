@@ -4,12 +4,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import org.hibernate.validator.constraints.UUID;
 
 @Builder
-public record LocationCreateRequest(@NotBlank String name,@NotBlank String ownerEmail, @Email String email,
+public record ClinicCreateRequest(@NotBlank String name,String ownerEmail, @Email String email,
                                     @NotBlank String city, @NotBlank String address,
-                                    @NotBlank String phoneNumber, @NotNull Boolean locationRestrictionsEnabled,
+                                    @NotBlank String phoneNumber, @NotNull Boolean clinicRestrictionsEnabled,
                                     Double latitude,
                                     Double longitude) {
 }

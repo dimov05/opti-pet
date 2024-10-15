@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record LocationCreateUserRequest(String userEmail, String userPassword, String userConfirmPassword,
+public record ClinicCreateUserRequest(String userEmail, String userPassword, String userConfirmPassword,
                                         String userPhoneNumber, String userName, String userJobTitle,
                                         List<Long> roleIdsToSet) {
 }

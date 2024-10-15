@@ -54,8 +54,8 @@ public class BilledProcedure {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
+    @JoinColumn(name = "clinic_id")
+    private Clinic clinic;
 
     @ManyToOne
     @JoinColumn(name = "discount_id")

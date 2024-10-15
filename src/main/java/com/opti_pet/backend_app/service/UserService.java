@@ -2,13 +2,13 @@ package com.opti_pet.backend_app.service;
 
 import com.opti_pet.backend_app.exception.BadRequestException;
 import com.opti_pet.backend_app.exception.NotFoundException;
-import com.opti_pet.backend_app.persistence.model.Location;
+import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Role;
 import com.opti_pet.backend_app.persistence.model.User;
-import com.opti_pet.backend_app.persistence.model.UserRoleLocation;
-import com.opti_pet.backend_app.persistence.repository.LocationRepository;
+import com.opti_pet.backend_app.persistence.model.UserRoleClinic;
+import com.opti_pet.backend_app.persistence.repository.ClinicRepository;
 import com.opti_pet.backend_app.persistence.repository.UserRepository;
-import com.opti_pet.backend_app.rest.request.LocationCreateUserRequest;
+import com.opti_pet.backend_app.rest.request.ClinicCreateUserRequest;
 import com.opti_pet.backend_app.rest.request.UserChangePasswordRequest;
 import com.opti_pet.backend_app.rest.request.UserEditProfileRequest;
 import com.opti_pet.backend_app.rest.request.UserRegisterRequest;
@@ -35,8 +35,8 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final UserRoleLocationService userRoleLocationService;
-    private final LocationRepository locationRepository;
+    private final UserRoleClinicService userRoleClinicService;
+    private final ClinicRepository clinicRepository;
     private final JwtService jwtService;
 
     @Override
@@ -53,29 +53,29 @@ public class UserService implements UserDetailsService {
 
         user = userRepository.save(user);
 
-        Location location = locationRepository.findById(DEFAULT_LOCATION_UUID)
-                .orElseThrow(() -> new NotFoundException(LOCATION_ENTITY, UUID_FIELD_NAME, DEFAULT_LOCATION_UUID.toString()));
+        Clinic clinic = clinicRepository.findById(DEFAULT_CLINIC_UUID)
+                .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, DEFAULT_CLINIC_UUID.toString()));
         Role role = roleService.getRoleByIdOrThrowException(1L);
 
-        List<UserRoleLocation> userRoleLocations = userRoleLocationService.saveNewUserRoleLocation(user, location, role);
-        user.setUserRoleLocations(userRoleLocations);
+        List<UserRoleClinic> userRoleClinics = userRoleClinicService.saveNewUserRoleClinic(user, clinic, role);
+        user.setUserRoleClinics(userRoleClinics);
 
         return UserTransformer.toResponse(userRepository.save(user));
     }
 
     @Transactional
-    public User registerUserAsManager(LocationCreateUserRequest locationCreateUserRequest) {
-        if (!locationCreateUserRequest.userPassword().equals(locationCreateUserRequest.userConfirmPassword())) {
+    public User registerUserAsManager(ClinicCreateUserRequest clinicCreateUserRequest) {
+        if (!clinicCreateUserRequest.userPassword().equals(clinicCreateUserRequest.userConfirmPassword())) {
             throw new BadRequestException("Password and confirm password does not match!");
         }
-        User user = UserTransformer.toEntity(locationCreateUserRequest, passwordEncoder.encode(locationCreateUserRequest.userPassword()));
+        User user = UserTransformer.toEntity(clinicCreateUserRequest, passwordEncoder.encode(clinicCreateUserRequest.userPassword()));
         user = userRepository.save(user);
 
-        Location location = locationRepository.findById(DEFAULT_LOCATION_UUID)
-                .orElseThrow(() -> new NotFoundException(LOCATION_ENTITY, UUID_FIELD_NAME, DEFAULT_LOCATION_UUID.toString()));
+        Clinic clinic = clinicRepository.findById(DEFAULT_CLINIC_UUID)
+                .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, DEFAULT_CLINIC_UUID.toString()));
         Role role = roleService.getRoleByIdOrThrowException(1L);
-        List<UserRoleLocation> userRoleLocations = userRoleLocationService.saveNewUserRoleLocation(user, location, role);
-        user.setUserRoleLocations(userRoleLocations);
+        List<UserRoleClinic> userRoleClinics = userRoleClinicService.saveNewUserRoleClinic(user, clinic, role);
+        user.setUserRoleClinics(userRoleClinics);
 
         return userRepository.save(user);
     }

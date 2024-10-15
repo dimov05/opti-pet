@@ -1,4 +1,4 @@
-CREATE TABLE "location"
+CREATE TABLE "clinic"
 (
     "id"                            UUID PRIMARY KEY    NOT NULL DEFAULT gen_random_uuid(),
     "name"                          VARCHAR(255) UNIQUE NOT NULL,
@@ -6,7 +6,7 @@ CREATE TABLE "location"
     "city"                          VARCHAR(255)        NOT NULL,
     "address"                       VARCHAR(255)        NOT NULL,
     "phone_number"                  VARCHAR(255)        NOT NULL,
-    "location_restrictions_enabled" BOOLEAN             NOT NULL DEFAULT FALSE,
+    "clinic_restrictions_enabled" BOOLEAN             NOT NULL DEFAULT FALSE,
     "latitude"                      DOUBLE PRECISION,
     "longitude"                     DOUBLE PRECISION,
     "is_active"                     BOOLEAN             NOT NULL DEFAULT TRUE,
@@ -58,7 +58,7 @@ CREATE TABLE "vaccination"
     "start_date"  DATE             NOT NULL,
     "due_date"    DATE             NOT NULL,
     "patient_id"  UUID             NOT NULL,
-    "location_id" UUID             NOT NULL,
+    "clinic_id" UUID             NOT NULL,
     "user_id"     UUID             NOT NULL
 );
 
@@ -68,7 +68,7 @@ CREATE TABLE "discount"
     "name"               VARCHAR(255)                                        NOT NULL,
     "percent_items"      DECIMAL(5, 2) CHECK (percent_items >= 0),
     "percent_procedures" DECIMAL(5, 2) CHECK (percent_procedures >= 0),
-    "location_id"        UUID                                                NOT NULL,
+    "clinic_id"        UUID                                                NOT NULL,
     "is_active"          BOOLEAN                                             NOT NULL DEFAULT TRUE
 );
 
@@ -78,7 +78,7 @@ CREATE TABLE "note"
     "message"     TEXT,
     "date_added"  DATE             NOT NULL,
     "patient_id"  UUID             NOT NULL,
-    "location_id" UUID             NOT NULL,
+    "clinic_id" UUID             NOT NULL,
     "user_id"     UUID             NOT NULL,
     "is_public"   BOOLEAN          NOT NULL DEFAULT TRUE
 
@@ -94,7 +94,7 @@ CREATE TABLE "bill"
     "has_invoice"      BOOLEAN          NOT NULL DEFAULT FALSE,
     "note"             TEXT,
     "patient_id"       UUID             NOT NULL,
-    "location_id"      UUID             NOT NULL
+    "clinic_id"      UUID             NOT NULL
 );
 
 CREATE TABLE "item"
@@ -108,7 +108,7 @@ CREATE TABLE "item"
     "date_added"         DATE             NOT NULL,
     "date_updated"       DATE             NOT NULL,
     "is_active"          BOOLEAN          NOT NULL                   DEFAULT TRUE,
-    "location_id"        UUID             NOT NULL
+    "clinic_id"        UUID             NOT NULL
 );
 
 CREATE TABLE "procedure"
@@ -121,7 +121,7 @@ CREATE TABLE "procedure"
     "date_added"       DATE             NOT NULL,
     "date_updated"     DATE             NOT NULL,
     "is_active"        BOOLEAN          NOT NULL                   DEFAULT TRUE,
-    "location_id"      UUID             NOT NULL
+    "clinic_id"      UUID             NOT NULL
 );
 
 CREATE TABLE "billed_item"
@@ -135,7 +135,7 @@ CREATE TABLE "billed_item"
     "billed_date"      DATE             NOT NULL,
     "bill_id"          UUID             NOT NULL,
     "user_id"          UUID             NOT NULL,
-    "location_id"      UUID             NOT NULL,
+    "clinic_id"      UUID             NOT NULL,
     "discount_id"      BIGINT
 );
 
@@ -150,75 +150,75 @@ CREATE TABLE "billed_procedure"
     "billed_date"      DATE             NOT NULL,
     "bill_id"          UUID             NOT NULL,
     "user_id"          UUID             NOT NULL,
-    "location_id"      UUID             NOT NULL,
+    "clinic_id"      UUID             NOT NULL,
     "discount_id"      BIGINT
 );
 
-CREATE TABLE "patient_location"
+CREATE TABLE "patient_clinic"
 (
     "patient_id"  UUID NOT NULL,
-    "location_id" UUID NOT NULL
+    "clinic_id" UUID NOT NULL
 );
 
-CREATE TABLE "user_role_location"
+CREATE TABLE "user_role_clinic"
 (
     "user_id"     UUID   NOT NULL,
     "role_id"     BIGINT NOT NULL,
-    "location_id" UUID
+    "clinic_id" UUID
 );
 
-ALTER TABLE "patient_location"
-    ADD PRIMARY KEY ("patient_id", "location_id");
+ALTER TABLE "patient_clinic"
+    ADD PRIMARY KEY ("patient_id", "clinic_id");
 
-ALTER TABLE "patient_location"
-    ADD CONSTRAINT "patient_location_fk_patient"
+ALTER TABLE "patient_clinic"
+    ADD CONSTRAINT "patient_clinic_fk_patient"
         FOREIGN KEY ("patient_id") REFERENCES "patient" ("id");
 
-ALTER TABLE "patient_location"
-    ADD CONSTRAINT "patient_location_fk_location"
-        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+ALTER TABLE "patient_clinic"
+    ADD CONSTRAINT "patient_clinic_fk_clinic"
+        FOREIGN KEY ("clinic_id") REFERENCES "clinic" ("id");
 
-ALTER TABLE "user_role_location"
-    ADD PRIMARY KEY ("user_id", "role_id", "location_id");
+ALTER TABLE "user_role_clinic"
+    ADD PRIMARY KEY ("user_id", "role_id", "clinic_id");
 
-ALTER TABLE "user_role_location"
-    ADD CONSTRAINT "user_role_location_fk_user"
+ALTER TABLE "user_role_clinic"
+    ADD CONSTRAINT "user_role_clinic_fk_user"
         FOREIGN KEY ("user_id") REFERENCES "user" ("id");
 
-ALTER TABLE "user_role_location"
-    ADD CONSTRAINT "user_role_location_fk_role"
+ALTER TABLE "user_role_clinic"
+    ADD CONSTRAINT "user_role_clinic_fk_role"
         FOREIGN KEY ("role_id") REFERENCES "role" ("id");
 
-ALTER TABLE "user_role_location"
-    ADD CONSTRAINT "user_role_location_fk_location"
-        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+ALTER TABLE "user_role_clinic"
+    ADD CONSTRAINT "user_role_clinic_fk_clinic"
+        FOREIGN KEY ("clinic_id") REFERENCES "clinic" ("id");
 
-ALTER TABLE "location"
-    ADD CONSTRAINT "location_fk_owner" FOREIGN KEY ("owner_id") REFERENCES "user" ("id");
+ALTER TABLE "clinic"
+    ADD CONSTRAINT "clinic_fk_owner" FOREIGN KEY ("owner_id") REFERENCES "user" ("id");
 
 ALTER TABLE "vaccination"
     ADD CONSTRAINT "vaccination_fk_patient"
         FOREIGN KEY ("patient_id") REFERENCES "patient" ("id");
 
 ALTER TABLE "vaccination"
-    ADD CONSTRAINT "vaccination_fk_location"
-        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+    ADD CONSTRAINT "vaccination_fk_clinic"
+        FOREIGN KEY ("clinic_id") REFERENCES "clinic" ("id");
 
 ALTER TABLE "vaccination"
     ADD CONSTRAINT "vaccination_fk_user"
         FOREIGN KEY ("user_id") REFERENCES "user" ("id");
 
 ALTER TABLE "discount"
-    ADD CONSTRAINT "discount_fk_location"
-        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+    ADD CONSTRAINT "discount_fk_clinic"
+        FOREIGN KEY ("clinic_id") REFERENCES "clinic" ("id");
 
 ALTER TABLE "note"
     ADD CONSTRAINT "note_fk_patient"
         FOREIGN KEY ("patient_id") REFERENCES "patient" ("id");
 
 ALTER TABLE "note"
-    ADD CONSTRAINT "note_fk_location"
-        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+    ADD CONSTRAINT "note_fk_clinic"
+        FOREIGN KEY ("clinic_id") REFERENCES "clinic" ("id");
 
 ALTER TABLE "note"
     ADD CONSTRAINT "note_fk_user"
@@ -229,16 +229,16 @@ ALTER TABLE "bill"
         FOREIGN KEY ("patient_id") REFERENCES "patient" ("id");
 
 ALTER TABLE "bill"
-    ADD CONSTRAINT "bill_fk_location"
-        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+    ADD CONSTRAINT "bill_fk_clinic"
+        FOREIGN KEY ("clinic_id") REFERENCES "clinic" ("id");
 
 ALTER TABLE "item"
-    ADD CONSTRAINT "item_fk_location"
-        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+    ADD CONSTRAINT "item_fk_clinic"
+        FOREIGN KEY ("clinic_id") REFERENCES "clinic" ("id");
 
 ALTER TABLE "procedure"
-    ADD CONSTRAINT "procedure_fk_location"
-        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+    ADD CONSTRAINT "procedure_fk_clinic"
+        FOREIGN KEY ("clinic_id") REFERENCES "clinic" ("id");
 
 ALTER TABLE "billed_item"
     ADD CONSTRAINT "billed_item_fk_bill"
@@ -253,8 +253,8 @@ ALTER TABLE "billed_item"
         FOREIGN KEY ("discount_id") REFERENCES "discount" ("id");
 
 ALTER TABLE "billed_item"
-    ADD CONSTRAINT "billed_item_fk_location"
-        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+    ADD CONSTRAINT "billed_item_fk_clinic"
+        FOREIGN KEY ("clinic_id") REFERENCES "clinic" ("id");
 
 ALTER TABLE "billed_procedure"
     ADD CONSTRAINT "billed_procedure_fk_bill"
@@ -269,8 +269,8 @@ ALTER TABLE "billed_procedure"
         FOREIGN KEY ("discount_id") REFERENCES "discount" ("id");
 
 ALTER TABLE "billed_procedure"
-    ADD CONSTRAINT "billed_procedure_fk_location"
-        FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+    ADD CONSTRAINT "billed_procedure_fk_clinic"
+        FOREIGN KEY ("clinic_id") REFERENCES "clinic" ("id");
 
 ALTER TABLE "patient"
     ADD CONSTRAINT "patient_fk_user"
@@ -288,11 +288,11 @@ VALUES (1, 'OWNER', 'Role for Pet Owners'),
        (5, 'CLINIC_MANAGER', 'Role for Clinic Managers - pricing, procedures, items and etc'),
        (6, 'ADMINISTRATOR', 'Role for Application Administrator');
 
-INSERT INTO "location" ("id", "owner_id", "name", "email", "city", "address", "phone_number",
-                        "location_restrictions_enabled", "latitude", "longitude", "is_active")
-VALUES ('3837ce44-ff3f-4b63-8833-7193be3aa4c3', '7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 'DEFAULT LOCATION',
+INSERT INTO "clinic" ("id", "owner_id", "name", "email", "city", "address", "phone_number",
+                        "clinic_restrictions_enabled", "latitude", "longitude", "is_active")
+VALUES ('3837ce44-ff3f-4b63-8833-7193be3aa4c3', '7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 'DEFAULT CLINIC',
         'defaultEmail@email.com', 'Default City', 'Default Address', 'Default Phone Number', false, null, null, true);
 
-INSERT INTO "user_role_location" (user_id, role_id, location_id)
+INSERT INTO "user_role_clinic" (user_id, role_id, clinic_id)
 VALUES ('7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 1, '3837ce44-ff3f-4b63-8833-7193be3aa4c3'),
        ('7cec22c6-6079-4b9e-a7e3-6f882ec47ff3', 6, '3837ce44-ff3f-4b63-8833-7193be3aa4c3')

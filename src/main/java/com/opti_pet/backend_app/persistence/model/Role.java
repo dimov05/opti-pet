@@ -30,5 +30,5 @@ public class Role {
     private String description;
 
     @OneToMany(mappedBy = "role")
-    private List<UserRoleLocation> userRoleLocations;
+    private List<UserRoleClinic> userRoleClinics;
 }

@@ -17,14 +17,14 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_role_location", schema = "opti-pet")
+@Table(name = "user_role_clinic", schema = "opti-pet")
 @Getter
 @Setter
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@IdClass(UserRoleLocationId.class)
-public class UserRoleLocation {
+@IdClass(UserRoleClinicId.class)
+public class UserRoleClinic {
     @Id
     @Column(name = "user_id", nullable = false)
     private UUID userId;
@@ -34,8 +34,8 @@ public class UserRoleLocation {
     private Long roleId;
 
     @Id
-    @Column(name = "location_id", nullable = false)
-    private UUID locationId;
+    @Column(name = "clinic_id", nullable = false)
+    private UUID clinicId;
 
     @ManyToOne
     @MapsId("userId")
@@ -48,7 +48,7 @@ public class UserRoleLocation {
     private Role role;
 
     @ManyToOne
-    @MapsId("locationId")
-    @JoinColumn(name = "location_id")
-    private Location location;
+    @MapsId("clinicId")
+    @JoinColumn(name = "clinic_id")
+    private Clinic clinic;
 }

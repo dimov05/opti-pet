@@ -40,8 +40,8 @@ public class Vaccination {
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
+    @JoinColumn(name = "clinic_id")
+    private Clinic clinic;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

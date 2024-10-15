@@ -86,8 +86,8 @@ public class Patient {
     private User owner;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "patient_location", schema = "opti-pet",
+    @JoinTable(name = "patient_clinic", schema = "opti-pet",
             joinColumns = @JoinColumn(name = "patient_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "location_id", referencedColumnName = "id"))
-    private List<Location> locations;
+            inverseJoinColumns = @JoinColumn(name = "clinic_id", referencedColumnName = "id"))
+    private List<Clinic> clinics;
 }

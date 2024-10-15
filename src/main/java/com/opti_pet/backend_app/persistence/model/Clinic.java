@@ -20,13 +20,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "location", schema = "opti-pet")
+@Table(name = "clinic", schema = "opti-pet")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Location {
+public class Clinic {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
@@ -47,8 +47,8 @@ public class Location {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "location_restrictions_enabled")
-    private Boolean locationRestrictionsEnabled;
+    @Column(name = "clinic_restrictions_enabled")
+    private Boolean clinicRestrictionsEnabled;
 
     @Column(name = "latitude")
     private Double latitude;
@@ -63,33 +63,33 @@ public class Location {
     @JoinColumn(name = "owner_id")
     private User owner;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "clinic")
     private List<Vaccination> vaccinations;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "clinic")
     private List<Discount> discounts;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "clinic")
     private List<Note> notes;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "clinic")
     private List<Bill> bills;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "clinic")
     private List<Item> items;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "clinic")
     private List<Procedure> procedures;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "clinic")
     private List<BilledItem> billedItems;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "clinic")
     private List<BilledProcedure> billedProcedures;
 
-    @ManyToMany(mappedBy = "locations")
+    @ManyToMany(mappedBy = "clinics")
     private List<Patient> patients;
 
-    @OneToMany(mappedBy = "location")
-    private List<UserRoleLocation> userRoleLocations;
+    @OneToMany(mappedBy = "clinic")
+    private List<UserRoleClinic> userRoleClinics;
 }

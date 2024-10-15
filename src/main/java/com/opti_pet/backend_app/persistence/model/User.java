@@ -74,15 +74,15 @@ public class User implements UserDetails {
     private List<Patient> patients;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<UserRoleLocation> userRoleLocations;
+    private List<UserRoleClinic> userRoleClinics;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.userRoleLocations.stream()
+        return this.userRoleClinics.stream()
                 .map(url -> {
                     String role = url.getRole().getName();
-                    String locationId = url.getLocation().getId() != null ? url.getLocation().getId().toString() : "";
-                    return new SimpleGrantedAuthority(role + "_" + locationId);
+                    String clinicId = url.getClinic().getId() != null ? url.getClinic().getId().toString() : "";
+                    return new SimpleGrantedAuthority(role + "_" + clinicId);
                 })
                 .toList();
     }

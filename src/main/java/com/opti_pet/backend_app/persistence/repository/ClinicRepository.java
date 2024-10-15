@@ -1,10 +1,10 @@
 package com.opti_pet.backend_app.persistence.repository;
 
-import com.opti_pet.backend_app.persistence.model.Location;
+import com.opti_pet.backend_app.persistence.model.Clinic;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface LocationRepository extends JpaRepository<Location, UUID> {
+public interface ClinicRepository extends JpaRepository<Clinic, UUID> {
     boolean existsByName(String name);
 }

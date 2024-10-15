@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record LocationUserRolesEditRequest(String userEmail, List<Long> roleIdsToSet) {
+public record ClinicUserRolesEditRequest(String userEmail, List<Long> roleIdsToSet) {
 }

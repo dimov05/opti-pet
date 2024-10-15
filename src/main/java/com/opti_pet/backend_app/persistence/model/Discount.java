@@ -39,8 +39,8 @@ public class Discount {
     private boolean isActive;
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
-    private Location location;
+    @JoinColumn(name = "clinic_id")
+    private Clinic clinic;
 
     @OneToMany(mappedBy = "discount")
     private List<BilledItem> billedItems;
