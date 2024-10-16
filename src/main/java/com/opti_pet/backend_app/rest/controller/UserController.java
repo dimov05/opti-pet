@@ -1,16 +1,17 @@
 package com.opti_pet.backend_app.rest.controller;
 
-import com.opti_pet.backend_app.rest.request.UserChangePasswordRequest;
-import com.opti_pet.backend_app.rest.request.UserEditProfileRequest;
-import com.opti_pet.backend_app.rest.request.UserRegisterRequest;
+import com.opti_pet.backend_app.rest.request.*;
 import com.opti_pet.backend_app.rest.response.UserResponse;
 import com.opti_pet.backend_app.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -18,6 +19,11 @@ public class UserController {
     @PostMapping("/register")
     public UserResponse register(@RequestBody UserRegisterRequest userRegisterRequest) {
         return userService.registerUser(userRegisterRequest);
+    }
+
+    @PostMapping("/admin/register/")
+    public UserResponse registerUserAsAdmin(@RequestBody UserRegisterAsAdminRequest userRegisterAsAdminRequest) {
+        return userService.registerUserAsAdmin(userRegisterAsAdminRequest);
     }
 
     @PutMapping("/{userId}/change-password")
@@ -35,5 +41,10 @@ public class UserController {
     @GetMapping("/me")
     public UserResponse getMyInformation() {
         return userService.getMyInformation();
+    }
+    @GetMapping("")
+    @PreAuthorize("@securityService.hasAdministratorAuthority()")
+    public Page<UserResponse> getAllUsers(UserSpecificationRequest userSpecificationRequest) {
+        return userService.getAllUsers(userSpecificationRequest);
     }
 }

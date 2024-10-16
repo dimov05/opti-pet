@@ -8,14 +8,16 @@ import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.model.UserRoleClinic;
 import com.opti_pet.backend_app.persistence.repository.ClinicRepository;
 import com.opti_pet.backend_app.persistence.repository.UserRepository;
-import com.opti_pet.backend_app.rest.request.ClinicCreateUserRequest;
-import com.opti_pet.backend_app.rest.request.UserChangePasswordRequest;
-import com.opti_pet.backend_app.rest.request.UserEditProfileRequest;
-import com.opti_pet.backend_app.rest.request.UserRegisterRequest;
+import com.opti_pet.backend_app.rest.request.*;
 import com.opti_pet.backend_app.rest.response.UserResponse;
 import com.opti_pet.backend_app.rest.transformer.UserTransformer;
+import com.opti_pet.backend_app.util.UserSpecifications;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,6 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.opti_pet.backend_app.util.AppConstants.*;
+import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
 @Service
 @RequiredArgsConstructor
@@ -120,6 +123,44 @@ public class UserService implements UserDetailsService {
         return UserTransformer.toResponse(getUserByEmailOrThrowException(email));
     }
 
+    @Transactional
+    public User getUserByEmailOrThrowException(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(USER_ENTITY, EMAIL_FIELD_NAME, email));
+    }
+
+    @Transactional
+    public UserResponse registerUserAsAdmin(UserRegisterAsAdminRequest userRegisterAsAdminRequest) {
+        User user = UserTransformer.toEntity(userRegisterAsAdminRequest, passwordEncoder.encode(userRegisterAsAdminRequest.phoneNumber()));
+
+        user = userRepository.save(user);
+
+        Clinic clinic = clinicRepository.findById(DEFAULT_CLINIC_UUID)
+                .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, DEFAULT_CLINIC_UUID.toString()));
+        Role role = roleService.getRoleByIdOrThrowException(1L);
+
+        List<UserRoleClinic> userRoleClinics = userRoleClinicService.saveNewUserRoleClinic(user, clinic, role);
+        user.setUserRoleClinics(userRoleClinics);
+
+        return UserTransformer.toResponse(userRepository.save(user));
+    }
+
+    public Page<UserResponse> getAllUsers(UserSpecificationRequest userSpecificationRequest) {
+        Pageable pageRequest = createPageRequest(userSpecificationRequest);
+
+        return userRepository.findAll(getSpecifications(userSpecificationRequest), pageRequest).map(UserTransformer::toResponse);
+    }
+
+    private Specification<User> getSpecifications(UserSpecificationRequest userSpecificationRequest) {
+        String inputText = userSpecificationRequest.inputText();
+        Specification<User> specification = Specification.where(null);
+        if (inputText != null) {
+            specification = specification.and(UserSpecifications.userEmailOrFullNameOrPhoneNumberLike(inputText));
+        }
+
+        return specification;
+    }
+
     private void updateUserField(Supplier<String> newField, Supplier<String> currentField, Consumer<String> updateField) {
         String newValue = newField.get();
         if (newValue != null && !newValue.trim().isEmpty() && !newValue.equals(currentField.get())) {
@@ -127,12 +168,13 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public User getUserByEmailOrThrowException(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(USER_ENTITY, EMAIL_FIELD_NAME, email));
-    }
-
     private User getUserByIdOrThrowException(String userId) {
         return userRepository.findById(UUID.fromString(userId)).orElseThrow(() -> new NotFoundException(USER_ENTITY, UUID_FIELD_NAME, userId));
+    }
+    private Pageable createPageRequest(UserSpecificationRequest request) {
+        int pageNumber = request.pageNumber() != null ? request.pageNumber() : DEFAULT_PAGE_NUMBER;
+        int pageSize = request.pageSize() != null ? request.pageSize() : DEFAULT_PAGE_SIZE;
+
+        return PageRequest.of(pageNumber, pageSize);
     }
 }

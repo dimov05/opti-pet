@@ -1,9 +1,10 @@
 package com.opti_pet.backend_app.rest.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
 @Builder
-public record UserRegisterRequest(String email, String password, String confirmPassword, String name,
-                                  String phoneNumber, String homeAddress,
-                                  String bulstat, String jobTitle) {
+public record UserRegisterRequest(@NotBlank String email,@NotBlank String password,@NotBlank String confirmPassword,@NotBlank String name,
+                                  @NotBlank String phoneNumber, String homeAddress,
+                                  String bulstat,@NotBlank String jobTitle) {
 }
