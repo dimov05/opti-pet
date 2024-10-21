@@ -55,4 +55,12 @@ public class UserRoleClinicService {
     public void deleteUserRoleClinicByUserAndClinic(User user, Clinic clinic) {
         userRoleClinicRepository.deleteByUserIdAndClinicId(user.getId(), clinic.getId());
     }
+
+    public List<UserRoleClinic> setRolesForUserAndClinic(User user, List<Role> roles, Clinic clinic) {
+        userRoleClinicRepository.deleteByUserIdAndClinicId(user.getId(), clinic.getId());
+        List<UserRoleClinic> userRoleClinicsToAdd = new ArrayList<>();
+        roles.forEach(role -> userRoleClinicsToAdd.add(
+                userRoleClinicRepository.save(UserRoleClinicTransformer.fromData(user, clinic, role))));
+        return userRoleClinicsToAdd;
+    }
 }

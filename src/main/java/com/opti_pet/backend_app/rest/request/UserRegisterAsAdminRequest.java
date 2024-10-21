@@ -5,5 +5,5 @@ import lombok.Builder;
 
 @Builder
 public record UserRegisterAsAdminRequest(@NotBlank String email, @NotBlank String name, @NotBlank String phoneNumber,
-                                         String homeAddress, String bulstat, @NotBlank String jobTitle) {
+                                         String homeAddress, @NotBlank String jobTitle) {
 }

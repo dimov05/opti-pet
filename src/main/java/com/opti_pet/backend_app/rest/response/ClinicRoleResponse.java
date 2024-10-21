@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record ClinicRoleResponse(String clinicId, String clinicName, List<String> roles, boolean restrictByGps) {
+public record ClinicRoleResponse(String clinicId, String clinicName, List<RoleResponse> roles, boolean restrictByGps) {
 }

@@ -52,6 +52,9 @@ public class UserService implements UserDetailsService {
         if (!userRegisterRequest.password().equals(userRegisterRequest.confirmPassword())) {
             throw new BadRequestException("Password and confirm password does not match!");
         }
+        if (userRepository.existsByEmail(userRegisterRequest.email())) {
+            throw new BadRequestException("User with this email already exists!");
+        }
         User user = UserTransformer.toEntity(userRegisterRequest, passwordEncoder.encode(userRegisterRequest.password()));
 
         user = userRepository.save(user);
@@ -92,6 +95,7 @@ public class UserService implements UserDetailsService {
         updateUserField(userEditProfileRequest::phoneNumber, user::getPhoneNumber, user::setPhoneNumber);
         updateUserField(userEditProfileRequest::bulstat, user::getBulstat, user::setBulstat);
         updateUserField(userEditProfileRequest::jobTitle, user::getJobTitle, user::setJobTitle);
+        updateUserField(userEditProfileRequest::note, user::getNote, user::setNote);
 
         return UserTransformer.toResponse(userRepository.save(user));
     }
@@ -131,6 +135,9 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public UserResponse registerUserAsAdmin(UserRegisterAsAdminRequest userRegisterAsAdminRequest) {
+        if (userRepository.existsByEmail(userRegisterAsAdminRequest.email())) {
+            throw new BadRequestException("User with this email already exists!");
+        }
         User user = UserTransformer.toEntity(userRegisterAsAdminRequest, passwordEncoder.encode(userRegisterAsAdminRequest.phoneNumber()));
 
         user = userRepository.save(user);
@@ -171,6 +178,7 @@ public class UserService implements UserDetailsService {
     private User getUserByIdOrThrowException(String userId) {
         return userRepository.findById(UUID.fromString(userId)).orElseThrow(() -> new NotFoundException(USER_ENTITY, UUID_FIELD_NAME, userId));
     }
+
     private Pageable createPageRequest(UserSpecificationRequest request) {
         int pageNumber = request.pageNumber() != null ? request.pageNumber() : DEFAULT_PAGE_NUMBER;
         int pageSize = request.pageSize() != null ? request.pageSize() : DEFAULT_PAGE_SIZE;

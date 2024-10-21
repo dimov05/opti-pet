@@ -5,14 +5,18 @@ import com.opti_pet.backend_app.exception.NotFoundException;
 import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Role;
 import com.opti_pet.backend_app.persistence.model.User;
+import com.opti_pet.backend_app.persistence.model.UserRoleClinic;
 import com.opti_pet.backend_app.persistence.repository.ClinicRepository;
 import com.opti_pet.backend_app.persistence.repository.RoleRepository;
 import com.opti_pet.backend_app.rest.request.ClinicAddUserRolesRequest;
 import com.opti_pet.backend_app.rest.request.ClinicCreateRequest;
 import com.opti_pet.backend_app.rest.request.ClinicCreateUserRequest;
 import com.opti_pet.backend_app.rest.request.ClinicUserRolesEditRequest;
+import com.opti_pet.backend_app.rest.response.ClinicBaseResponse;
 import com.opti_pet.backend_app.rest.response.ClinicResponse;
+import com.opti_pet.backend_app.rest.response.UserResponse;
 import com.opti_pet.backend_app.rest.transformer.ClinicTransformer;
+import com.opti_pet.backend_app.rest.transformer.UserTransformer;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,8 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-import static com.opti_pet.backend_app.util.AppConstants.CLINIC_ENTITY;
-import static com.opti_pet.backend_app.util.AppConstants.UUID_FIELD_NAME;
+import static com.opti_pet.backend_app.util.AppConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -87,6 +90,20 @@ public class ClinicService {
     }
 
     @Transactional
+    public UserResponse setRolesToEmployeeForClinic(String clinicId, ClinicUserRolesEditRequest clinicUserRolesEditRequest) {
+        Clinic clinic = getClinicByIdOrThrowException(UUID.fromString(clinicId));
+        User user = userService.getUserByEmailOrThrowException(clinicUserRolesEditRequest.userEmail());
+        List<Role> roles = roleRepository.findAllById(clinicUserRolesEditRequest.roleIdsToSet());
+
+        List<UserRoleClinic> useRoleClinicsToAdd = userRoleClinicService.setRolesForUserAndClinic(user, roles, clinic);
+        List<UserRoleClinic> userRoleClinics = user.getUserRoleClinics();
+        userRoleClinics.addAll(useRoleClinicsToAdd);
+        user.setUserRoleClinics(userRoleClinics);
+
+        return UserTransformer.toResponse(user);
+    }
+
+    @Transactional
     public ClinicResponse removeEmployeeFromClinic(String clinicId, String employeeEmail) {
         Clinic clinic = getClinicByIdOrThrowException(UUID.fromString(clinicId));
         User user = userService.getUserByEmailOrThrowException(employeeEmail);
@@ -98,5 +115,12 @@ public class ClinicService {
 
     public ClinicResponse getClinicById(String clinicId) {
         return ClinicTransformer.toResponse(getClinicByIdOrThrowException(UUID.fromString(clinicId)));
+    }
+
+    public List<ClinicBaseResponse> getAllClinics() {
+        return clinicRepository.findAll()
+                .stream().filter(clinic -> !clinic.getId().equals(DEFAULT_CLINIC_UUID))
+                .map(ClinicTransformer::toBaseResponse)
+                .toList();
     }
 }

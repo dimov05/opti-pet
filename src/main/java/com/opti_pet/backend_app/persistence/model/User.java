@@ -55,6 +55,9 @@ public class User implements UserDetails {
     @Column(name = "job_title")
     private String jobTitle;
 
+    @Column(name = "notes")
+    private String note;
+
     @Column(name = "is_active")
     private boolean isActive;
 

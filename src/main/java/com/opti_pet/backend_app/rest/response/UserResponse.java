@@ -6,6 +6,6 @@ import java.util.List;
 
 @Builder
 public record UserResponse(String id, String name, String email, String phoneNumber, String homeAddress, String bulstat,
-                           String jobTitle, Boolean isActive, Boolean isAdministrator,
+                           String jobTitle, String note, Boolean isActive, Boolean isAdministrator,
                            List<ClinicRoleResponse> clinics) {
 }

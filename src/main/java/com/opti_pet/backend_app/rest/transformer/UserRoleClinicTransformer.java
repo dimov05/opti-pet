@@ -5,6 +5,7 @@ import com.opti_pet.backend_app.persistence.model.Role;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.model.UserRoleClinic;
 import com.opti_pet.backend_app.rest.response.ClinicRoleResponse;
+import com.opti_pet.backend_app.rest.response.RoleResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,16 +26,16 @@ public class UserRoleClinicTransformer {
     }
 
     public static List<ClinicRoleResponse> toClinicRoleResponse(List<UserRoleClinic> userRoleClinics) {
-        HashMap<UUID, List<String>> rolesByClinic = new HashMap<>();
+        HashMap<UUID, List<RoleResponse>> rolesByClinic = new HashMap<>();
         userRoleClinics.forEach(userRoleClinic -> {
             if (rolesByClinic.containsKey(userRoleClinic.getClinic().getId())) {
-                List<String> currentRoles = rolesByClinic.get(userRoleClinic.getClinic().getId());
-                currentRoles.add(userRoleClinic.getRole().getName());
-                rolesByClinic.put(userRoleClinic.getClinic().getId(),currentRoles);
-            } else{
-                List<String> currentRoles = new ArrayList<>();
-                currentRoles.add(userRoleClinic.getRole().getName());
-                rolesByClinic.put(userRoleClinic.getClinic().getId(),currentRoles);
+                List<RoleResponse> currentRoles = rolesByClinic.get(userRoleClinic.getClinic().getId());
+                currentRoles.add(RoleTransformer.toResponse(userRoleClinic.getRole()));
+                rolesByClinic.put(userRoleClinic.getClinic().getId(), currentRoles);
+            } else {
+                List<RoleResponse> currentRoles = new ArrayList<>();
+                currentRoles.add(RoleTransformer.toResponse(userRoleClinic.getRole()));
+                rolesByClinic.put(userRoleClinic.getClinic().getId(), currentRoles);
             }
         });
         return userRoleClinics.stream()

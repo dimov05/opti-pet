@@ -4,6 +4,7 @@ import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.model.UserRoleClinic;
 import com.opti_pet.backend_app.rest.request.ClinicCreateRequest;
+import com.opti_pet.backend_app.rest.response.ClinicBaseResponse;
 import com.opti_pet.backend_app.rest.response.ClinicResponse;
 
 import java.util.ArrayList;
@@ -50,6 +51,13 @@ public class ClinicTransformer {
                         .map(UserRoleClinic::getUserId)
                         .collect(Collectors.toSet()).size())
                 .isActive(clinic.isActive())
+                .build();
+    }
+
+    public static ClinicBaseResponse toBaseResponse(Clinic clinic) {
+        return ClinicBaseResponse.builder()
+                .id(clinic.getId().toString())
+                .name(clinic.getName())
                 .build();
     }
 }
