@@ -7,8 +7,10 @@ public class AppConstants {
     public static final UUID DEFAULT_CLINIC_UUID = UUID.fromString("3837ce44-ff3f-4b63-8833-7193be3aa4c3");
     public static final String EMAIL_FIELD_NAME = "email";
     public static final String NAME_FIELD_NAME = "name";
+    public static final String CITY_FIELD_NAME = "city";
+    public static final String ADDRESS_FIELD_NAME = "address";
     public static final String PHONE_NUMBER_FIELD_NAME = "phoneNumber";
-    public static final String ID_FIELD_NAME = "ID";
+    public static final String ID_FIELD_NAME = "id";
     public static final String UUID_FIELD_NAME = "UUID";
     public static final String DATE_PATTERN = "dd/MM/yyyy";
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_PATTERN);

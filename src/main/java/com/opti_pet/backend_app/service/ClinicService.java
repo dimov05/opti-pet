@@ -8,23 +8,26 @@ import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.model.UserRoleClinic;
 import com.opti_pet.backend_app.persistence.repository.ClinicRepository;
 import com.opti_pet.backend_app.persistence.repository.RoleRepository;
-import com.opti_pet.backend_app.rest.request.ClinicAddUserRolesRequest;
-import com.opti_pet.backend_app.rest.request.ClinicCreateRequest;
-import com.opti_pet.backend_app.rest.request.ClinicCreateUserRequest;
-import com.opti_pet.backend_app.rest.request.ClinicUserRolesEditRequest;
+import com.opti_pet.backend_app.rest.request.*;
 import com.opti_pet.backend_app.rest.response.ClinicBaseResponse;
 import com.opti_pet.backend_app.rest.response.ClinicResponse;
 import com.opti_pet.backend_app.rest.response.UserResponse;
 import com.opti_pet.backend_app.rest.transformer.ClinicTransformer;
 import com.opti_pet.backend_app.rest.transformer.UserTransformer;
+import com.opti_pet.backend_app.util.ClinicSpecifications;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 import static com.opti_pet.backend_app.util.AppConstants.*;
+import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
 @Service
 @RequiredArgsConstructor
@@ -117,10 +120,34 @@ public class ClinicService {
         return ClinicTransformer.toResponse(getClinicByIdOrThrowException(UUID.fromString(clinicId)));
     }
 
-    public List<ClinicBaseResponse> getAllClinics() {
+    public List<ClinicBaseResponse> getAllClinicsBaseResponse() {
         return clinicRepository.findAll()
                 .stream().filter(clinic -> !clinic.getId().equals(DEFAULT_CLINIC_UUID))
                 .map(ClinicTransformer::toBaseResponse)
                 .toList();
+    }
+
+    public Page<ClinicResponse> getAllClinicsExtendedResponse(ClinicSpecificationRequest clinicSpecificationRequest) {
+        Pageable pageRequest = createPageRequest(clinicSpecificationRequest);
+
+        return clinicRepository.findAll(getSpecifications(clinicSpecificationRequest), pageRequest)
+                .map(ClinicTransformer::toResponse);
+    }
+
+    private Specification<Clinic> getSpecifications(ClinicSpecificationRequest clinicSpecificationRequest) {
+        String inputText = clinicSpecificationRequest.inputText();
+        Specification<Clinic> specification = Specification.where(ClinicSpecifications.clinicIsNotDefaultClinic());
+        if (inputText != null) {
+            specification = specification.and(ClinicSpecifications.clinicEmailOrNameOrCityOrAddressOrPhoneNumberLike(inputText));
+        }
+
+        return specification;
+    }
+
+    private Pageable createPageRequest(ClinicSpecificationRequest request) {
+        int pageNumber = request.pageNumber() != null ? request.pageNumber() : DEFAULT_PAGE_NUMBER;
+        int pageSize = request.pageSize() != null ? request.pageSize() : DEFAULT_PAGE_SIZE;
+
+        return PageRequest.of(pageNumber, pageSize);
     }
 }

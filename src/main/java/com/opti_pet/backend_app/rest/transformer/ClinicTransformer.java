@@ -41,6 +41,7 @@ public class ClinicTransformer {
                 .id(clinic.getId().toString())
                 .name(clinic.getName())
                 .email(clinic.getEmail())
+                .ownerEmail(clinic.getOwner().getEmail())
                 .city(clinic.getCity())
                 .address(clinic.getAddress())
                 .phoneNumber(clinic.getPhoneNumber())

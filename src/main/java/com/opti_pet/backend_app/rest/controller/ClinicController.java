@@ -1,22 +1,20 @@
 package com.opti_pet.backend_app.rest.controller;
 
-import com.opti_pet.backend_app.rest.request.ClinicAddUserRolesRequest;
-import com.opti_pet.backend_app.rest.request.ClinicCreateRequest;
-import com.opti_pet.backend_app.rest.request.ClinicCreateUserRequest;
-import com.opti_pet.backend_app.rest.request.ClinicUserRolesEditRequest;
+import com.opti_pet.backend_app.rest.request.*;
 import com.opti_pet.backend_app.rest.response.ClinicBaseResponse;
 import com.opti_pet.backend_app.rest.response.ClinicResponse;
 import com.opti_pet.backend_app.rest.response.UserResponse;
 import com.opti_pet.backend_app.service.ClinicService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/clinic")
+@RequestMapping("/api/v1/clinics")
 @RequiredArgsConstructor
 public class ClinicController {
     private final ClinicService clinicService;
@@ -31,18 +29,6 @@ public class ClinicController {
     @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
     public ClinicResponse addNewEmployee(@PathVariable("clinicId") String clinicId, @Valid @RequestBody ClinicCreateUserRequest clinicCreateUserRequest) {
         return clinicService.addNewEmployee(clinicId, clinicCreateUserRequest);
-    }
-
-    @PostMapping("/{clinicId}/add-roles-employee")
-    @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
-    public ClinicResponse addNewEmployee(@PathVariable("clinicId") String clinicId, @Valid @RequestBody ClinicAddUserRolesRequest clinicAddUserRolesRequest) {
-        return clinicService.addRolesToExistingEmployee(clinicId, clinicAddUserRolesRequest);
-    }
-
-    @PutMapping("/{clinicId}/remove-roles-employee")
-    @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
-    public ClinicResponse removeRolesFromEmployee(@PathVariable("clinicId") String clinicId, @Valid @RequestBody ClinicUserRolesEditRequest clinicUserRolesEditRequest) {
-        return clinicService.removeRolesFromEmployee(clinicId, clinicUserRolesEditRequest);
     }
 
     @PutMapping("/{clinicId}/set-roles-employee")
@@ -63,7 +49,11 @@ public class ClinicController {
     }
 
     @GetMapping("")
-    public List<ClinicBaseResponse> getAllClinics() {
-        return clinicService.getAllClinics();
+    public List<ClinicBaseResponse> getAllClinicsBaseResponse() {
+        return clinicService.getAllClinicsBaseResponse();
+    }
+    @GetMapping("/data")
+    public Page<ClinicResponse> getAllClinicsExtendedResponse(ClinicSpecificationRequest clinicSpecificationRequest){
+        return clinicService.getAllClinicsExtendedResponse(clinicSpecificationRequest);
     }
 }
