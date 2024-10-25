@@ -25,6 +25,12 @@ public class ClinicController {
         return clinicService.createClinic(clinicCreateRequest);
     }
 
+    @PostMapping("/{clinicId}/edit")
+    @PreAuthorize("hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
+    public ClinicResponse updateClinic(@PathVariable("clinicId") String clinicId, @Valid @RequestBody ClinicUpdateRequest clinicUpdateRequest) {
+        return clinicService.updateClinic(clinicId, clinicUpdateRequest);
+    }
+
     @PostMapping("/{clinicId}/add-new-employee")
     @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
     public ClinicResponse addNewEmployee(@PathVariable("clinicId") String clinicId, @Valid @RequestBody ClinicCreateUserRequest clinicCreateUserRequest) {
@@ -52,8 +58,9 @@ public class ClinicController {
     public List<ClinicBaseResponse> getAllClinicsBaseResponse() {
         return clinicService.getAllClinicsBaseResponse();
     }
+
     @GetMapping("/data")
-    public Page<ClinicResponse> getAllClinicsExtendedResponse(ClinicSpecificationRequest clinicSpecificationRequest){
+    public Page<ClinicResponse> getAllClinicsExtendedResponse(ClinicSpecificationRequest clinicSpecificationRequest) {
         return clinicService.getAllClinicsExtendedResponse(clinicSpecificationRequest);
     }
 }

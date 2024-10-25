@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static com.opti_pet.backend_app.util.AppConstants.*;
 import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
@@ -54,6 +56,45 @@ public class ClinicService {
 
         return ClinicTransformer.toResponse(clinic);
 
+    }
+
+    @Transactional
+    public ClinicResponse updateClinic(String clinicId, ClinicUpdateRequest clinicUpdateRequest) {
+        Clinic clinic = getClinicByIdOrThrowException(UUID.fromString(clinicId));
+        User owner = userService.getUserByEmailOrThrowException(clinicUpdateRequest.ownerEmail() != null ? clinicUpdateRequest.ownerEmail() : "admin@opti-pet.com");
+
+        if (clinic.getOwner().getId() != owner.getId()) {
+            clinic.setOwner(owner);
+        }
+        updateClinicField(clinicUpdateRequest::name, clinic::getName, clinic::setName);
+        updateClinicField(clinicUpdateRequest::email, clinic::getEmail, clinic::setEmail);
+        updateClinicField(clinicUpdateRequest::city, clinic::getCity, clinic::setCity);
+        updateClinicField(clinicUpdateRequest::address, clinic::getAddress, clinic::setAddress);
+        updateClinicField(clinicUpdateRequest::phoneNumber, clinic::getPhoneNumber, clinic::setPhoneNumber);
+        if (clinicUpdateRequest.clinicRestrictionsEnabled() != clinic.getClinicRestrictionsEnabled()) {
+            if (Boolean.TRUE.equals(clinic.getClinicRestrictionsEnabled())) {
+                clinic.setClinicRestrictionsEnabled(true);
+                if (clinicUpdateRequest.longitude() == null || clinicUpdateRequest.latitude() == null) {
+                    throw new BadRequestException("You should send valid Latitude/Longitude values!");
+                }
+                clinic.setLongitude(clinicUpdateRequest.longitude());
+                clinic.setLatitude(clinicUpdateRequest.latitude());
+            }
+            if (Boolean.FALSE.equals(clinic.getClinicRestrictionsEnabled())) {
+                clinic.setClinicRestrictionsEnabled(false);
+                clinic.setLatitude(null);
+                clinic.setLongitude(null);
+            }
+        }
+
+        return ClinicTransformer.toResponse(clinicRepository.save(clinic));
+    }
+
+    private void updateClinicField(Supplier<String> newField, Supplier<String> currentField, Consumer<String> updateField) {
+        String newValue = newField.get();
+        if (newValue != null && !newValue.trim().isEmpty() && !newValue.equals(currentField.get())) {
+            updateField.accept(newValue);
+        }
     }
 
     private void checkIfClinicAlreadyExists(ClinicCreateRequest clinicCreateRequest) {
