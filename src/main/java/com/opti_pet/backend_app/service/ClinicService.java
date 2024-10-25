@@ -71,8 +71,8 @@ public class ClinicService {
         updateClinicField(clinicUpdateRequest::city, clinic::getCity, clinic::setCity);
         updateClinicField(clinicUpdateRequest::address, clinic::getAddress, clinic::setAddress);
         updateClinicField(clinicUpdateRequest::phoneNumber, clinic::getPhoneNumber, clinic::setPhoneNumber);
-        if (clinicUpdateRequest.clinicRestrictionsEnabled() != clinic.getClinicRestrictionsEnabled()) {
-            if (Boolean.TRUE.equals(clinic.getClinicRestrictionsEnabled())) {
+        if (!clinicUpdateRequest.clinicRestrictionsEnabled().equals(clinic.getClinicRestrictionsEnabled())) {
+            if (Boolean.TRUE.equals(clinicUpdateRequest.clinicRestrictionsEnabled())) {
                 clinic.setClinicRestrictionsEnabled(true);
                 if (clinicUpdateRequest.longitude() == null || clinicUpdateRequest.latitude() == null) {
                     throw new BadRequestException("You should send valid Latitude/Longitude values!");
@@ -80,7 +80,7 @@ public class ClinicService {
                 clinic.setLongitude(clinicUpdateRequest.longitude());
                 clinic.setLatitude(clinicUpdateRequest.latitude());
             }
-            if (Boolean.FALSE.equals(clinic.getClinicRestrictionsEnabled())) {
+            if (Boolean.FALSE.equals(clinicUpdateRequest.clinicRestrictionsEnabled())) {
                 clinic.setClinicRestrictionsEnabled(false);
                 clinic.setLatitude(null);
                 clinic.setLongitude(null);
