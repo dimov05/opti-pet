@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/clinics")
@@ -62,5 +63,10 @@ public class ClinicController {
     @GetMapping("/data")
     public Page<ClinicResponse> getAllClinicsExtendedResponse(ClinicSpecificationRequest clinicSpecificationRequest) {
         return clinicService.getAllClinicsExtendedResponse(clinicSpecificationRequest);
+    }
+
+    @GetMapping("/{clinicId}/employees")
+    public Set<UserResponse> getAllEmployees(@PathVariable("clinicId") String clinicId) {
+        return clinicService.getAllEmployees(clinicId);
     }
 }

@@ -71,10 +71,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User registerUserAsManager(ClinicCreateUserRequest clinicCreateUserRequest) {
-        if (!clinicCreateUserRequest.userPassword().equals(clinicCreateUserRequest.userConfirmPassword())) {
-            throw new BadRequestException("Password and confirm password does not match!");
-        }
-        User user = UserTransformer.toEntity(clinicCreateUserRequest, passwordEncoder.encode(clinicCreateUserRequest.userPassword()));
+        User user = UserTransformer.toEntity(clinicCreateUserRequest, passwordEncoder.encode(clinicCreateUserRequest.userPhoneNumber()));
         user = userRepository.save(user);
 
         Clinic clinic = clinicRepository.findById(DEFAULT_CLINIC_UUID)

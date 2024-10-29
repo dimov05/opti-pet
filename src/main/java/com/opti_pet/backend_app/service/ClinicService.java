@@ -8,6 +8,7 @@ import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.model.UserRoleClinic;
 import com.opti_pet.backend_app.persistence.repository.ClinicRepository;
 import com.opti_pet.backend_app.persistence.repository.RoleRepository;
+import com.opti_pet.backend_app.persistence.repository.UserRoleClinicRepository;
 import com.opti_pet.backend_app.rest.request.*;
 import com.opti_pet.backend_app.rest.response.ClinicBaseResponse;
 import com.opti_pet.backend_app.rest.response.ClinicResponse;
@@ -24,9 +25,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.opti_pet.backend_app.util.AppConstants.*;
 import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
@@ -38,6 +41,7 @@ public class ClinicService {
     private final UserRoleClinicService userRoleClinicService;
     private final UserService userService;
     private final RoleRepository roleRepository;
+    private final UserRoleClinicRepository userRoleClinicRepository;
 
 
     public Clinic getClinicByIdOrThrowException(UUID clinicUuid) {
@@ -190,5 +194,14 @@ public class ClinicService {
         int pageSize = request.pageSize() != null ? request.pageSize() : DEFAULT_PAGE_SIZE;
 
         return PageRequest.of(pageNumber, pageSize);
+    }
+
+    public Set<UserResponse> getAllEmployees(String clinicId) {
+        List<UserRoleClinic> userRoleClinics = userRoleClinicRepository.findAllByClinicId(UUID.fromString(clinicId));
+
+        return userRoleClinics.stream()
+                .map(UserRoleClinic::getUser)
+                .map(UserTransformer::toResponse)
+                .collect(Collectors.toSet());
     }
 }
