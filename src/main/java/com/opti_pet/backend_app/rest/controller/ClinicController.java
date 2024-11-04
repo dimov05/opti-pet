@@ -66,7 +66,7 @@ public class ClinicController {
     }
 
     @GetMapping("/{clinicId}/employees")
-    public Set<UserResponse> getAllEmployees(@PathVariable("clinicId") String clinicId) {
+    public List<UserResponse> getAllEmployees(@PathVariable("clinicId") String clinicId) {
         return clinicService.getAllEmployees(clinicId);
     }
 }

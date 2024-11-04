@@ -196,12 +196,13 @@ public class ClinicService {
         return PageRequest.of(pageNumber, pageSize);
     }
 
-    public Set<UserResponse> getAllEmployees(String clinicId) {
+    public List<UserResponse> getAllEmployees(String clinicId) {
         List<UserRoleClinic> userRoleClinics = userRoleClinicRepository.findAllByClinicId(UUID.fromString(clinicId));
 
         return userRoleClinics.stream()
                 .map(UserRoleClinic::getUser)
                 .map(UserTransformer::toResponse)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet())
+                .stream().toList();
     }
 }

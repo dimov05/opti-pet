@@ -7,7 +7,7 @@ public class RoleTransformer {
 
     public static RoleResponse toResponse(Role role) {
         return RoleResponse.builder()
-                .id(role.getId().toString())
+                .id(role.getId())
                 .name(role.getName())
                 .description(role.getDescription())
                 .build();

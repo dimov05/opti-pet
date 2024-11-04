@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .securityMatchers(matchers -> matchers.requestMatchers(AntPathRequestMatcher.antMatcher("/**")))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/**", "/v3/api-docs/**", "/api/v1/user/register", "/api/v1/auth/generateToken").permitAll()
+                        .requestMatchers("/actuator/**", "/v3/api-docs/**", "/api/v1/users/register", "/api/v1/auth/generateToken").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
