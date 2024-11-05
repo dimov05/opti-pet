@@ -55,7 +55,10 @@ public class Bill {
     private Clinic clinic;
 
     @OneToMany(mappedBy = "bill")
-    private List<BilledItem> billedItems;
+    private List<BilledMedication> billedMedications;
+
+    @OneToMany(mappedBy = "bill")
+    private List<BilledConsumable> billedConsumables;
 
     @OneToMany(mappedBy = "bill")
     private List<BilledProcedure> billedProcedures;

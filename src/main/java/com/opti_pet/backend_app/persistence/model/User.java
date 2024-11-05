@@ -68,7 +68,10 @@ public class User implements UserDetails {
     private List<Note> notes;
 
     @OneToMany(mappedBy = "user")
-    private List<BilledItem> billedItems;
+    private List<BilledMedication> billedMedications;
+
+    @OneToMany(mappedBy = "user")
+    private List<BilledConsumable> billedConsumables;
 
     @OneToMany(mappedBy = "user")
     private List<BilledProcedure> billedProcedures;

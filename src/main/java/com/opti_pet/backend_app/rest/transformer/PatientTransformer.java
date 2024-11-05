@@ -4,7 +4,6 @@ import com.opti_pet.backend_app.persistence.model.Patient;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.rest.request.PatientCreateRequest;
 import com.opti_pet.backend_app.rest.response.PatientResponse;
-import com.opti_pet.backend_app.rest.response.UserResponse;
 
 import java.time.LocalDate;
 

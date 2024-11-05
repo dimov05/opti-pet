@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/clinics")
@@ -27,25 +26,25 @@ public class ClinicController {
     }
 
     @PostMapping("/{clinicId}/edit")
-    @PreAuthorize("hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
+    @PreAuthorize("@securityService.hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
     public ClinicResponse updateClinic(@PathVariable("clinicId") String clinicId, @Valid @RequestBody ClinicUpdateRequest clinicUpdateRequest) {
         return clinicService.updateClinic(clinicId, clinicUpdateRequest);
     }
 
     @PostMapping("/{clinicId}/add-new-employee")
-    @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
+    @PreAuthorize("@securityService.hasAuthority('PEOPLE_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
     public ClinicResponse addNewEmployee(@PathVariable("clinicId") String clinicId, @Valid @RequestBody ClinicCreateUserRequest clinicCreateUserRequest) {
         return clinicService.addNewEmployee(clinicId, clinicCreateUserRequest);
     }
 
     @PutMapping("/{clinicId}/set-roles-employee")
-    @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
+    @PreAuthorize("@securityService.hasAuthority('PEOPLE_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
     public UserResponse setRolesToEmployeeForClinic(@PathVariable("clinicId") String clinicId, @Valid @RequestBody ClinicUserRolesEditRequest clinicUserRolesEditRequest) {
         return clinicService.setRolesToEmployeeForClinic(clinicId, clinicUserRolesEditRequest);
     }
 
     @PutMapping("/{clinicId}/remove-employee/{employeeEmail}")
-    @PreAuthorize("hasAuthority('PEOPLE_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
+    @PreAuthorize("@securityService.hasAuthority('PEOPLE_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
     public ClinicResponse removeEmployeeFromClinic(@PathVariable("clinicId") String clinicId, @PathVariable("employeeEmail") String employeeEmail) {
         return clinicService.removeEmployeeFromClinic(clinicId, employeeEmail);
     }

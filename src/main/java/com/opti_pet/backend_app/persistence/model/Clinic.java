@@ -76,13 +76,19 @@ public class Clinic {
     private List<Bill> bills;
 
     @OneToMany(mappedBy = "clinic")
-    private List<Item> items;
+    private List<Medication> medications;
+
+    @OneToMany(mappedBy = "clinic")
+    private List<Consumable> consumables;
 
     @OneToMany(mappedBy = "clinic")
     private List<Procedure> procedures;
 
     @OneToMany(mappedBy = "clinic")
-    private List<BilledItem> billedItems;
+    private List<BilledMedication> billedMedications;
+
+    @OneToMany(mappedBy = "clinic")
+    private List<BilledConsumable> billedConsumables;
 
     @OneToMany(mappedBy = "clinic")
     private List<BilledProcedure> billedProcedures;

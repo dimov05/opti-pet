@@ -1,6 +1,5 @@
 package com.opti_pet.backend_app.service;
 
-import com.opti_pet.backend_app.util.JwtServiceHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

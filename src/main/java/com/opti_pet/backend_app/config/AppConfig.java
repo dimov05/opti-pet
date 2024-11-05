@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 import javax.crypto.SecretKey;
 import javax.sql.DataSource;
-import java.security.Key;
 
 @Configuration
 @EnableScheduling

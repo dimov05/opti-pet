@@ -1,6 +1,7 @@
 package com.opti_pet.backend_app.service;
 
 import com.opti_pet.backend_app.exception.NotFoundException;
+import com.opti_pet.backend_app.persistence.enums.PetType;
 import com.opti_pet.backend_app.persistence.model.Patient;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.repository.PatientRepository;
@@ -8,15 +9,16 @@ import com.opti_pet.backend_app.rest.request.PatientCreateRequest;
 import com.opti_pet.backend_app.rest.request.PatientEditRequest;
 import com.opti_pet.backend_app.rest.response.PatientResponse;
 import com.opti_pet.backend_app.rest.transformer.PatientTransformer;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import static com.opti_pet.backend_app.util.AppConstants.DATE_TIME_FORMATTER;
-import static com.opti_pet.backend_app.util.AppConstants.PATIENT_ENTITY;
-import static com.opti_pet.backend_app.util.AppConstants.UUID_FIELD_NAME;
+import static com.opti_pet.backend_app.util.AppConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,28 +33,18 @@ public class PatientService {
         return PatientTransformer.toResponse(patientRepository.save(patient));
     }
 
+    @Transactional
     public PatientResponse editPatient(UUID patientId, PatientEditRequest patientEditRequest) {
         Patient patient = getPatientByIdOrThrowException(patientId);
-        if (patientEditRequest.name() != null && !patientEditRequest.name().equals(patient.getName())) {
-            patient.setName(patientEditRequest.name());
-        }
-        if (patientEditRequest.petType() != null && !patientEditRequest.petType().equals(patient.getPetType())) {
-            patient.setPetType(patientEditRequest.petType());
+
+        if (patientEditRequest.petType() != null && !patientEditRequest.petType().equals(patient.getPetType().getBreed())) {
+            patient.setPetType(PetType.fromValue(patientEditRequest.petType()));
         }
         if (patientEditRequest.ownerEmail() != null && !patientEditRequest.ownerEmail().equals(patient.getOwner().getEmail())) {
             patient.setOwner(userService.getUserByEmailOrThrowException(patientEditRequest.ownerEmail()));
         }
         if (patientEditRequest.birthdate() != null && !patientEditRequest.birthdate().equals(patient.getBirthdate().toString())) {
             patient.setBirthdate(LocalDate.parse(patientEditRequest.birthdate(), DATE_TIME_FORMATTER));
-        }
-        if (patientEditRequest.microchip() != null && !patientEditRequest.microchip().equals(patient.getMicrochip())) {
-            patient.setMicrochip(patientEditRequest.microchip());
-        }
-        if (patientEditRequest.pendant() != null && !patientEditRequest.pendant().equals(patient.getPendant())) {
-            patient.setPendant(patientEditRequest.pendant());
-        }
-        if (patientEditRequest.passport() != null && !patientEditRequest.passport().equals(patient.getPassport())) {
-            patient.setPassport(patientEditRequest.passport());
         }
         if (patientEditRequest.weight() != null && patientEditRequest.weight() != patient.getWeight()) {
             patient.setWeight(patientEditRequest.weight());
@@ -63,14 +55,21 @@ public class PatientService {
         if (patientEditRequest.isNeutered() != null && patientEditRequest.isNeutered() != patient.isNeutered()) {
             patient.setNeutered(patientEditRequest.isNeutered());
         }
-        if (patientEditRequest.patientAccessCode() != null && !patientEditRequest.patientAccessCode().equals(patient.getPatientAccessCode())) {
-            patient.setPatientAccessCode(patientEditRequest.patientAccessCode());
-        }
-        if (patientEditRequest.note() != null && !patientEditRequest.note().equals(patient.getNote())) {
-            patient.setNote(patientEditRequest.note());
-        }
+        updatePatientField(patientEditRequest::name, patient::getName, patient::setName);
+        updatePatientField(patientEditRequest::microchip, patient::getMicrochip, patient::setMicrochip);
+        updatePatientField(patientEditRequest::pendant, patient::getPendant, patient::setPendant);
+        updatePatientField(patientEditRequest::passport, patient::getPassport, patient::setPassport);
+        updatePatientField(patientEditRequest::patientAccessCode, patient::getPatientAccessCode, patient::setPatientAccessCode);
+        updatePatientField(patientEditRequest::note, patient::getNote, patient::setNote);
 
         return PatientTransformer.toResponse(patientRepository.save(patient));
+    }
+
+    private void updatePatientField(Supplier<String> newField, Supplier<String> currentField, Consumer<String> updateField) {
+        String newValue = newField.get();
+        if (newValue != null && !newValue.trim().isEmpty() && !newValue.equals(currentField.get())) {
+            updateField.accept(newValue);
+        }
     }
 
     private Patient getPatientByIdOrThrowException(UUID patientId) {

@@ -17,11 +17,11 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "billed_item", schema = "opti-pet")
+@Table(name = "billed_medication", schema = "opti-pet")
 @Getter
 @Setter
 @NoArgsConstructor
-public class BilledItem {
+public class BilledMedication {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
