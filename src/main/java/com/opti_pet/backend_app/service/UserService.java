@@ -149,6 +149,7 @@ public class UserService implements UserDetailsService {
         return UserTransformer.toResponse(userRepository.save(user));
     }
 
+    @Transactional
     public Page<UserResponse> getAllUsers(UserSpecificationRequest userSpecificationRequest) {
         Pageable pageRequest = createPageRequest(userSpecificationRequest);
 

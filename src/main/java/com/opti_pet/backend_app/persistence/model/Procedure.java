@@ -1,18 +1,10 @@
 package com.opti_pet.backend_app.persistence.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -20,6 +12,8 @@ import java.util.UUID;
 @Table(name = "procedure", schema = "opti-pet")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Procedure {
     @Id
@@ -40,10 +34,10 @@ public class Procedure {
     private BigDecimal taxRatePercent;
 
     @Column(name = "date_added")
-    private Date dateAdded;
+    private LocalDate dateAdded;
 
     @Column(name = "date_updated")
-    private Date dateUpdated;
+    private LocalDate dateUpdated;
 
     @Column(name = "is_active")
     private boolean isActive;

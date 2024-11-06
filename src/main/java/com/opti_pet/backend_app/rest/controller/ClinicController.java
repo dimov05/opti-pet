@@ -25,7 +25,7 @@ public class ClinicController {
         return clinicService.createClinic(clinicCreateRequest);
     }
 
-    @PostMapping("/{clinicId}/edit")
+    @PutMapping("/{clinicId}/edit")
     @PreAuthorize("@securityService.hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
     public ClinicResponse updateClinic(@PathVariable("clinicId") String clinicId, @Valid @RequestBody ClinicUpdateRequest clinicUpdateRequest) {
         return clinicService.updateClinic(clinicId, clinicUpdateRequest);

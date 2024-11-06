@@ -45,13 +45,6 @@ public class UserRoleClinicService {
     }
 
     @Transactional
-    public void deleteUserRoleClinic(User user, Clinic clinic, Role role) {
-        userRoleClinicRepository
-                .findByUserIdAndRoleIdAndClinicId(user.getId(), role.getId(), clinic.getId())
-                .ifPresent(userRoleClinicRepository::delete);
-    }
-
-    @Transactional
     public void deleteUserRoleClinicByUserAndClinic(User user, Clinic clinic) {
         userRoleClinicRepository.deleteByUserIdAndClinicId(user.getId(), clinic.getId());
     }

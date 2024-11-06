@@ -20,4 +20,7 @@ public class AppConstants {
     public static final String CLINIC_ENTITY = "Clinic";
     public static final String ROLE_ENTITY = "Role";
     public static final String PATIENT_ENTITY = "Patient";
+    public static final String BILLED_PRICE_FIELD_NAME = "billedPrice";
+    public static final String DESCRIPTION_FIELD_NAME = "description";
+    public static final String CLINIC_FIELD_NAME = "clinic";
 }
