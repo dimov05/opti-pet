@@ -10,6 +10,6 @@ import java.math.BigDecimal;
 
 @Builder
 public record ProcedureUpdateRequest(@UUID String procedureId, @NotBlank String name,
-                                     @Length(max = 255) String description,
-                                     @NotNull BigDecimal billedPrice, @NotNull BigDecimal taxRatePercent) {
+                                     @Length(max = 255) String description, @NotNull BigDecimal billedPrice,
+                                     @NotNull BigDecimal taxRatePercent, @NotNull BigDecimal finalPrice) {
 }

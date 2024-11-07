@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -36,7 +36,7 @@ public class BilledConsumable {
     private Long quantity;
 
     @Column(name = "billed_date")
-    private Date billedDate;
+    private LocalDate billedDate;
 
     @ManyToOne
     @JoinColumn(name = "bill_id")

@@ -1,5 +1,6 @@
 package com.opti_pet.backend_app.service;
 
+import com.opti_pet.backend_app.exception.BadRequestException;
 import com.opti_pet.backend_app.exception.NotFoundException;
 import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Procedure;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -36,6 +39,7 @@ public class ProcedureService {
     @Transactional
     public ProcedureResponse createProcedure(String clinicId, ProcedureCreateRequest procedureCreateRequest) {
         Clinic clinic = clinicService.getClinicByIdOrThrowException(UUID.fromString(clinicId));
+        checkIfPriceIsCorrect(procedureCreateRequest);
         Procedure procedure = procedureRepository.save(ProcedureTransformer.toEntity(procedureCreateRequest, clinic));
 
         return ProcedureTransformer.toResponse(procedure);
@@ -44,15 +48,19 @@ public class ProcedureService {
     @Transactional
     public ProcedureResponse updateProcedure(ProcedureUpdateRequest procedureUpdateRequest) {
         Procedure procedure = getProcedureByIdOrThrowException(UUID.fromString(procedureUpdateRequest.procedureId()));
-
+        checkIfPriceIsCorrect(procedureUpdateRequest);
         updateProcedureField(procedureUpdateRequest::name, procedure::getName, procedure::setName);
         updateProcedureField(procedureUpdateRequest::description, procedure::getDescription, procedure::setDescription);
         if (!procedureUpdateRequest.billedPrice().equals(procedure.getPrice())) {
             procedure.setPrice(procedureUpdateRequest.billedPrice());
         }
+        if (!procedureUpdateRequest.finalPrice().equals(procedure.getFinalPrice())) {
+            procedure.setFinalPrice(procedureUpdateRequest.finalPrice());
+        }
         if (!procedureUpdateRequest.taxRatePercent().equals(procedure.getTaxRatePercent())) {
             procedure.setTaxRatePercent(procedureUpdateRequest.taxRatePercent());
         }
+
         procedure.setDateUpdated(LocalDate.now());
 
         return ProcedureTransformer.toResponse(procedureRepository.save(procedure));
@@ -113,4 +121,20 @@ public class ProcedureService {
         return Sort.by(Boolean.TRUE.equals(flag) ? Sort.Direction.ASC : Sort.Direction.DESC, fieldName);
     }
 
+
+    private void checkIfPriceIsCorrect(ProcedureCreateRequest procedureCreateRequest) {
+        checkBigDecimalPrices(procedureCreateRequest.billedPrice(), procedureCreateRequest.finalPrice(), procedureCreateRequest.taxRatePercent());
+    }
+
+    private void checkIfPriceIsCorrect(ProcedureUpdateRequest procedureUpdateRequest) {
+        checkBigDecimalPrices(procedureUpdateRequest.billedPrice(), procedureUpdateRequest.finalPrice(), procedureUpdateRequest.taxRatePercent());
+    }
+
+    public void checkBigDecimalPrices(BigDecimal priceBeforeTax, BigDecimal priceAfterTax, BigDecimal taxPercent) {
+        BigDecimal taxRateMultiplier = BigDecimal.ONE.add(taxPercent.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
+        BigDecimal calculatedPriceAfterTax = priceBeforeTax.multiply(taxRateMultiplier).setScale(2, RoundingMode.HALF_UP);
+        if (calculatedPriceAfterTax.compareTo(priceAfterTax) != 0) {
+            throw new BadRequestException("Prices are not correct!");
+        }
+    }
 }

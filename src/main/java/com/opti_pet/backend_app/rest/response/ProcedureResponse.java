@@ -6,5 +6,5 @@ import java.math.BigDecimal;
 
 @Builder
 public record ProcedureResponse(String id, String name, String description, BigDecimal price, BigDecimal taxRatePercent,
-                                String dateAdded, String dateUpdated, ClinicBaseResponse clinic) {
+                                BigDecimal finalPrice, String dateAdded, String dateUpdated, ClinicBaseResponse clinic) {
 }

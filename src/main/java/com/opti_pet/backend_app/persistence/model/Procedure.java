@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +28,9 @@ public class Procedure {
 
     @Column(name = "price")
     private BigDecimal price;
+
+    @Column(name = "final_price")
+    private BigDecimal finalPrice;
 
     @Column(name = "tax_rate_percent")
     private BigDecimal taxRatePercent;

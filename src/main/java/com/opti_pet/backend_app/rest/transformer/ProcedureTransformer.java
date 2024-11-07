@@ -15,6 +15,7 @@ public class ProcedureTransformer {
                 .name(procedure.getName())
                 .description(procedure.getDescription())
                 .price(procedure.getPrice())
+                .finalPrice(procedure.getFinalPrice())
                 .taxRatePercent(procedure.getTaxRatePercent())
                 .dateAdded(procedure.getDateAdded().toString())
                 .dateUpdated(procedure.getDateUpdated().toString())
@@ -22,12 +23,12 @@ public class ProcedureTransformer {
                 .build();
     }
 
-    //LocalDate.parse(procedureCreateRequest.birthdate(), DATE_TIME_FORMATTER)
     public static Procedure toEntity(ProcedureCreateRequest procedureCreateRequest, Clinic clinic) {
         return Procedure.builder()
                 .name(procedureCreateRequest.name())
                 .description(procedureCreateRequest.description())
                 .price(procedureCreateRequest.billedPrice())
+                .finalPrice(procedureCreateRequest.finalPrice())
                 .taxRatePercent(procedureCreateRequest.taxRatePercent())
                 .dateAdded(LocalDate.now())
                 .dateUpdated(LocalDate.now())

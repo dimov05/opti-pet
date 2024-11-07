@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -32,14 +32,17 @@ public class Consumable {
     @Column(name = "price")
     private BigDecimal price;
 
+    @Column(name = "final_price")
+    private BigDecimal finalPrice;
+
     @Column(name = "tax_rate_percent")
     private BigDecimal taxRatePercent;
 
     @Column(name = "date_added")
-    private Date dateAdded;
+    private LocalDate dateAdded;
 
     @Column(name = "date_updated")
-    private Date dateUpdated;
+    private LocalDate dateUpdated;
 
     @Column(name = "is_active")
     private boolean isActive;
