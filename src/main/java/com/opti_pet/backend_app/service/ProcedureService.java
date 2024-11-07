@@ -101,7 +101,7 @@ public class ProcedureService {
 
     private Pageable createPageRequest(ProcedureSpecificationRequest request) {
         Sort sort = Sort.unsorted();
-        sort = request.sortByAmount() != null ? sort.and(getSort(request.sortByAmount(), BILLED_PRICE_FIELD_NAME)) : sort;
+        sort = request.sortByAmount() != null ? sort.and(getSort(request.sortByAmount(), PRICE_FIELD_NAME)) : sort;
 
         int pageNumber = request.pageNumber() != null ? request.pageNumber() : DEFAULT_PAGE_NUMBER;
         int pageSize = request.pageSize() != null ? request.pageSize() : DEFAULT_PAGE_SIZE;
