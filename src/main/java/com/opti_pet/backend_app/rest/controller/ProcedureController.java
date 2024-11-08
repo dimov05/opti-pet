@@ -61,7 +61,7 @@ public class ProcedureController {
 
     @PostMapping(value = "/clinics/{clinicId}/procedures/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @PreAuthorize("@securityService.hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
-    public void importFromExcel(@PathVariable("clinicId") String clinicId, HttpServletResponse response, @RequestPart("file") MultipartFile file) throws IOException {
-        excelExporterService.importProcedures(clinicId, response, file);
+    public void importFromExcel(@PathVariable("clinicId") String clinicId, @RequestPart("file") MultipartFile file) throws IOException {
+        excelExporterService.importProcedures(clinicId, file);
     }
 }

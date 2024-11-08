@@ -26,7 +26,7 @@ public class AppConstants {
     public static final String TAX_RATE_PERCENT_FIELD_NAME = "taxRatePercent";
     public static final String DATE_ADDED_FIELD_NAME = "dateAdded";
     public static final String DATE_UPDATED_FIELD_NAME = "dateUpdated";
-
+    public static final String AVAILABLE_QUANTITY_FIELD_NAME = "availableQuantity";
     public static final String ID_EXPORT_NAME = "Id";
     public static final String PRICE_EXPORT_NAME = "Price";
     public static final String DESCRIPTION_EXPORT_NAME = "Description";
@@ -35,4 +35,11 @@ public class AppConstants {
     public static final String DATE_ADDED_EXPORT_NAME = "Date Added";
     public static final String DATE_UPDATED_EXPORT_NAME = "Date Updated";
     public static final String FINAL_PRICE_EXPORT_NAME = "Price after Tax";
+    public static final String AVAILABLE_QUANTITY_EXPORT_NAME = "Available Quantity";
+    public static final String PROCEDURE_EXPORT_TYPE = "procedure";
+    public static final String MEDICATION_EXPORT_TYPE = "medication";
+    public static final String CONSUMABLE_EXPORT_TYPE = "consumable";
+    public static final String EXPORT_EXCEL_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public static final String CONTENT_DISPOSITION = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public static final String CONTENT_DISPOSITION_FORMAT_FILE_NAME = "attachment; filename=\"%s%s.xlsx\"";
 }

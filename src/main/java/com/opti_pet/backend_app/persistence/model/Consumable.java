@@ -27,7 +27,7 @@ public class Consumable {
     private String description;
 
     @Column(name = "available_quantity")
-    private Long availableQuantity;
+    private BigDecimal availableQuantity;
 
     @Column(name = "price")
     private BigDecimal price;
