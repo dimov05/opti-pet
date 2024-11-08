@@ -42,4 +42,6 @@ public class AppConstants {
     public static final String EXPORT_EXCEL_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     public static final String CONTENT_DISPOSITION = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     public static final String CONTENT_DISPOSITION_FORMAT_FILE_NAME = "attachment; filename=\"%s%s.xlsx\"";
+    public static final String TEMPLATE = "Template";
+    public static final String FILE_NAME_TEMPLATE_IMPORT = "%ss_template_import_";
 }

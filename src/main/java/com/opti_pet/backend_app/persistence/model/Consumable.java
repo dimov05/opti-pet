@@ -1,9 +1,7 @@
 package com.opti_pet.backend_app.persistence.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,6 +11,8 @@ import java.util.UUID;
 @Table(name = "consumable", schema = "opti-pet")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Consumable {
     @Id

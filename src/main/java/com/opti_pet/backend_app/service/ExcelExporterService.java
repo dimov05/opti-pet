@@ -3,8 +3,10 @@ package com.opti_pet.backend_app.service;
 import com.opti_pet.backend_app.exception.BadRequestException;
 import com.opti_pet.backend_app.persistence.enums.ExportTypeEnum;
 import com.opti_pet.backend_app.persistence.model.Clinic;
+import com.opti_pet.backend_app.persistence.model.Consumable;
 import com.opti_pet.backend_app.persistence.model.Medication;
 import com.opti_pet.backend_app.persistence.model.Procedure;
+import com.opti_pet.backend_app.persistence.repository.ConsumableRepository;
 import com.opti_pet.backend_app.persistence.repository.MedicationRepository;
 import com.opti_pet.backend_app.persistence.repository.ProcedureRepository;
 import com.opti_pet.backend_app.rest.request.ExcelExportRequest;
@@ -38,6 +40,7 @@ import static com.opti_pet.backend_app.util.ErrorConstants.*;
 public class ExcelExporterService {
     private final ClinicService clinicService;
     private final MedicationRepository medicationRepository;
+    private final ConsumableRepository consumableRepository;
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
     private final ProcedureRepository procedureRepository;
@@ -93,8 +96,8 @@ public class ExcelExporterService {
     @Transactional
     public void exportExcelProceduresTemplate(HttpServletResponse response) throws IOException {
         workbook = new XSSFWorkbook();
-        String fileName = "procedures_template_import_";
-        writeHeaderLine("Template", PROCEDURE_EXPORT_TYPE);
+        String fileName = String.format(FILE_NAME_TEMPLATE_IMPORT, PROCEDURE_EXPORT_TYPE);
+        writeHeaderLine(TEMPLATE, PROCEDURE_EXPORT_TYPE);
         adjustColumnWidths(getProcedureHeaders().size());
         response.setContentType(EXPORT_EXCEL_CONTENT_TYPE);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(CONTENT_DISPOSITION_FORMAT_FILE_NAME, fileName, LocalDate.now()));
@@ -157,9 +160,73 @@ public class ExcelExporterService {
     @Transactional
     public void exportExcelMedicationsTemplate(HttpServletResponse response) throws IOException {
         workbook = new XSSFWorkbook();
-        String fileName = "medications_template_import_";
-        writeHeaderLine("Template", MEDICATION_EXPORT_TYPE);
+        String fileName = String.format(FILE_NAME_TEMPLATE_IMPORT, MEDICATION_EXPORT_TYPE);
+        writeHeaderLine(TEMPLATE, MEDICATION_EXPORT_TYPE);
         adjustColumnWidths(getMedicationHeaders().size());
+        response.setContentType(EXPORT_EXCEL_CONTENT_TYPE);
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(CONTENT_DISPOSITION_FORMAT_FILE_NAME, fileName, LocalDate.now()));
+
+        ServletOutputStream outputStream = response.getOutputStream();
+        workbook.write(outputStream);
+        workbook.close();
+
+        outputStream.close();
+    }
+
+    @Transactional
+    public void importConsumables(String clinicId, MultipartFile file) throws IOException {
+        try (XSSFWorkbook workbook1 = new XSSFWorkbook(file.getInputStream())) {
+            Sheet sheet1 = workbook1.getSheetAt(0);
+
+            Row headerRow = sheet1.getRow(0);
+            if (!isValidHeader(headerRow, CONSUMABLE_EXPORT_TYPE)) {
+                throw new BadRequestException(INVALID_EXCEL_FORMAT_HEADERS_DO_NOT_MATCH_TEMPLATE_EXCEPTION);
+            }
+
+            Iterator<Row> rowIterator = sheet1.iterator();
+            rowIterator.next();
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                Consumable consumable = mapRowToConsumable(row);
+
+                Consumable existingConsumable = consumableRepository.findById(consumable.getId()).orElse(null);
+                if (existingConsumable == null) {
+                    Clinic clinic = clinicService.getClinicByIdOrThrowException(UUID.fromString(clinicId));
+                    consumable.setDateUpdated(LocalDate.now());
+                    consumable.setDateAdded(LocalDate.now());
+                    consumable.setClinic(clinic);
+                    consumableRepository.save(consumable);
+                } else {
+                    updateConsumable(existingConsumable, consumable);
+                    consumableRepository.save(existingConsumable);
+                }
+            }
+        } catch (IOException e) {
+            throw new IOException(ERROR_PROCESSING_EXCEL_FILE_TEMPLATE_EXCEPTION, e);
+        }
+    }
+
+    @Transactional
+    public void exportConsumables(String clinicId, HttpServletResponse response, ExcelExportRequest excelExportRequest) throws IOException {
+        workbook = new XSSFWorkbook();
+        String fileName = determineFileNameAndCreateTable(excelExportRequest, CONSUMABLE_EXPORT_TYPE, clinicId);
+
+        response.setContentType(EXPORT_EXCEL_CONTENT_TYPE);
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(CONTENT_DISPOSITION_FORMAT_FILE_NAME, fileName, LocalDate.now()));
+
+        ServletOutputStream outputStream = response.getOutputStream();
+        workbook.write(outputStream);
+        workbook.close();
+
+        outputStream.close();
+    }
+
+    @Transactional
+    public void exportExcelConsumablesTemplate(HttpServletResponse response) throws IOException {
+        workbook = new XSSFWorkbook();
+        String fileName = String.format(FILE_NAME_TEMPLATE_IMPORT, CONSUMABLE_EXPORT_TYPE);
+        writeHeaderLine(TEMPLATE, CONSUMABLE_EXPORT_TYPE);
+        adjustColumnWidths(getConsumableHeaders().size());
         response.setContentType(EXPORT_EXCEL_CONTENT_TYPE);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(CONTENT_DISPOSITION_FORMAT_FILE_NAME, fileName, LocalDate.now()));
 
@@ -174,6 +241,7 @@ public class ExcelExporterService {
         List<String> expectedHeaders = switch (exportedObjectName) {
             case PROCEDURE_EXPORT_TYPE -> getProcedureHeaders();
             case MEDICATION_EXPORT_TYPE -> getMedicationHeaders();
+            case CONSUMABLE_EXPORT_TYPE -> getConsumableHeaders();
             default -> throw new BadRequestException(UNEXPECTED_VALUE_EXCEPTION + exportedObjectName);
         };
 
@@ -235,6 +303,31 @@ public class ExcelExporterService {
                 .build();
     }
 
+    private Consumable mapRowToConsumable(Row row) {
+        String uuid = row.getCell(0) != null ? row.getCell(0).getStringCellValue() : null;
+        for (int i = 1; i <= 4; i++) {
+            if (row.getCell(i) == null) {
+                throw new BadRequestException(String.format(INVALID_EXCEL_FORMAT_COLUMN_AND_ROW_TEMPLATE_EXCEPTION, i, row.getRowNum()));
+            }
+        }
+
+        BigDecimal finalPrice = BigDecimal.valueOf(row.getCell(5).getNumericCellValue());
+        BigDecimal taxRatePercent = BigDecimal.valueOf(row.getCell(4).getNumericCellValue());
+        BigDecimal taxRateMultiplier = BigDecimal.ONE.add(taxRatePercent.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
+        BigDecimal priceBeforeTaxes = finalPrice.divide(taxRateMultiplier, 2, RoundingMode.HALF_UP);
+
+        return Consumable.builder()
+                .id(uuid != null ? UUID.fromString(uuid) : UUID.randomUUID())
+                .name(row.getCell(1).getStringCellValue())
+                .description(row.getCell(2).getStringCellValue())
+                .price(priceBeforeTaxes)
+                .availableQuantity(BigDecimal.valueOf(row.getCell(3).getNumericCellValue()))
+                .taxRatePercent(taxRatePercent)
+                .finalPrice(finalPrice)
+                .isActive(true)
+                .build();
+    }
+
     private void updateProcedure(Procedure existingProcedure, Procedure newProcedure) {
         updateField(newProcedure::getName, existingProcedure::getName, existingProcedure::setName);
         updateField(newProcedure::getDescription, existingProcedure::getDescription, existingProcedure::setDescription);
@@ -268,6 +361,24 @@ public class ExcelExporterService {
         existingMedication.setDateUpdated(LocalDate.now());
     }
 
+    private void updateConsumable(Consumable existingConsumable, Consumable newConsumable) {
+        updateField(newConsumable::getName, existingConsumable::getName, existingConsumable::setName);
+        updateField(newConsumable::getDescription, existingConsumable::getDescription, existingConsumable::setDescription);
+        if (!newConsumable.getPrice().equals(existingConsumable.getPrice())) {
+            existingConsumable.setPrice(newConsumable.getPrice());
+        }
+        if (!newConsumable.getFinalPrice().equals(existingConsumable.getFinalPrice())) {
+            existingConsumable.setFinalPrice(newConsumable.getFinalPrice());
+        }
+        if (!newConsumable.getTaxRatePercent().equals(existingConsumable.getTaxRatePercent())) {
+            existingConsumable.setTaxRatePercent(newConsumable.getTaxRatePercent());
+        }
+        if (!newConsumable.getAvailableQuantity().equals(existingConsumable.getAvailableQuantity())) {
+            existingConsumable.setAvailableQuantity(newConsumable.getAvailableQuantity());
+        }
+        existingConsumable.setDateUpdated(LocalDate.now());
+    }
+
     private void updateField(Supplier<String> newField, Supplier<String> currentField, Consumer<String> updateField) {
         String newValue = newField.get();
         if (newValue != null && !newValue.trim().isEmpty() && !newValue.equals(currentField.get())) {
@@ -294,6 +405,7 @@ public class ExcelExporterService {
         int headerSize = switch (exportedObjectName) {
             case PROCEDURE_EXPORT_TYPE -> getProcedureHeaders().size();
             case MEDICATION_EXPORT_TYPE -> getMedicationHeaders().size();
+            case CONSUMABLE_EXPORT_TYPE -> getConsumableHeaders().size();
             default -> throw new BadRequestException(UNEXPECTED_VALUE_EXCEPTION + exportedObjectName);
         };
         writeHeaderLine(exportType, exportedObjectName);
@@ -325,6 +437,7 @@ public class ExcelExporterService {
         List<String> headers = switch (exportedObjectName) {
             case PROCEDURE_EXPORT_TYPE -> getProcedureHeaders();
             case MEDICATION_EXPORT_TYPE -> getMedicationHeaders();
+            case CONSUMABLE_EXPORT_TYPE -> getConsumableHeaders();
             default -> throw new BadRequestException(UNEXPECTED_VALUE_EXCEPTION + exportedObjectName);
         };
         for (int columnCount = 0; columnCount < headers.size(); columnCount++) {
@@ -373,6 +486,11 @@ public class ExcelExporterService {
     }
 
     private List<String> getMedicationHeaders() {
+        return List.of(ID_EXPORT_NAME, NAME_EXPORT_NAME, DESCRIPTION_EXPORT_NAME, AVAILABLE_QUANTITY_EXPORT_NAME,
+                TAX_RATE_PERCENT_EXPORT_NAME, FINAL_PRICE_EXPORT_NAME, DATE_ADDED_EXPORT_NAME, DATE_UPDATED_EXPORT_NAME);
+    }
+
+    private List<String> getConsumableHeaders() {
         return List.of(ID_EXPORT_NAME, NAME_EXPORT_NAME, DESCRIPTION_EXPORT_NAME, AVAILABLE_QUANTITY_EXPORT_NAME,
                 TAX_RATE_PERCENT_EXPORT_NAME, FINAL_PRICE_EXPORT_NAME, DATE_ADDED_EXPORT_NAME, DATE_UPDATED_EXPORT_NAME);
     }
