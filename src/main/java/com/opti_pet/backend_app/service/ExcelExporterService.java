@@ -51,7 +51,7 @@ public class ExcelExporterService {
             Sheet sheet1 = workbook1.getSheetAt(0);
 
             Row headerRow = sheet1.getRow(0);
-            if (!isValidHeader(headerRow, PROCEDURE_EXPORT_TYPE)) {
+            if (isHeaderInvalid(headerRow, PROCEDURE_EXPORT_TYPE)) {
                 throw new BadRequestException(INVALID_EXCEL_FORMAT_HEADERS_DO_NOT_MATCH_TEMPLATE_EXCEPTION);
             }
 
@@ -97,7 +97,8 @@ public class ExcelExporterService {
     public void exportExcelProceduresTemplate(HttpServletResponse response) throws IOException {
         workbook = new XSSFWorkbook();
         String fileName = String.format(FILE_NAME_TEMPLATE_IMPORT, PROCEDURE_EXPORT_TYPE);
-        writeHeaderLine(TEMPLATE, PROCEDURE_EXPORT_TYPE);
+        List<String> headers = getHeadersByObject(PROCEDURE_EXPORT_TYPE);
+        writeHeaderLine(TEMPLATE, PROCEDURE_EXPORT_TYPE, headers);
         adjustColumnWidths(getProcedureHeaders().size());
         response.setContentType(EXPORT_EXCEL_CONTENT_TYPE);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(CONTENT_DISPOSITION_FORMAT_FILE_NAME, fileName, LocalDate.now()));
@@ -115,7 +116,7 @@ public class ExcelExporterService {
             Sheet sheet1 = workbook1.getSheetAt(0);
 
             Row headerRow = sheet1.getRow(0);
-            if (!isValidHeader(headerRow, MEDICATION_EXPORT_TYPE)) {
+            if (isHeaderInvalid(headerRow, MEDICATION_EXPORT_TYPE)) {
                 throw new BadRequestException(INVALID_EXCEL_FORMAT_HEADERS_DO_NOT_MATCH_TEMPLATE_EXCEPTION);
             }
 
@@ -161,7 +162,8 @@ public class ExcelExporterService {
     public void exportExcelMedicationsTemplate(HttpServletResponse response) throws IOException {
         workbook = new XSSFWorkbook();
         String fileName = String.format(FILE_NAME_TEMPLATE_IMPORT, MEDICATION_EXPORT_TYPE);
-        writeHeaderLine(TEMPLATE, MEDICATION_EXPORT_TYPE);
+        List<String> headers = getHeadersByObject(MEDICATION_EXPORT_TYPE);
+        writeHeaderLine(TEMPLATE, MEDICATION_EXPORT_TYPE, headers);
         adjustColumnWidths(getMedicationHeaders().size());
         response.setContentType(EXPORT_EXCEL_CONTENT_TYPE);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(CONTENT_DISPOSITION_FORMAT_FILE_NAME, fileName, LocalDate.now()));
@@ -179,7 +181,7 @@ public class ExcelExporterService {
             Sheet sheet1 = workbook1.getSheetAt(0);
 
             Row headerRow = sheet1.getRow(0);
-            if (!isValidHeader(headerRow, CONSUMABLE_EXPORT_TYPE)) {
+            if (isHeaderInvalid(headerRow, CONSUMABLE_EXPORT_TYPE)) {
                 throw new BadRequestException(INVALID_EXCEL_FORMAT_HEADERS_DO_NOT_MATCH_TEMPLATE_EXCEPTION);
             }
 
@@ -225,7 +227,8 @@ public class ExcelExporterService {
     public void exportExcelConsumablesTemplate(HttpServletResponse response) throws IOException {
         workbook = new XSSFWorkbook();
         String fileName = String.format(FILE_NAME_TEMPLATE_IMPORT, CONSUMABLE_EXPORT_TYPE);
-        writeHeaderLine(TEMPLATE, CONSUMABLE_EXPORT_TYPE);
+        List<String> headers = getHeadersByObject(CONSUMABLE_EXPORT_TYPE);
+        writeHeaderLine(TEMPLATE, CONSUMABLE_EXPORT_TYPE, headers);
         adjustColumnWidths(getConsumableHeaders().size());
         response.setContentType(EXPORT_EXCEL_CONTENT_TYPE);
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(CONTENT_DISPOSITION_FORMAT_FILE_NAME, fileName, LocalDate.now()));
@@ -237,7 +240,7 @@ public class ExcelExporterService {
         outputStream.close();
     }
 
-    private boolean isValidHeader(Row headerRow, String exportedObjectName) {
+    private boolean isHeaderInvalid(Row headerRow, String exportedObjectName) {
         List<String> expectedHeaders = switch (exportedObjectName) {
             case PROCEDURE_EXPORT_TYPE -> getProcedureHeaders();
             case MEDICATION_EXPORT_TYPE -> getMedicationHeaders();
@@ -247,10 +250,10 @@ public class ExcelExporterService {
 
         for (int i = 0; i < expectedHeaders.size(); i++) {
             if (!headerRow.getCell(i).getStringCellValue().equals(expectedHeaders.get(i))) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private Procedure mapRowToProcedure(Row row) {
@@ -391,63 +394,89 @@ public class ExcelExporterService {
         String exportTypeString = exportType.getExportType();
         return switch (exportType) {
             case ExportTypeEnum.ALL -> {
-                createTable(procedureRepository.findAllByClinic_Id(UUID.fromString(clinicId)), exportTypeString, exportedObjectName);
-                yield "all_" + exportedObjectName + "_";
+                switch (exportedObjectName) {
+                    case PROCEDURE_EXPORT_TYPE -> {
+                        createProceduresTable(procedureRepository.findAllByClinic_Id(UUID.fromString(clinicId)), exportTypeString, exportedObjectName);
+                        yield "all_" + exportedObjectName + "_";
+                    }
+                    case MEDICATION_EXPORT_TYPE -> {
+                        createMedicationsTable(medicationRepository.findAllByClinic_Id(UUID.fromString(clinicId)), exportTypeString, exportedObjectName);
+                        yield "all_" + exportedObjectName + "_";
+                    }
+                    case CONSUMABLE_EXPORT_TYPE -> {
+                        createConsumablesTable(consumableRepository.findAllByClinic_Id(UUID.fromString(clinicId)), exportTypeString, exportedObjectName);
+                        yield "all_" + exportedObjectName + "_";
+                    }
+                    default -> throw new BadRequestException(UNEXPECTED_VALUE_EXCEPTION + exportedObjectName);
+
+                }
             }
             case ExportTypeEnum.SELECTED -> {
-                createTable(procedureRepository.findAllByIdIn(excelExportRequest.uuids()), exportTypeString, exportedObjectName);
-                yield "selected_" + exportedObjectName + "_";
+                switch (exportedObjectName) {
+                    case PROCEDURE_EXPORT_TYPE -> {
+                        createProceduresTable(procedureRepository.findAllByIdIn(excelExportRequest.uuids()), exportTypeString, exportedObjectName);
+                        yield "selected_" + exportedObjectName + "_";
+                    }
+                    case MEDICATION_EXPORT_TYPE -> {
+                        createMedicationsTable(medicationRepository.findAllByIdIn(excelExportRequest.uuids()), exportTypeString, exportedObjectName);
+                        yield "all_" + exportedObjectName + "_";
+                    }
+                    case CONSUMABLE_EXPORT_TYPE -> {
+                        createConsumablesTable(consumableRepository.findAllByIdIn(excelExportRequest.uuids()), exportTypeString, exportedObjectName);
+                        yield "all_" + exportedObjectName + "_";
+                    }
+                    default -> throw new BadRequestException(UNEXPECTED_VALUE_EXCEPTION + exportedObjectName);
+
+                }
+
             }
         };
     }
 
-    private void createTable(List<Procedure> procedures, String exportType, String exportedObjectName) {
-        int headerSize = switch (exportedObjectName) {
-            case PROCEDURE_EXPORT_TYPE -> getProcedureHeaders().size();
-            case MEDICATION_EXPORT_TYPE -> getMedicationHeaders().size();
-            case CONSUMABLE_EXPORT_TYPE -> getConsumableHeaders().size();
-            default -> throw new BadRequestException(UNEXPECTED_VALUE_EXCEPTION + exportedObjectName);
-        };
-        writeHeaderLine(exportType, exportedObjectName);
-        writeDataLines(procedures);
-        adjustColumnWidths(headerSize);
+    private void createProceduresTable(List<Procedure> procedures, String exportType, String exportedObjectName) {
+        List<String> headers = getHeadersByObject(exportedObjectName);
+        writeHeaderLine(exportType, exportedObjectName, headers);
+        writeProceduresDataLines(procedures);
+        adjustColumnWidths(headers.size());
     }
 
-    private void writeHeaderLine(String exportType, String exportedObjectName) {
-        XSSFFont headerFont = workbook.createFont();
-        headerFont.setBold(true);
+    private void createMedicationsTable(List<Medication> medications, String exportType, String exportedObjectName) {
+        List<String> headers = getHeadersByObject(exportedObjectName);
+        writeHeaderLine(exportType, exportedObjectName, headers);
+        writeMedicationsDataLines(medications);
+        adjustColumnWidths(headers.size());
+    }
 
-        CellStyle headerCellStyle = workbook.createCellStyle();
-        headerCellStyle.setFont(headerFont);
-        headerCellStyle.setLocked(true);
-        sheet = workbook.createSheet(String.format("%s %s", exportType, exportedObjectName));
-        Row row = sheet.createRow(0);
-        CellStyle lockedHeaderCellStyle = workbook.createCellStyle();
-        lockedHeaderCellStyle.setFont(headerFont);
-        lockedHeaderCellStyle.setFillForegroundColor(IndexedColors.DARK_RED.getIndex());
-        lockedHeaderCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        lockedHeaderCellStyle.setLocked(true);
+    private void createConsumablesTable(List<Consumable> consumables, String exportType, String exportedObjectName) {
+        List<String> headers = getHeadersByObject(exportedObjectName);
+        writeHeaderLine(exportType, exportedObjectName, headers);
+        writeConsumablesDataLines(consumables);
+        adjustColumnWidths(headers.size());
+    }
 
-        CellStyle editableHeaderCellStyle = workbook.createCellStyle();
-        editableHeaderCellStyle.setFont(headerFont);
-        editableHeaderCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
-        editableHeaderCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        editableHeaderCellStyle.setLocked(true);
-
-        List<String> headers = switch (exportedObjectName) {
+    private List<String> getHeadersByObject(String exportedObjectName) {
+        return switch (exportedObjectName) {
             case PROCEDURE_EXPORT_TYPE -> getProcedureHeaders();
             case MEDICATION_EXPORT_TYPE -> getMedicationHeaders();
             case CONSUMABLE_EXPORT_TYPE -> getConsumableHeaders();
             default -> throw new BadRequestException(UNEXPECTED_VALUE_EXCEPTION + exportedObjectName);
         };
+    }
+
+
+    private void writeHeaderLine(String exportType, String exportedObjectName, List<String> headers) {
+        XSSFFont headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        sheet = workbook.createSheet(String.format("%s %s", exportType, exportedObjectName));
+        Row row = sheet.createRow(0);
+        CellStyle lockedHeaderCellStyle = createCellStyle(headerFont, IndexedColors.DARK_RED);
+        CellStyle editableHeaderCellStyle = createCellStyle(headerFont, IndexedColors.LIGHT_YELLOW);
+
         for (int columnCount = 0; columnCount < headers.size(); columnCount++) {
-            if (headers.get(columnCount).equals(ID_EXPORT_NAME) ||
+            boolean isLocked = headers.get(columnCount).equals(ID_EXPORT_NAME) ||
                     headers.get(columnCount).equals(DATE_ADDED_EXPORT_NAME) ||
-                    headers.get(columnCount).equals(DATE_UPDATED_EXPORT_NAME)) {
-                createCell(row, columnCount, headers.get(columnCount), lockedHeaderCellStyle);
-            } else {
-                createCell(row, columnCount, headers.get(columnCount), editableHeaderCellStyle);
-            }
+                    headers.get(columnCount).equals(DATE_UPDATED_EXPORT_NAME);
+            createCell(row, columnCount, headers.get(columnCount), isLocked ? lockedHeaderCellStyle : editableHeaderCellStyle);
         }
     }
 
@@ -459,6 +488,22 @@ public class ExcelExporterService {
                 sheet.setColumnWidth(columnIndex, minWidth);
             }
         }
+    }
+
+    private CellStyle createCellStyle(XSSFFont font, IndexedColors bgColor) {
+        CellStyle style = workbook.createCellStyle();
+        style.setFont(font);
+        style.setFillForegroundColor(bgColor.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setWrapText(true); // Optional: wraps text within the cell
+
+        // You may also want to set borders for better visual appearance
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+
+        return style;
     }
 
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
@@ -495,15 +540,31 @@ public class ExcelExporterService {
                 TAX_RATE_PERCENT_EXPORT_NAME, FINAL_PRICE_EXPORT_NAME, DATE_ADDED_EXPORT_NAME, DATE_UPDATED_EXPORT_NAME);
     }
 
-    private void writeDataLines(List<Procedure> procedures) {
+    private void writeProceduresDataLines(List<Procedure> procedures) {
         int rowCount = 1;
         for (Procedure procedure : procedures) {
             Row row = sheet.createRow(rowCount++);
-            fillRowWithData(row, procedure);
+            fillRowWithProcedureData(row, procedure);
         }
     }
 
-    private void fillRowWithData(Row row, Procedure procedure) {
+    private void writeMedicationsDataLines(List<Medication> medications) {
+        int rowCount = 1;
+        for (Medication medication : medications) {
+            Row row = sheet.createRow(rowCount++);
+            fillRowWithMedicationData(row, medication);
+        }
+    }
+
+    private void writeConsumablesDataLines(List<Consumable> consumables) {
+        int rowCount = 1;
+        for (Consumable consumable : consumables) {
+            Row row = sheet.createRow(rowCount++);
+            fillRowWithConsumableData(row, consumable);
+        }
+    }
+
+    private void fillRowWithProcedureData(Row row, Procedure procedure) {
         int columnCount = 0;
         createCell(row, columnCount++, procedure.getId());
         createCell(row, columnCount++, procedure.getName());
@@ -512,5 +573,29 @@ public class ExcelExporterService {
         createCell(row, columnCount++, procedure.getFinalPrice());
         createCell(row, columnCount++, procedure.getDateAdded().toString());
         createCell(row, columnCount, procedure.getDateUpdated().toString());
+    }
+
+    private void fillRowWithMedicationData(Row row, Medication medication) {
+        int columnCount = 0;
+        createCell(row, columnCount++, medication.getId());
+        createCell(row, columnCount++, medication.getName());
+        createCell(row, columnCount++, medication.getDescription());
+        createCell(row, columnCount++, medication.getAvailableQuantity());
+        createCell(row, columnCount++, medication.getTaxRatePercent());
+        createCell(row, columnCount++, medication.getFinalPrice());
+        createCell(row, columnCount++, medication.getDateAdded().toString());
+        createCell(row, columnCount, medication.getDateUpdated().toString());
+    }
+
+    private void fillRowWithConsumableData(Row row, Consumable consumable) {
+        int columnCount = 0;
+        createCell(row, columnCount++, consumable.getId());
+        createCell(row, columnCount++, consumable.getName());
+        createCell(row, columnCount++, consumable.getDescription());
+        createCell(row, columnCount++, consumable.getAvailableQuantity());
+        createCell(row, columnCount++, consumable.getTaxRatePercent());
+        createCell(row, columnCount++, consumable.getFinalPrice());
+        createCell(row, columnCount++, consumable.getDateAdded().toString());
+        createCell(row, columnCount, consumable.getDateUpdated().toString());
     }
 }
