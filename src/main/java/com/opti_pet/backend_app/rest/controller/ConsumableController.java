@@ -1,12 +1,12 @@
 package com.opti_pet.backend_app.rest.controller;
 
-import com.opti_pet.backend_app.rest.request.ExcelExportRequest;
 import com.opti_pet.backend_app.rest.request.ConsumableCreateRequest;
 import com.opti_pet.backend_app.rest.request.ConsumableSpecificationRequest;
 import com.opti_pet.backend_app.rest.request.ConsumableUpdateRequest;
+import com.opti_pet.backend_app.rest.request.ExcelExportRequest;
 import com.opti_pet.backend_app.rest.response.ConsumableResponse;
-import com.opti_pet.backend_app.service.ExcelExporterService;
 import com.opti_pet.backend_app.service.ConsumableService;
+import com.opti_pet.backend_app.service.ExcelExporterService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,19 +50,19 @@ public class ConsumableController {
 
     @PostMapping("/clinics/{clinicId}/consumables/export")
     @PreAuthorize("@securityService.hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
-    public void exportToExcel(@PathVariable("clinicId") String clinicId, HttpServletResponse response, @RequestBody ExcelExportRequest excelExportRequest) throws IOException {
+    public void exportConsumables(@PathVariable("clinicId") String clinicId, HttpServletResponse response, @RequestBody ExcelExportRequest excelExportRequest) throws IOException {
         excelExporterService.exportConsumables(clinicId, response, excelExportRequest);
     }
 
     @PostMapping("/clinics/{clinicId}/consumables/export-template")
     @PreAuthorize("@securityService.hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
-    public void downloadExcelTemplate(@PathVariable("clinicId") String clinicId, HttpServletResponse response) throws IOException {
+    public void exportExcelConsumablesTemplate(@PathVariable("clinicId") String clinicId, HttpServletResponse response) throws IOException {
         excelExporterService.exportExcelConsumablesTemplate(response);
     }
 
     @PostMapping(value = "/clinics/{clinicId}/consumables/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @PreAuthorize("@securityService.hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
-    public void importFromExcel(@PathVariable("clinicId") String clinicId, @RequestPart("file") MultipartFile file) throws IOException {
+    public void importConsumables(@PathVariable("clinicId") String clinicId, @RequestPart("file") MultipartFile file) throws IOException {
         excelExporterService.importConsumables(clinicId, file);
     }
 }

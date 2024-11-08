@@ -50,18 +50,18 @@ public class ProcedureController {
 
     @PostMapping("/clinics/{clinicId}/procedures/export")
     @PreAuthorize("@securityService.hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
-    public void exportToExcel(@PathVariable("clinicId") String clinicId, HttpServletResponse response, @RequestBody ExcelExportRequest excelExportRequest) throws IOException {
+    public void exportProcedures(@PathVariable("clinicId") String clinicId, HttpServletResponse response, @RequestBody ExcelExportRequest excelExportRequest) throws IOException {
         excelExporterService.exportProcedures(clinicId, response, excelExportRequest);
     }
     @PostMapping("/clinics/{clinicId}/procedures/export-template")
     @PreAuthorize("@securityService.hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
-    public void downloadExcelTemplate(@PathVariable("clinicId") String clinicId, HttpServletResponse response) throws IOException {
+    public void exportExcelProceduresTemplate(@PathVariable("clinicId") String clinicId, HttpServletResponse response) throws IOException {
         excelExporterService.exportExcelProceduresTemplate(response);
     }
 
     @PostMapping(value = "/clinics/{clinicId}/procedures/import", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @PreAuthorize("@securityService.hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
-    public void importFromExcel(@PathVariable("clinicId") String clinicId, @RequestPart("file") MultipartFile file) throws IOException {
+    public void importProcedures(@PathVariable("clinicId") String clinicId, @RequestPart("file") MultipartFile file) throws IOException {
         excelExporterService.importProcedures(clinicId, file);
     }
 }
