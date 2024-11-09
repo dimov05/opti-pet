@@ -112,7 +112,7 @@ public class ConsumableService {
     private Pageable createPageRequest(ConsumableSpecificationRequest request) {
         Sort sort = Sort.unsorted();
 
-        sort = request.sortByAmount() != null ? sort.and(getSort(request.sortByAvailableQuantity(), AVAILABLE_QUANTITY_FIELD_NAME)) : sort;
+        sort = request.sortByAvailableQuantity() != null ? sort.and(getSort(request.sortByAvailableQuantity(), AVAILABLE_QUANTITY_FIELD_NAME)) : sort;
         sort = request.sortByAmount() != null ? sort.and(getSort(request.sortByAmount(), PRICE_FIELD_NAME)) : sort;
 
         int pageNumber = request.pageNumber() != null ? request.pageNumber() : DEFAULT_PAGE_NUMBER;
