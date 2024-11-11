@@ -11,7 +11,7 @@ public class DiscountTransformer {
 
     public static DiscountResponse toResponse(Discount discount) {
         return DiscountResponse.builder()
-                .id(discount.getId().toString())
+                .id(discount.getId())
                 .name(discount.getName())
                 .percentConsumables(discount.getPercentConsumables())
                 .percentHospitals(discount.getPercentHospitals())

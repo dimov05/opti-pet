@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record DiscountResponse(String id, String name, BigDecimal percentConsumables, BigDecimal percentMedications,
+public record DiscountResponse(Long id, String name, BigDecimal percentConsumables, BigDecimal percentMedications,
                                BigDecimal percentHospitals, BigDecimal percentProcedures, String dateAdded,
                                String dateUpdated, ClinicBaseResponse clinic) {
 }
