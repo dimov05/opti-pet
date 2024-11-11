@@ -1,20 +1,21 @@
 package com.opti_pet.backend_app.persistence.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "billed_procedure", schema = "opti-pet")
+@Table(name = "booked_hospital", schema = "opti-pet")
 @Getter
 @Setter
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class BilledProcedure {
+public class BookedHospital {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
@@ -26,14 +27,20 @@ public class BilledProcedure {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "message")
-    private String message;
-
     @Column(name = "billed_price")
     private BigDecimal billedPrice;
 
     @Column(name = "tax_rate_percent")
     private BigDecimal taxRatePercent;
+
+    @Column(name = "booked_hours")
+    private Long bookedHours;
+
+    @Column(name = "start_date")
+    private LocalDateTime startDate;
+
+    @Column(name = "end_date")
+    private LocalDateTime endDate;
 
     @Column(name = "billed_date")
     private LocalDateTime billedDate;
@@ -53,4 +60,11 @@ public class BilledProcedure {
     @ManyToOne
     @JoinColumn(name = "discount_id")
     private Discount discount;
+
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
+
+    @OneToMany(mappedBy = "bookedHospital")
+    private List<HospitalNote> notes;
 }

@@ -1,25 +1,8 @@
 package com.opti_pet.backend_app.persistence.model;
 
 import com.opti_pet.backend_app.persistence.enums.PetType;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -80,6 +63,9 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient")
     private List<Bill> bills;
+
+    @OneToMany(mappedBy = "patient")
+    private List<BookedHospital> bookedHospitals;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

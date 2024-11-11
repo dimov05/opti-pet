@@ -42,4 +42,7 @@ public class Discount {
 
     @OneToMany(mappedBy = "discount")
     private List<BilledProcedure> billedProcedures;
+
+    @OneToMany(mappedBy = "discount")
+    private List<BookedHospital> bookedHospitals;
 }

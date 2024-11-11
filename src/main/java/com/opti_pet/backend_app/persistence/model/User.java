@@ -1,18 +1,7 @@
 package com.opti_pet.backend_app.persistence.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -68,6 +57,9 @@ public class User implements UserDetails {
     private List<Note> notes;
 
     @OneToMany(mappedBy = "user")
+    private List<HospitalNote> hospitalNotes;
+
+    @OneToMany(mappedBy = "user")
     private List<BilledMedication> billedMedications;
 
     @OneToMany(mappedBy = "user")
@@ -75,6 +67,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<BilledProcedure> billedProcedures;
+
+    @OneToMany(mappedBy = "user")
+    private List<BookedHospital> bookedHospitals;
 
     @OneToMany(mappedBy = "owner")
     private List<Patient> patients;

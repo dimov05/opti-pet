@@ -63,4 +63,6 @@ public class Bill {
     @OneToMany(mappedBy = "bill")
     private List<BilledProcedure> billedProcedures;
 
+    @OneToMany(mappedBy = "bill")
+    private List<BookedHospital> bookedHospitals;
 }

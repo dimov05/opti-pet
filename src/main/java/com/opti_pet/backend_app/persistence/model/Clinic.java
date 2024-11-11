@@ -93,6 +93,9 @@ public class Clinic {
     @OneToMany(mappedBy = "clinic")
     private List<BilledProcedure> billedProcedures;
 
+    @OneToMany(mappedBy = "clinic")
+    private List<BookedHospital> bookedHospitals;
+
     @ManyToMany(mappedBy = "clinics")
     private List<Patient> patients;
 
