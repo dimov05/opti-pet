@@ -71,6 +71,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<BookedHospital> bookedHospitals;
 
+    @OneToMany(mappedBy = "user")
+    private List<BillTemplate> billTemplates;
+
     @OneToMany(mappedBy = "owner")
     private List<Patient> patients;
 

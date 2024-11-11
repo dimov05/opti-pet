@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -50,4 +51,7 @@ public class Consumable {
     @ManyToOne
     @JoinColumn(name = "clinic_id")
     private Clinic clinic;
+
+    @ManyToMany(mappedBy = "consumables")
+    private List<BillTemplate> billTemplates;
 }
