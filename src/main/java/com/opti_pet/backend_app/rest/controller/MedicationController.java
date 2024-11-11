@@ -1,9 +1,9 @@
 package com.opti_pet.backend_app.rest.controller;
 
 import com.opti_pet.backend_app.rest.request.ExcelExportRequest;
-import com.opti_pet.backend_app.rest.request.MedicationCreateRequest;
-import com.opti_pet.backend_app.rest.request.MedicationSpecificationRequest;
-import com.opti_pet.backend_app.rest.request.MedicationUpdateRequest;
+import com.opti_pet.backend_app.rest.request.medication.MedicationCreateRequest;
+import com.opti_pet.backend_app.rest.request.medication.MedicationSpecificationRequest;
+import com.opti_pet.backend_app.rest.request.medication.MedicationUpdateRequest;
 import com.opti_pet.backend_app.rest.response.MedicationResponse;
 import com.opti_pet.backend_app.service.ExcelExporterService;
 import com.opti_pet.backend_app.service.MedicationService;

@@ -1,6 +1,6 @@
 package com.opti_pet.backend_app.rest.controller;
 
-import com.opti_pet.backend_app.rest.request.UserLoginRequest;
+import com.opti_pet.backend_app.rest.request.user.UserLoginRequest;
 import com.opti_pet.backend_app.util.JwtServiceHelper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

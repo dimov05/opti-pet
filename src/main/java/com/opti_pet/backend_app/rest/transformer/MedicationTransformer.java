@@ -2,7 +2,7 @@ package com.opti_pet.backend_app.rest.transformer;
 
 import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Medication;
-import com.opti_pet.backend_app.rest.request.MedicationCreateRequest;
+import com.opti_pet.backend_app.rest.request.medication.MedicationCreateRequest;
 import com.opti_pet.backend_app.rest.response.MedicationResponse;
 
 import java.time.LocalDate;

@@ -3,7 +3,7 @@ package com.opti_pet.backend_app.util;
 import com.opti_pet.backend_app.exception.BadRequestException;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.repository.UserRepository;
-import com.opti_pet.backend_app.rest.request.UserLoginRequest;
+import com.opti_pet.backend_app.rest.request.user.UserLoginRequest;
 import com.opti_pet.backend_app.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

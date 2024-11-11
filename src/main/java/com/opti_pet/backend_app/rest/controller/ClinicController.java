@@ -1,6 +1,6 @@
 package com.opti_pet.backend_app.rest.controller;
 
-import com.opti_pet.backend_app.rest.request.*;
+import com.opti_pet.backend_app.rest.request.clinic.*;
 import com.opti_pet.backend_app.rest.response.ClinicBaseResponse;
 import com.opti_pet.backend_app.rest.response.ClinicResponse;
 import com.opti_pet.backend_app.rest.response.UserResponse;

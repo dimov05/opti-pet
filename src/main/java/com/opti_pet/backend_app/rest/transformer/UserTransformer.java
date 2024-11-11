@@ -1,9 +1,9 @@
 package com.opti_pet.backend_app.rest.transformer;
 
 import com.opti_pet.backend_app.persistence.model.User;
-import com.opti_pet.backend_app.rest.request.ClinicCreateUserRequest;
-import com.opti_pet.backend_app.rest.request.UserRegisterAsAdminRequest;
-import com.opti_pet.backend_app.rest.request.UserRegisterRequest;
+import com.opti_pet.backend_app.rest.request.clinic.ClinicCreateUserRequest;
+import com.opti_pet.backend_app.rest.request.user.UserRegisterAsAdminRequest;
+import com.opti_pet.backend_app.rest.request.user.UserRegisterRequest;
 import com.opti_pet.backend_app.rest.response.UserResponse;
 
 import java.util.ArrayList;

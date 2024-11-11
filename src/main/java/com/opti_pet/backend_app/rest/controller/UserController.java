@@ -1,6 +1,6 @@
 package com.opti_pet.backend_app.rest.controller;
 
-import com.opti_pet.backend_app.rest.request.*;
+import com.opti_pet.backend_app.rest.request.user.*;
 import com.opti_pet.backend_app.rest.response.RoleResponse;
 import com.opti_pet.backend_app.rest.response.UserResponse;
 import com.opti_pet.backend_app.service.RoleService;

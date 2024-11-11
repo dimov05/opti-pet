@@ -3,7 +3,7 @@ package com.opti_pet.backend_app.rest.transformer;
 import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.persistence.model.UserRoleClinic;
-import com.opti_pet.backend_app.rest.request.ClinicCreateRequest;
+import com.opti_pet.backend_app.rest.request.clinic.ClinicCreateRequest;
 import com.opti_pet.backend_app.rest.response.ClinicBaseResponse;
 import com.opti_pet.backend_app.rest.response.ClinicResponse;
 

@@ -1,8 +1,8 @@
 package com.opti_pet.backend_app.rest.controller;
 
-import com.opti_pet.backend_app.rest.request.ConsumableCreateRequest;
-import com.opti_pet.backend_app.rest.request.ConsumableSpecificationRequest;
-import com.opti_pet.backend_app.rest.request.ConsumableUpdateRequest;
+import com.opti_pet.backend_app.rest.request.consumable.ConsumableCreateRequest;
+import com.opti_pet.backend_app.rest.request.consumable.ConsumableSpecificationRequest;
+import com.opti_pet.backend_app.rest.request.consumable.ConsumableUpdateRequest;
 import com.opti_pet.backend_app.rest.request.ExcelExportRequest;
 import com.opti_pet.backend_app.rest.response.ConsumableResponse;
 import com.opti_pet.backend_app.service.ConsumableService;

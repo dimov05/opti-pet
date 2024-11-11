@@ -1,7 +1,7 @@
 package com.opti_pet.backend_app.rest.controller;
 
-import com.opti_pet.backend_app.rest.request.PatientCreateRequest;
-import com.opti_pet.backend_app.rest.request.PatientEditRequest;
+import com.opti_pet.backend_app.rest.request.patient.PatientCreateRequest;
+import com.opti_pet.backend_app.rest.request.patient.PatientEditRequest;
 import com.opti_pet.backend_app.rest.response.PatientResponse;
 import com.opti_pet.backend_app.service.PatientService;
 import jakarta.validation.Valid;

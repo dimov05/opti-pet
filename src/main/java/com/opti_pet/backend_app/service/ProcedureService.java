@@ -5,12 +5,12 @@ import com.opti_pet.backend_app.exception.NotFoundException;
 import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Procedure;
 import com.opti_pet.backend_app.persistence.repository.ProcedureRepository;
-import com.opti_pet.backend_app.rest.request.ProcedureCreateRequest;
-import com.opti_pet.backend_app.rest.request.ProcedureSpecificationRequest;
-import com.opti_pet.backend_app.rest.request.ProcedureUpdateRequest;
+import com.opti_pet.backend_app.rest.request.procedure.ProcedureCreateRequest;
+import com.opti_pet.backend_app.rest.request.procedure.ProcedureSpecificationRequest;
+import com.opti_pet.backend_app.rest.request.procedure.ProcedureUpdateRequest;
 import com.opti_pet.backend_app.rest.response.ProcedureResponse;
 import com.opti_pet.backend_app.rest.transformer.ProcedureTransformer;
-import com.opti_pet.backend_app.util.ProcedureSpecifications;
+import com.opti_pet.backend_app.util.specifications.ProcedureSpecifications;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -120,7 +120,6 @@ public class ProcedureService {
     private Sort getSort(Boolean flag, String fieldName) {
         return Sort.by(Boolean.TRUE.equals(flag) ? Sort.Direction.ASC : Sort.Direction.DESC, fieldName);
     }
-
 
     private void checkIfPriceIsCorrect(ProcedureCreateRequest procedureCreateRequest) {
         checkBigDecimalPrices(procedureCreateRequest.billedPrice(), procedureCreateRequest.finalPrice(), procedureCreateRequest.taxRatePercent());

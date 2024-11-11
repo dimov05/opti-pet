@@ -1,9 +1,9 @@
 package com.opti_pet.backend_app.rest.controller;
 
 import com.opti_pet.backend_app.rest.request.ExcelExportRequest;
-import com.opti_pet.backend_app.rest.request.ProcedureCreateRequest;
-import com.opti_pet.backend_app.rest.request.ProcedureSpecificationRequest;
-import com.opti_pet.backend_app.rest.request.ProcedureUpdateRequest;
+import com.opti_pet.backend_app.rest.request.procedure.ProcedureCreateRequest;
+import com.opti_pet.backend_app.rest.request.procedure.ProcedureSpecificationRequest;
+import com.opti_pet.backend_app.rest.request.procedure.ProcedureUpdateRequest;
 import com.opti_pet.backend_app.rest.response.ProcedureResponse;
 import com.opti_pet.backend_app.service.ExcelExporterService;
 import com.opti_pet.backend_app.service.ProcedureService;
