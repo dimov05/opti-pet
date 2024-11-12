@@ -43,21 +43,12 @@ public class BillTemplate {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "bill_template_consumable", schema = "opti-pet",
-            joinColumns = @JoinColumn(name = "bill_template_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "consumable_id", referencedColumnName = "id"))
-    private List<Consumable> consumables;
+    @OneToMany(mappedBy = "billTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ConsumableTemplate> consumableTemplates;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "bill_template_medication", schema = "opti-pet",
-            joinColumns = @JoinColumn(name = "bill_template_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "medication_id", referencedColumnName = "id"))
-    private List<Medication> medications;
+    @OneToMany(mappedBy = "billTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MedicationTemplate> medicationTemplates;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "bill_template_procedure", schema = "opti-pet",
-            joinColumns = @JoinColumn(name = "bill_template_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "procedure_id", referencedColumnName = "id"))
-    private List<Procedure> procedures;
+    @OneToMany(mappedBy = "billTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProcedureTemplate> procedureTemplates;
 }

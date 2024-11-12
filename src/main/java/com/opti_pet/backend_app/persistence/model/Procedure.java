@@ -49,6 +49,6 @@ public class Procedure {
     @JoinColumn(name = "clinic_id")
     private Clinic clinic;
 
-    @ManyToMany(mappedBy = "procedures")
-    private List<BillTemplate> billTemplates;
+    @OneToMany(mappedBy = "procedure", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProcedureTemplate> procedureTemplates;
 }

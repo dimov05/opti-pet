@@ -52,6 +52,6 @@ public class Medication {
     @JoinColumn(name = "clinic_id")
     private Clinic clinic;
 
-    @ManyToMany(mappedBy = "medications")
-    private List<BillTemplate> billTemplates;
+    @OneToMany(mappedBy = "medication", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MedicationTemplate> medicationTemplates;
 }

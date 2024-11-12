@@ -23,6 +23,10 @@ public class AppConstants {
     public static final String PRICE_FIELD_NAME = "price";
     public static final String DESCRIPTION_FIELD_NAME = "description";
     public static final String CLINIC_FIELD_NAME = "clinic";
+    public static final String CONSUMABLE_ENTITY = "Consumable";
+    public static final String PROCEDURE_ENTITY = "Procedure";
+    public static final String MEDICATION_ENTITY = "Medication";
+    public static final String BILL_TEMPLATE_ENTITY = "Bill Template";
     public static final String TAX_RATE_PERCENT_FIELD_NAME = "taxRatePercent";
     public static final String DATE_ADDED_FIELD_NAME = "dateAdded";
     public static final String DATE_UPDATED_FIELD_NAME = "dateUpdated";
