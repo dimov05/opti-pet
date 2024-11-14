@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -25,9 +26,13 @@ public class MedicationController {
     private final MedicationService medicationService;
     private final ExcelExporterService excelExporterService;
 
+    @GetMapping("/clinics/{clinicId}/manager/medications")
+    public Page<MedicationResponse> getAllMedicationsByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, MedicationSpecificationRequest medicationSpecificationRequest) {
+        return medicationService.getAllMedicationsByClinicIdForManager(clinicId, medicationSpecificationRequest);
+    }
     @GetMapping("/clinics/{clinicId}/medications")
-    public Page<MedicationResponse> getAllMedicationsByClinicId(@PathVariable(name = "clinicId") String clinicId, MedicationSpecificationRequest medicationSpecificationRequest) {
-        return medicationService.getAllMedicationsByClinicId(clinicId, medicationSpecificationRequest);
+    public List<MedicationResponse> getAllMedicationsByClinicIdState(@PathVariable(name = "clinicId") String clinicId) {
+        return medicationService.getAllMedicationsByClinicIdState(clinicId);
     }
 
     @PostMapping("/clinics/{clinicId}/medications")

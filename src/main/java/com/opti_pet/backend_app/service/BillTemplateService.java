@@ -3,10 +3,7 @@ package com.opti_pet.backend_app.service;
 import com.opti_pet.backend_app.exception.BadRequestException;
 import com.opti_pet.backend_app.exception.NotFoundException;
 import com.opti_pet.backend_app.persistence.model.*;
-import com.opti_pet.backend_app.persistence.repository.BillTemplateRepository;
-import com.opti_pet.backend_app.persistence.repository.ConsumableRepository;
-import com.opti_pet.backend_app.persistence.repository.MedicationRepository;
-import com.opti_pet.backend_app.persistence.repository.ProcedureRepository;
+import com.opti_pet.backend_app.persistence.repository.*;
 import com.opti_pet.backend_app.rest.request.billTemplate.*;
 import com.opti_pet.backend_app.rest.response.BillTemplateResponse;
 import com.opti_pet.backend_app.rest.transformer.BillTemplateTransformer;
@@ -37,6 +34,9 @@ public class BillTemplateService {
     private final ConsumableRepository consumableRepository;
     private final MedicationRepository medicationRepository;
     private final ProcedureRepository procedureRepository;
+    private final ConsumableTemplateRepository consumableTemplateRepository;
+    private final MedicationTemplateRepository medicationTemplateRepository;
+    private final ProcedureTemplateRepository procedureTemplateRepository;
 
     @Transactional
     public List<BillTemplateResponse> getAllBillTemplatesByClinicIdForManager(String clinicId) {
@@ -56,12 +56,9 @@ public class BillTemplateService {
         List<ConsumableTemplateRequest> consumables = billTemplateCreateRequest.consumableTemplates();
         List<MedicationTemplateRequest> medications = billTemplateCreateRequest.medicationTemplates();
         List<ProcedureTemplateRequest> procedures = billTemplateCreateRequest.procedureTemplates();
-        List<ConsumableTemplate> consumableTemplates = getTemplateConsumables(consumables, billTemplate);
-        List<MedicationTemplate> medicationTemplates = getTemplateMedications(medications, billTemplate);
-        List<ProcedureTemplate> procedureTemplates = getTemplateProcedures(procedures, billTemplate);
-        billTemplate.setConsumableTemplates(consumableTemplates);
-        billTemplate.setMedicationTemplates(medicationTemplates);
-        billTemplate.setProcedureTemplates(procedureTemplates);
+        setTemplateConsumables(consumables, billTemplate);
+        setTemplateMedications(medications, billTemplate);
+        setTemplateProcedures(procedures, billTemplate);
 
         return BillTemplateTransformer.toResponse(billTemplateRepository.save(billTemplate));
     }
@@ -207,41 +204,33 @@ public class BillTemplateService {
         }
     }
 
-    private List<ProcedureTemplate> getTemplateProcedures(List<ProcedureTemplateRequest> requests, BillTemplate billTemplate) {
-        return requests
-                .stream()
-                .map(procedure -> {
-                    Procedure procedureToAdd = procedureRepository.findById(UUID.fromString(procedure.id()))
-                            .orElseThrow(() -> new BadRequestException(String.format(
-                                    ENTITY_NOT_FOUND_BY_FIELD_AND_VALUE_EXCEPTION_TEMPLATE, PROCEDURE_ENTITY, ID_FIELD_NAME, procedure.id())));
-                    return ProcedureTemplateTransformer.toEntity(procedure.quantity(), procedureToAdd, billTemplate);
-                })
-                .toList();
+    private void setTemplateProcedures(List<ProcedureTemplateRequest> requests, BillTemplate billTemplate) {
+        requests.forEach(procedure -> {
+            Procedure procedureToAdd = procedureRepository.findById(UUID.fromString(procedure.id()))
+                    .orElseThrow(() -> new BadRequestException(String.format(
+                            ENTITY_NOT_FOUND_BY_FIELD_AND_VALUE_EXCEPTION_TEMPLATE, PROCEDURE_ENTITY, ID_FIELD_NAME, procedure.id())));
+            billTemplate.addProcedureTemplate(procedureTemplateRepository.saveAndFlush(ProcedureTemplateTransformer.toEntity(procedure.quantity(), procedureToAdd, billTemplate)));
+        });
     }
 
 
-    private List<MedicationTemplate> getTemplateMedications(List<MedicationTemplateRequest> requests, BillTemplate billTemplate) {
-        return requests
-                .stream()
-                .map(medication -> {
-                    Medication medicationToAdd = medicationRepository.findById(UUID.fromString(medication.id()))
-                            .orElseThrow(() -> new BadRequestException(String.format(
-                                    ENTITY_NOT_FOUND_BY_FIELD_AND_VALUE_EXCEPTION_TEMPLATE, MEDICATION_ENTITY, ID_FIELD_NAME, medication.id())));
-                    return MedicationTemplateTransformer.toEntity(medication.quantity(), medicationToAdd, billTemplate);
-                })
-                .toList();
+    private void setTemplateMedications(List<MedicationTemplateRequest> requests, BillTemplate billTemplate) {
+        requests.forEach(medication -> {
+            Medication medicationToAdd = medicationRepository.findById(UUID.fromString(medication.id()))
+                    .orElseThrow(() -> new BadRequestException(String.format(
+                            ENTITY_NOT_FOUND_BY_FIELD_AND_VALUE_EXCEPTION_TEMPLATE, MEDICATION_ENTITY, ID_FIELD_NAME, medication.id())));
+            billTemplate.addMedicationTemplate(medicationTemplateRepository.saveAndFlush(MedicationTemplateTransformer.toEntity(medication.quantity(), medicationToAdd, billTemplate)));
+        });
     }
 
-    private List<ConsumableTemplate> getTemplateConsumables(List<ConsumableTemplateRequest> requests, BillTemplate billTemplate) {
-        return requests
-                .stream()
-                .map(consumable -> {
-                    Consumable consumableToAdd = consumableRepository.findById(UUID.fromString(consumable.id()))
-                            .orElseThrow(() -> new BadRequestException(String.format(
-                                    ENTITY_NOT_FOUND_BY_FIELD_AND_VALUE_EXCEPTION_TEMPLATE, CONSUMABLE_ENTITY, ID_FIELD_NAME, consumable.id())));
-                    return ConsumableTemplateTransformer.toEntity(consumable.quantity(), consumableToAdd, billTemplate);
-                })
-                .toList();
+    private void setTemplateConsumables(List<ConsumableTemplateRequest> requests, BillTemplate billTemplate) {
+        requests.forEach(consumable -> {
+            Consumable consumableToAdd = consumableRepository.findById(UUID.fromString(consumable.id()))
+                    .orElseThrow(() -> new BadRequestException(String.format(
+                            ENTITY_NOT_FOUND_BY_FIELD_AND_VALUE_EXCEPTION_TEMPLATE, CONSUMABLE_ENTITY, ID_FIELD_NAME, consumable.id())));
+            billTemplate.addConsumableTemplate(consumableTemplateRepository.saveAndFlush(
+                    ConsumableTemplateTransformer.toEntity(consumable.quantity(), consumableToAdd, billTemplate)));
+        });
     }
 
     private BillTemplate getBillTemplateByIdOrThrowException(UUID billTemplateId) {

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -35,6 +36,7 @@ import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZ
 public class ConsumableService {
     private final ConsumableRepository consumableRepository;
     private final ClinicService clinicService;
+
     @Transactional
     public ConsumableResponse createConsumable(String clinicId, ConsumableCreateRequest consumableCreateRequest) {
         Clinic clinic = clinicService.getClinicByIdOrThrowException(UUID.fromString(clinicId));
@@ -77,7 +79,15 @@ public class ConsumableService {
     }
 
     @Transactional
-    public Page<ConsumableResponse> getAllConsumablesByClinicId(String clinicId, ConsumableSpecificationRequest consumableSpecificationRequest) {
+    public List<ConsumableResponse> getAllConsumablesByClinicId(String clinicId) {
+        return consumableRepository.findAllByClinic_Id(UUID.fromString(clinicId))
+                .stream()
+                .map(ConsumableTransformer::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public Page<ConsumableResponse> getAllConsumablesByClinicIdForManager(String clinicId, ConsumableSpecificationRequest consumableSpecificationRequest) {
         Pageable pageRequest = createPageRequest(consumableSpecificationRequest);
         Clinic clinic = clinicService.getClinicByIdOrThrowException(UUID.fromString(clinicId));
 

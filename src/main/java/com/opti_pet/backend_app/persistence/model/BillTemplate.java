@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,4 +52,43 @@ public class BillTemplate {
 
     @OneToMany(mappedBy = "billTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProcedureTemplate> procedureTemplates;
+
+    public void addConsumableTemplate(ConsumableTemplate consumableTemplate) {
+        if (consumableTemplates == null) {
+            consumableTemplates = new ArrayList<>();
+        }
+        consumableTemplates.add(consumableTemplate);
+    }
+
+    public void addMedicationTemplate(MedicationTemplate medicationTemplate) {
+        if (medicationTemplates == null) {
+            medicationTemplates = new ArrayList<>();
+        }
+        medicationTemplates.add(medicationTemplate);
+    }
+
+    public void addProcedureTemplate(ProcedureTemplate procedureTemplate) {
+        if (procedureTemplates == null) {
+            procedureTemplates = new ArrayList<>();
+        }
+        procedureTemplates.add(procedureTemplate);
+    }
+
+    public void removeConsumableTemplate(ConsumableTemplate consumableTemplate) {
+        if (consumableTemplates != null) {
+            consumableTemplates.remove(consumableTemplate);
+        }
+    }
+
+    public void removeMedicationTemplate(MedicationTemplate medicationTemplate) {
+        if (medicationTemplates != null) {
+            medicationTemplates.remove(medicationTemplate);
+        }
+    }
+
+    public void removeProcedureTemplate(ProcedureTemplate procedureTemplate) {
+        if (procedureTemplates != null) {
+            procedureTemplates.remove(procedureTemplate);
+        }
+    }
 }

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -75,7 +76,15 @@ public class ProcedureService {
     }
 
     @Transactional
-    public Page<ProcedureResponse> getAllProceduresByClinicId(String clinicId, ProcedureSpecificationRequest procedureSpecificationRequest) {
+    public List<ProcedureResponse> getAllProceduresByClinicIdState(String clinicId) {
+        return procedureRepository.findAllByClinic_Id(UUID.fromString(clinicId))
+                .stream()
+                .map(ProcedureTransformer::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public Page<ProcedureResponse> getAllProceduresByClinicIdForManager(String clinicId, ProcedureSpecificationRequest procedureSpecificationRequest) {
         Pageable pageRequest = createPageRequest(procedureSpecificationRequest);
         Clinic clinic = clinicService.getClinicByIdOrThrowException(UUID.fromString(clinicId));
 

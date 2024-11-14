@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -25,9 +26,14 @@ public class ProcedureController {
     private final ProcedureService procedureService;
     private final ExcelExporterService excelExporterService;
 
+    @GetMapping("/clinics/{clinicId}/manager/procedures")
+    public Page<ProcedureResponse> getAllProceduresByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, ProcedureSpecificationRequest procedureSpecificationRequest) {
+        return procedureService.getAllProceduresByClinicIdForManager(clinicId, procedureSpecificationRequest);
+    }
+
     @GetMapping("/clinics/{clinicId}/procedures")
-    public Page<ProcedureResponse> getAllProceduresByClinicId(@PathVariable(name = "clinicId") String clinicId, ProcedureSpecificationRequest procedureSpecificationRequest) {
-        return procedureService.getAllProceduresByClinicId(clinicId, procedureSpecificationRequest);
+    public List<ProcedureResponse> getAllProceduresByClinicIdState(@PathVariable(name = "clinicId") String clinicId) {
+        return procedureService.getAllProceduresByClinicIdState(clinicId);
     }
 
     @PostMapping("/clinics/{clinicId}/procedures")
@@ -53,6 +59,7 @@ public class ProcedureController {
     public void exportProcedures(@PathVariable("clinicId") String clinicId, HttpServletResponse response, @RequestBody ExcelExportRequest excelExportRequest) throws IOException {
         excelExporterService.exportProcedures(clinicId, response, excelExportRequest);
     }
+
     @PostMapping("/clinics/{clinicId}/procedures/export-template")
     @PreAuthorize("@securityService.hasAuthority('CLINIC_MANAGER_' + #clinicId) || @securityService.hasAdministratorAuthority()")
     public void exportExcelProceduresTemplate(@PathVariable("clinicId") String clinicId, HttpServletResponse response) throws IOException {

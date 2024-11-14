@@ -33,15 +33,15 @@ public class BillTemplateTransformer {
                 .creatorName(billTemplate.getUser().getName())
                 .dateAdded(billTemplate.getDateAdded().toString())
                 .dateUpdated(billTemplate.getDateUpdated().toString())
-                .consumables(billTemplate.getConsumableTemplates().stream()
+                .consumables(billTemplate.getConsumableTemplates() != null ? billTemplate.getConsumableTemplates().stream()
                         .map(ConsumableTemplateTransformer::toResponse)
-                        .toList())
-                .medications(billTemplate.getMedicationTemplates().stream()
+                        .toList() : new ArrayList<>())
+                .medications(billTemplate.getMedicationTemplates() != null ? billTemplate.getMedicationTemplates().stream()
                         .map(MedicationTemplateTransformer::toResponse)
-                        .toList())
-                .procedures(billTemplate.getProcedureTemplates().stream()
+                        .toList() : new ArrayList<>())
+                .procedures(billTemplate.getProcedureTemplates() != null ? billTemplate.getProcedureTemplates().stream()
                         .map(ProcedureTemplateTransformer::toResponse)
-                        .toList())
+                        .toList() : new ArrayList<>())
                 .build();
 
     }
