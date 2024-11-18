@@ -2,8 +2,8 @@ package com.opti_pet.backend_app.rest.controller;
 
 import com.opti_pet.backend_app.rest.request.ExcelExportRequest;
 import com.opti_pet.backend_app.rest.request.procedure.ProcedureCreateRequest;
-import com.opti_pet.backend_app.rest.request.procedure.ProcedureSpecificationRequest;
 import com.opti_pet.backend_app.rest.request.procedure.ProcedureUpdateRequest;
+import com.opti_pet.backend_app.rest.request.specification.SpecificationRequest;
 import com.opti_pet.backend_app.rest.response.ProcedureResponse;
 import com.opti_pet.backend_app.service.ExcelExporterService;
 import com.opti_pet.backend_app.service.ProcedureService;
@@ -27,8 +27,8 @@ public class ProcedureController {
     private final ExcelExporterService excelExporterService;
 
     @GetMapping("/clinics/{clinicId}/manager/procedures")
-    public Page<ProcedureResponse> getAllProceduresByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, ProcedureSpecificationRequest procedureSpecificationRequest) {
-        return procedureService.getAllProceduresByClinicIdForManager(clinicId, procedureSpecificationRequest);
+    public Page<ProcedureResponse> getAllProceduresByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, SpecificationRequest specificationRequest) {
+        return procedureService.getAllProceduresByClinicIdForManager(clinicId, specificationRequest);
     }
 
     @GetMapping("/clinics/{clinicId}/procedures")

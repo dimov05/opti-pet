@@ -2,8 +2,8 @@ package com.opti_pet.backend_app.rest.controller;
 
 import com.opti_pet.backend_app.rest.request.ExcelExportRequest;
 import com.opti_pet.backend_app.rest.request.consumable.ConsumableCreateRequest;
-import com.opti_pet.backend_app.rest.request.consumable.ConsumableSpecificationRequest;
 import com.opti_pet.backend_app.rest.request.consumable.ConsumableUpdateRequest;
+import com.opti_pet.backend_app.rest.request.specification.ExtendedSpecificationRequest;
 import com.opti_pet.backend_app.rest.response.ConsumableResponse;
 import com.opti_pet.backend_app.service.ConsumableService;
 import com.opti_pet.backend_app.service.ExcelExporterService;
@@ -27,8 +27,8 @@ public class ConsumableController {
     private final ExcelExporterService excelExporterService;
 
     @GetMapping("/clinics/{clinicId}/manager/consumables")
-    public Page<ConsumableResponse> getAllConsumablesByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, ConsumableSpecificationRequest consumableSpecificationRequest) {
-        return consumableService.getAllConsumablesByClinicIdForManager(clinicId, consumableSpecificationRequest);
+    public Page<ConsumableResponse> getAllConsumablesByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, ExtendedSpecificationRequest specificationRequest) {
+        return consumableService.getAllConsumablesByClinicIdForManager(clinicId, specificationRequest);
     }
 
     @GetMapping("/clinics/{clinicId}/consumables")

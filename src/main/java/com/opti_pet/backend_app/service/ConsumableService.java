@@ -6,8 +6,8 @@ import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Consumable;
 import com.opti_pet.backend_app.persistence.repository.ConsumableRepository;
 import com.opti_pet.backend_app.rest.request.consumable.ConsumableCreateRequest;
-import com.opti_pet.backend_app.rest.request.consumable.ConsumableSpecificationRequest;
 import com.opti_pet.backend_app.rest.request.consumable.ConsumableUpdateRequest;
+import com.opti_pet.backend_app.rest.request.specification.ExtendedSpecificationRequest;
 import com.opti_pet.backend_app.rest.response.ConsumableResponse;
 import com.opti_pet.backend_app.rest.transformer.ConsumableTransformer;
 import com.opti_pet.backend_app.util.specifications.ConsumableSpecifications;
@@ -87,11 +87,11 @@ public class ConsumableService {
     }
 
     @Transactional
-    public Page<ConsumableResponse> getAllConsumablesByClinicIdForManager(String clinicId, ConsumableSpecificationRequest consumableSpecificationRequest) {
-        Pageable pageRequest = createPageRequest(consumableSpecificationRequest);
+    public Page<ConsumableResponse> getAllConsumablesByClinicIdForManager(String clinicId, ExtendedSpecificationRequest specificationRequest) {
+        Pageable pageRequest = createPageRequest(specificationRequest);
         Clinic clinic = clinicService.getClinicByIdOrThrowException(UUID.fromString(clinicId));
 
-        return consumableRepository.findAll(getSpecifications(consumableSpecificationRequest, clinic), pageRequest)
+        return consumableRepository.findAll(getSpecifications(specificationRequest, clinic), pageRequest)
                 .map(ConsumableTransformer::toResponse);
     }
 
@@ -102,9 +102,9 @@ public class ConsumableService {
         }
     }
 
-    private Specification<Consumable> getSpecifications(ConsumableSpecificationRequest consumableSpecificationRequest, Clinic clinic) {
+    private Specification<Consumable> getSpecifications(ExtendedSpecificationRequest specificationRequest, Clinic clinic) {
         UUID clinicId = clinic.getId();
-        String inputText = consumableSpecificationRequest.inputText();
+        String inputText = specificationRequest.inputText();
         Specification<Consumable> specification = ConsumableSpecifications.clinicIdEquals(clinicId);
 
         if (inputText != null) {
@@ -119,14 +119,14 @@ public class ConsumableService {
                 .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, consumableId.toString()));
     }
 
-    private Pageable createPageRequest(ConsumableSpecificationRequest request) {
+    private Pageable createPageRequest(ExtendedSpecificationRequest specificationRequest) {
         Sort sort = Sort.unsorted();
 
-        sort = request.sortByAvailableQuantity() != null ? sort.and(getSort(request.sortByAvailableQuantity(), AVAILABLE_QUANTITY_FIELD_NAME)) : sort;
-        sort = request.sortByAmount() != null ? sort.and(getSort(request.sortByAmount(), PRICE_FIELD_NAME)) : sort;
+        sort = specificationRequest.sortByAvailableQuantity() != null ? sort.and(getSort(specificationRequest.sortByAvailableQuantity(), AVAILABLE_QUANTITY_FIELD_NAME)) : sort;
+        sort = specificationRequest.sortByAmount() != null ? sort.and(getSort(specificationRequest.sortByAmount(), PRICE_FIELD_NAME)) : sort;
 
-        int pageNumber = request.pageNumber() != null ? request.pageNumber() : DEFAULT_PAGE_NUMBER;
-        int pageSize = request.pageSize() != null ? request.pageSize() : DEFAULT_PAGE_SIZE;
+        int pageNumber = specificationRequest.pageNumber() != null ? specificationRequest.pageNumber() : DEFAULT_PAGE_NUMBER;
+        int pageSize = specificationRequest.pageSize() != null ? specificationRequest.pageSize() : DEFAULT_PAGE_SIZE;
 
         return PageRequest.of(pageNumber, pageSize, sort);
     }

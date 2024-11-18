@@ -6,8 +6,8 @@ import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Hospital;
 import com.opti_pet.backend_app.persistence.repository.HospitalRepository;
 import com.opti_pet.backend_app.rest.request.hospital.HospitalCreateRequest;
-import com.opti_pet.backend_app.rest.request.hospital.HospitalSpecificationRequest;
 import com.opti_pet.backend_app.rest.request.hospital.HospitalUpdateRequest;
+import com.opti_pet.backend_app.rest.request.specification.SpecificationRequest;
 import com.opti_pet.backend_app.rest.response.HospitalBaseResponse;
 import com.opti_pet.backend_app.rest.response.HospitalResponse;
 import com.opti_pet.backend_app.rest.transformer.HospitalTransformer;
@@ -85,11 +85,11 @@ public class HospitalService {
     }
 
     @Transactional
-    public Page<HospitalResponse> getAllHospitalsByClinicIdForManager(String clinicId, HospitalSpecificationRequest hospitalSpecificationRequest) {
-        Pageable pageRequest = createPageRequest(hospitalSpecificationRequest);
+    public Page<HospitalResponse> getAllHospitalsByClinicIdForManager(String clinicId, SpecificationRequest specificationRequest) {
+        Pageable pageRequest = createPageRequest(specificationRequest);
         Clinic clinic = clinicService.getClinicByIdOrThrowException(UUID.fromString(clinicId));
 
-        return hospitalRepository.findAll(getSpecifications(hospitalSpecificationRequest, clinic), pageRequest)
+        return hospitalRepository.findAll(getSpecifications(specificationRequest, clinic), pageRequest)
                 .map(HospitalTransformer::toResponse);
     }
 
@@ -100,9 +100,9 @@ public class HospitalService {
         }
     }
 
-    private Specification<Hospital> getSpecifications(HospitalSpecificationRequest hospitalSpecificationRequest, Clinic clinic) {
+    private Specification<Hospital> getSpecifications(SpecificationRequest specificationRequest, Clinic clinic) {
         UUID clinicId = clinic.getId();
-        String inputText = hospitalSpecificationRequest.inputText();
+        String inputText = specificationRequest.inputText();
         Specification<Hospital> specification = HospitalSpecifications.clinicIdEquals(clinicId);
 
         if (inputText != null) {
@@ -117,12 +117,12 @@ public class HospitalService {
                 .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, hospitalId.toString()));
     }
 
-    private Pageable createPageRequest(HospitalSpecificationRequest request) {
+    private Pageable createPageRequest(SpecificationRequest specificationRequest) {
         Sort sort = Sort.unsorted();
-        sort = request.sortByAmount() != null ? sort.and(getSort(request.sortByAmount(), PRICE_FIELD_NAME)) : sort;
+        sort = specificationRequest.sortByAmount() != null ? sort.and(getSort(specificationRequest.sortByAmount(), PRICE_FIELD_NAME)) : sort;
 
-        int pageNumber = request.pageNumber() != null ? request.pageNumber() : DEFAULT_PAGE_NUMBER;
-        int pageSize = request.pageSize() != null ? request.pageSize() : DEFAULT_PAGE_SIZE;
+        int pageNumber = specificationRequest.pageNumber() != null ? specificationRequest.pageNumber() : DEFAULT_PAGE_NUMBER;
+        int pageSize = specificationRequest.pageSize() != null ? specificationRequest.pageSize() : DEFAULT_PAGE_SIZE;
 
         return PageRequest.of(pageNumber, pageSize, sort);
     }

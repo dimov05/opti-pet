@@ -6,10 +6,12 @@ import com.opti_pet.backend_app.persistence.model.Discount;
 import com.opti_pet.backend_app.persistence.repository.DiscountRepository;
 import com.opti_pet.backend_app.rest.request.discount.DiscountCreateRequest;
 import com.opti_pet.backend_app.rest.request.discount.DiscountUpdateRequest;
+import com.opti_pet.backend_app.rest.request.specification.BaseSpecificationRequest;
 import com.opti_pet.backend_app.rest.response.DiscountResponse;
 import com.opti_pet.backend_app.rest.transformer.DiscountTransformer;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -74,16 +76,19 @@ public class DiscountService {
                 .toList();
     }
 
+    @Transactional
+    public Page<DiscountResponse> getAllDiscountsByClinicIdForManager(String clinicId, BaseSpecificationRequest specificationRequest) {
+        return null;
+    }
+
     private void updateDiscountField(Supplier<String> newField, Supplier<String> currentField, Consumer<String> updateField) {
         String newValue = newField.get();
         if (newValue != null && !newValue.trim().isEmpty() && !newValue.equals(currentField.get())) {
             updateField.accept(newValue);
         }
     }
-
     private Discount getDiscountByIdOrThrowException(Long discountId) {
         return discountRepository.findById(discountId)
                 .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, discountId.toString()));
     }
-
 }

@@ -9,7 +9,11 @@ import com.opti_pet.backend_app.persistence.model.UserRoleClinic;
 import com.opti_pet.backend_app.persistence.repository.ClinicRepository;
 import com.opti_pet.backend_app.persistence.repository.RoleRepository;
 import com.opti_pet.backend_app.persistence.repository.UserRoleClinicRepository;
-import com.opti_pet.backend_app.rest.request.clinic.*;
+import com.opti_pet.backend_app.rest.request.clinic.ClinicCreateRequest;
+import com.opti_pet.backend_app.rest.request.clinic.ClinicCreateUserRequest;
+import com.opti_pet.backend_app.rest.request.clinic.ClinicUpdateRequest;
+import com.opti_pet.backend_app.rest.request.clinic.ClinicUserRolesEditRequest;
+import com.opti_pet.backend_app.rest.request.specification.BaseSpecificationRequest;
 import com.opti_pet.backend_app.rest.response.ClinicBaseResponse;
 import com.opti_pet.backend_app.rest.response.ClinicResponse;
 import com.opti_pet.backend_app.rest.response.UserResponse;
@@ -112,10 +116,10 @@ public class ClinicService {
                 .toList();
     }
 
-    public Page<ClinicResponse> getAllClinicsExtendedResponse(ClinicSpecificationRequest clinicSpecificationRequest) {
-        Pageable pageRequest = createPageRequest(clinicSpecificationRequest);
+    public Page<ClinicResponse> getAllClinicsExtendedResponse(BaseSpecificationRequest specificationRequest) {
+        Pageable pageRequest = createPageRequest(specificationRequest);
 
-        return clinicRepository.findAll(getSpecifications(clinicSpecificationRequest), pageRequest)
+        return clinicRepository.findAll(getSpecifications(specificationRequest), pageRequest)
                 .map(ClinicTransformer::toResponse);
     }
 
@@ -151,6 +155,11 @@ public class ClinicService {
         return ClinicTransformer.toResponse(clinicRepository.save(clinic));
     }
 
+    @Transactional
+    public Page<UserResponse> getAllDiscountsByClinicIdForManager(String clinicId, BaseSpecificationRequest specificationRequest) {
+        return null;
+    }
+
     private void updateClinicField(Supplier<String> newField, Supplier<String> currentField, Consumer<String> updateField) {
         String newValue = newField.get();
         if (newValue != null && !newValue.trim().isEmpty() && !newValue.equals(currentField.get())) {
@@ -168,8 +177,8 @@ public class ClinicService {
         return ClinicTransformer.toResponse(getClinicByIdOrThrowException(UUID.fromString(clinicId)));
     }
 
-    private Specification<Clinic> getSpecifications(ClinicSpecificationRequest clinicSpecificationRequest) {
-        String inputText = clinicSpecificationRequest.inputText();
+    private Specification<Clinic> getSpecifications(BaseSpecificationRequest specificationRequest) {
+        String inputText = specificationRequest.inputText();
         Specification<Clinic> specification = Specification.where(ClinicSpecifications.clinicIsNotDefaultClinic());
         if (inputText != null) {
             specification = specification.and(ClinicSpecifications.clinicEmailOrNameOrCityOrAddressOrPhoneNumberLike(inputText));
@@ -178,9 +187,9 @@ public class ClinicService {
         return specification;
     }
 
-    private Pageable createPageRequest(ClinicSpecificationRequest request) {
-        int pageNumber = request.pageNumber() != null ? request.pageNumber() : DEFAULT_PAGE_NUMBER;
-        int pageSize = request.pageSize() != null ? request.pageSize() : DEFAULT_PAGE_SIZE;
+    private Pageable createPageRequest(BaseSpecificationRequest specificationRequest) {
+        int pageNumber = specificationRequest.pageNumber() != null ? specificationRequest.pageNumber() : DEFAULT_PAGE_NUMBER;
+        int pageSize = specificationRequest.pageSize() != null ? specificationRequest.pageSize() : DEFAULT_PAGE_SIZE;
 
         return PageRequest.of(pageNumber, pageSize);
     }

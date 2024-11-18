@@ -1,6 +1,10 @@
 package com.opti_pet.backend_app.rest.controller;
 
-import com.opti_pet.backend_app.rest.request.clinic.*;
+import com.opti_pet.backend_app.rest.request.clinic.ClinicCreateRequest;
+import com.opti_pet.backend_app.rest.request.clinic.ClinicCreateUserRequest;
+import com.opti_pet.backend_app.rest.request.clinic.ClinicUpdateRequest;
+import com.opti_pet.backend_app.rest.request.clinic.ClinicUserRolesEditRequest;
+import com.opti_pet.backend_app.rest.request.specification.BaseSpecificationRequest;
 import com.opti_pet.backend_app.rest.response.ClinicBaseResponse;
 import com.opti_pet.backend_app.rest.response.ClinicResponse;
 import com.opti_pet.backend_app.rest.response.UserResponse;
@@ -60,12 +64,17 @@ public class ClinicController {
     }
 
     @GetMapping("/data")
-    public Page<ClinicResponse> getAllClinicsExtendedResponse(ClinicSpecificationRequest clinicSpecificationRequest) {
-        return clinicService.getAllClinicsExtendedResponse(clinicSpecificationRequest);
+    public Page<ClinicResponse> getAllClinicsExtendedResponse(BaseSpecificationRequest specificationRequest) {
+        return clinicService.getAllClinicsExtendedResponse(specificationRequest);
     }
 
     @GetMapping("/{clinicId}/employees")
     public List<UserResponse> getAllEmployees(@PathVariable("clinicId") String clinicId) {
         return clinicService.getAllEmployees(clinicId);
+    }
+
+    @GetMapping("/clinics/{clinicId}/manager/employees")
+    public Page<UserResponse> getAllEmployeesByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, BaseSpecificationRequest specificationRequest) {
+        return clinicService.getAllDiscountsByClinicIdForManager(clinicId, specificationRequest);
     }
 }

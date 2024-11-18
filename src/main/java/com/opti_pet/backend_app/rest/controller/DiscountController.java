@@ -2,10 +2,12 @@ package com.opti_pet.backend_app.rest.controller;
 
 import com.opti_pet.backend_app.rest.request.discount.DiscountCreateRequest;
 import com.opti_pet.backend_app.rest.request.discount.DiscountUpdateRequest;
+import com.opti_pet.backend_app.rest.request.specification.BaseSpecificationRequest;
 import com.opti_pet.backend_app.rest.response.DiscountResponse;
 import com.opti_pet.backend_app.service.DiscountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,11 @@ public class DiscountController {
     @GetMapping("/clinics/{clinicId}/discounts")
     public List<DiscountResponse> getAllDiscountsByClinicId(@PathVariable(name = "clinicId") String clinicId) {
         return discountService.getAllDiscountsByClinicId(clinicId);
+    }
+
+    @GetMapping("/clinics/{clinicId}/manager/discounts")
+    public Page<DiscountResponse> getAllDiscountsByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, BaseSpecificationRequest specificationRequest) {
+        return discountService.getAllDiscountsByClinicIdForManager(clinicId, specificationRequest);
     }
 
     @PostMapping("/clinics/{clinicId}/discounts")

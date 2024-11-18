@@ -6,8 +6,8 @@ import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Procedure;
 import com.opti_pet.backend_app.persistence.repository.ProcedureRepository;
 import com.opti_pet.backend_app.rest.request.procedure.ProcedureCreateRequest;
-import com.opti_pet.backend_app.rest.request.procedure.ProcedureSpecificationRequest;
 import com.opti_pet.backend_app.rest.request.procedure.ProcedureUpdateRequest;
+import com.opti_pet.backend_app.rest.request.specification.SpecificationRequest;
 import com.opti_pet.backend_app.rest.response.ProcedureResponse;
 import com.opti_pet.backend_app.rest.transformer.ProcedureTransformer;
 import com.opti_pet.backend_app.util.specifications.ProcedureSpecifications;
@@ -84,11 +84,11 @@ public class ProcedureService {
     }
 
     @Transactional
-    public Page<ProcedureResponse> getAllProceduresByClinicIdForManager(String clinicId, ProcedureSpecificationRequest procedureSpecificationRequest) {
-        Pageable pageRequest = createPageRequest(procedureSpecificationRequest);
+    public Page<ProcedureResponse> getAllProceduresByClinicIdForManager(String clinicId, SpecificationRequest specificationRequest) {
+        Pageable pageRequest = createPageRequest(specificationRequest);
         Clinic clinic = clinicService.getClinicByIdOrThrowException(UUID.fromString(clinicId));
 
-        return procedureRepository.findAll(getSpecifications(procedureSpecificationRequest, clinic), pageRequest)
+        return procedureRepository.findAll(getSpecifications(specificationRequest, clinic), pageRequest)
                 .map(ProcedureTransformer::toResponse);
     }
 
@@ -99,9 +99,9 @@ public class ProcedureService {
         }
     }
 
-    private Specification<Procedure> getSpecifications(ProcedureSpecificationRequest procedureSpecificationRequest, Clinic clinic) {
+    private Specification<Procedure> getSpecifications(SpecificationRequest specificationRequest, Clinic clinic) {
         UUID clinicId = clinic.getId();
-        String inputText = procedureSpecificationRequest.inputText();
+        String inputText = specificationRequest.inputText();
         Specification<Procedure> specification = ProcedureSpecifications.clinicIdEquals(clinicId);
 
         if (inputText != null) {
@@ -116,12 +116,12 @@ public class ProcedureService {
                 .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, procedureId.toString()));
     }
 
-    private Pageable createPageRequest(ProcedureSpecificationRequest request) {
+    private Pageable createPageRequest(SpecificationRequest specificationRequest) {
         Sort sort = Sort.unsorted();
-        sort = request.sortByAmount() != null ? sort.and(getSort(request.sortByAmount(), PRICE_FIELD_NAME)) : sort;
+        sort = specificationRequest.sortByAmount() != null ? sort.and(getSort(specificationRequest.sortByAmount(), PRICE_FIELD_NAME)) : sort;
 
-        int pageNumber = request.pageNumber() != null ? request.pageNumber() : DEFAULT_PAGE_NUMBER;
-        int pageSize = request.pageSize() != null ? request.pageSize() : DEFAULT_PAGE_SIZE;
+        int pageNumber = specificationRequest.pageNumber() != null ? specificationRequest.pageNumber() : DEFAULT_PAGE_NUMBER;
+        int pageSize = specificationRequest.pageSize() != null ? specificationRequest.pageSize() : DEFAULT_PAGE_SIZE;
 
         return PageRequest.of(pageNumber, pageSize, sort);
     }

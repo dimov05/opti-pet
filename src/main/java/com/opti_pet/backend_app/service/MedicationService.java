@@ -6,8 +6,8 @@ import com.opti_pet.backend_app.persistence.model.Clinic;
 import com.opti_pet.backend_app.persistence.model.Medication;
 import com.opti_pet.backend_app.persistence.repository.MedicationRepository;
 import com.opti_pet.backend_app.rest.request.medication.MedicationCreateRequest;
-import com.opti_pet.backend_app.rest.request.medication.MedicationSpecificationRequest;
 import com.opti_pet.backend_app.rest.request.medication.MedicationUpdateRequest;
+import com.opti_pet.backend_app.rest.request.specification.ExtendedSpecificationRequest;
 import com.opti_pet.backend_app.rest.response.MedicationResponse;
 import com.opti_pet.backend_app.rest.transformer.MedicationTransformer;
 import com.opti_pet.backend_app.util.specifications.MedicationSpecifications;
@@ -87,11 +87,11 @@ public class MedicationService {
     }
 
     @Transactional
-    public Page<MedicationResponse> getAllMedicationsByClinicIdForManager(String clinicId, MedicationSpecificationRequest medicationSpecificationRequest) {
-        Pageable pageRequest = createPageRequest(medicationSpecificationRequest);
+    public Page<MedicationResponse> getAllMedicationsByClinicIdForManager(String clinicId, ExtendedSpecificationRequest specificationRequest) {
+        Pageable pageRequest = createPageRequest(specificationRequest);
         Clinic clinic = clinicService.getClinicByIdOrThrowException(UUID.fromString(clinicId));
 
-        return medicationRepository.findAll(getSpecifications(medicationSpecificationRequest, clinic), pageRequest)
+        return medicationRepository.findAll(getSpecifications(specificationRequest, clinic), pageRequest)
                 .map(MedicationTransformer::toResponse);
     }
 
@@ -102,9 +102,9 @@ public class MedicationService {
         }
     }
 
-    private Specification<Medication> getSpecifications(MedicationSpecificationRequest medicationSpecificationRequest, Clinic clinic) {
+    private Specification<Medication> getSpecifications(ExtendedSpecificationRequest specificationRequest, Clinic clinic) {
         UUID clinicId = clinic.getId();
-        String inputText = medicationSpecificationRequest.inputText();
+        String inputText = specificationRequest.inputText();
         Specification<Medication> specification = MedicationSpecifications.clinicIdEquals(clinicId);
 
         if (inputText != null) {
@@ -119,14 +119,14 @@ public class MedicationService {
                 .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, medicationId.toString()));
     }
 
-    private Pageable createPageRequest(MedicationSpecificationRequest request) {
+    private Pageable createPageRequest(ExtendedSpecificationRequest specificationRequest) {
         Sort sort = Sort.unsorted();
 
-        sort = request.sortByAvailableQuantity() != null ? sort.and(getSort(request.sortByAvailableQuantity(), AVAILABLE_QUANTITY_FIELD_NAME)) : sort;
-        sort = request.sortByAmount() != null ? sort.and(getSort(request.sortByAmount(), PRICE_FIELD_NAME)) : sort;
+        sort = specificationRequest.sortByAvailableQuantity() != null ? sort.and(getSort(specificationRequest.sortByAvailableQuantity(), AVAILABLE_QUANTITY_FIELD_NAME)) : sort;
+        sort = specificationRequest.sortByAmount() != null ? sort.and(getSort(specificationRequest.sortByAmount(), PRICE_FIELD_NAME)) : sort;
 
-        int pageNumber = request.pageNumber() != null ? request.pageNumber() : DEFAULT_PAGE_NUMBER;
-        int pageSize = request.pageSize() != null ? request.pageSize() : DEFAULT_PAGE_SIZE;
+        int pageNumber = specificationRequest.pageNumber() != null ? specificationRequest.pageNumber() : DEFAULT_PAGE_NUMBER;
+        int pageSize = specificationRequest.pageSize() != null ? specificationRequest.pageSize() : DEFAULT_PAGE_SIZE;
 
         return PageRequest.of(pageNumber, pageSize, sort);
     }

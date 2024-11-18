@@ -2,8 +2,8 @@ package com.opti_pet.backend_app.rest.controller;
 
 import com.opti_pet.backend_app.rest.request.ExcelExportRequest;
 import com.opti_pet.backend_app.rest.request.medication.MedicationCreateRequest;
-import com.opti_pet.backend_app.rest.request.medication.MedicationSpecificationRequest;
 import com.opti_pet.backend_app.rest.request.medication.MedicationUpdateRequest;
+import com.opti_pet.backend_app.rest.request.specification.ExtendedSpecificationRequest;
 import com.opti_pet.backend_app.rest.response.MedicationResponse;
 import com.opti_pet.backend_app.service.ExcelExporterService;
 import com.opti_pet.backend_app.service.MedicationService;
@@ -27,8 +27,8 @@ public class MedicationController {
     private final ExcelExporterService excelExporterService;
 
     @GetMapping("/clinics/{clinicId}/manager/medications")
-    public Page<MedicationResponse> getAllMedicationsByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, MedicationSpecificationRequest medicationSpecificationRequest) {
-        return medicationService.getAllMedicationsByClinicIdForManager(clinicId, medicationSpecificationRequest);
+    public Page<MedicationResponse> getAllMedicationsByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, ExtendedSpecificationRequest specificationRequest) {
+        return medicationService.getAllMedicationsByClinicIdForManager(clinicId, specificationRequest);
     }
     @GetMapping("/clinics/{clinicId}/medications")
     public List<MedicationResponse> getAllMedicationsByClinicIdState(@PathVariable(name = "clinicId") String clinicId) {

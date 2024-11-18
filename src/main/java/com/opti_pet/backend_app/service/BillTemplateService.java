@@ -5,6 +5,7 @@ import com.opti_pet.backend_app.exception.NotFoundException;
 import com.opti_pet.backend_app.persistence.model.*;
 import com.opti_pet.backend_app.persistence.repository.*;
 import com.opti_pet.backend_app.rest.request.billTemplate.*;
+import com.opti_pet.backend_app.rest.request.specification.SpecificationRequest;
 import com.opti_pet.backend_app.rest.response.BillTemplateResponse;
 import com.opti_pet.backend_app.rest.transformer.BillTemplateTransformer;
 import com.opti_pet.backend_app.rest.transformer.ConsumableTemplateTransformer;
@@ -12,6 +13,7 @@ import com.opti_pet.backend_app.rest.transformer.MedicationTemplateTransformer;
 import com.opti_pet.backend_app.rest.transformer.ProcedureTemplateTransformer;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,7 +40,13 @@ public class BillTemplateService {
     private final ProcedureTemplateRepository procedureTemplateRepository;
 
     @Transactional
-    public List<BillTemplateResponse> getAllBillTemplatesByClinicIdForManager(String clinicId) {
+    public Page<BillTemplateResponse> getAllBillTemplatesByClinicIdForManager(String clinicId, SpecificationRequest specificationRequest) {
+        return null;
+
+    }
+
+    @Transactional
+    public List<BillTemplateResponse> getAllBillTemplatesByClinicIdState(String clinicId) {
         return billTemplateRepository.findBillTemplateByClinic_Id(UUID.fromString(clinicId))
                 .stream()
                 .map(BillTemplateTransformer::toResponse)

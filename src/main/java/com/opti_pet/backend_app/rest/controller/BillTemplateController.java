@@ -2,10 +2,12 @@ package com.opti_pet.backend_app.rest.controller;
 
 import com.opti_pet.backend_app.rest.request.billTemplate.BillTemplateCreateRequest;
 import com.opti_pet.backend_app.rest.request.billTemplate.BillTemplateUpdateRequest;
+import com.opti_pet.backend_app.rest.request.specification.SpecificationRequest;
 import com.opti_pet.backend_app.rest.response.BillTemplateResponse;
 import com.opti_pet.backend_app.service.BillTemplateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +21,12 @@ public class BillTemplateController {
 
     @GetMapping("/clinics/{clinicId}/bill-templates")
     public List<BillTemplateResponse> getAllBillTemplatesByClinicId(@PathVariable(name = "clinicId") String clinicId) {
-        return billTemplateService.getAllBillTemplatesByClinicIdForManager(clinicId);
+        return billTemplateService.getAllBillTemplatesByClinicIdState(clinicId);
+    }
+
+    @GetMapping("/clinics/{clinicId}/manager/bill-templates")
+    public Page<BillTemplateResponse> getAllBillTemplatesByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, SpecificationRequest specificationRequest) {
+        return billTemplateService.getAllBillTemplatesByClinicIdForManager(clinicId, specificationRequest);
     }
 
     @PostMapping("/clinics/{clinicId}/bill-templates")

@@ -1,8 +1,8 @@
 package com.opti_pet.backend_app.rest.controller;
 
 import com.opti_pet.backend_app.rest.request.hospital.HospitalCreateRequest;
-import com.opti_pet.backend_app.rest.request.hospital.HospitalSpecificationRequest;
 import com.opti_pet.backend_app.rest.request.hospital.HospitalUpdateRequest;
+import com.opti_pet.backend_app.rest.request.specification.SpecificationRequest;
 import com.opti_pet.backend_app.rest.response.HospitalBaseResponse;
 import com.opti_pet.backend_app.rest.response.HospitalResponse;
 import com.opti_pet.backend_app.service.HospitalService;
@@ -26,8 +26,8 @@ public class HospitalController {
     }
 
     @GetMapping("/clinics/{clinicId}/manager/hospitals")
-    public Page<HospitalResponse> getAllHospitalsByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, HospitalSpecificationRequest hospitalSpecificationRequest) {
-        return hospitalService.getAllHospitalsByClinicIdForManager(clinicId, hospitalSpecificationRequest);
+    public Page<HospitalResponse> getAllHospitalsByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, SpecificationRequest specificationRequest) {
+        return hospitalService.getAllHospitalsByClinicIdForManager(clinicId, specificationRequest);
     }
 
     @PostMapping("/clinics/{clinicId}/hospitals")
