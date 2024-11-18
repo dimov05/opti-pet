@@ -45,50 +45,42 @@ public class BillTemplate {
     private User user;
 
     @OneToMany(mappedBy = "billTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ConsumableTemplate> consumableTemplates;
+    private List<ConsumableTemplate> consumableTemplates = new ArrayList<>();
 
     @OneToMany(mappedBy = "billTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MedicationTemplate> medicationTemplates;
+    private List<MedicationTemplate> medicationTemplates = new ArrayList<>();
 
     @OneToMany(mappedBy = "billTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProcedureTemplate> procedureTemplates;
+    private List<ProcedureTemplate> procedureTemplates =new ArrayList<>();
 
-    public void addConsumableTemplate(ConsumableTemplate consumableTemplate) {
-        if (consumableTemplates == null) {
-            consumableTemplates = new ArrayList<>();
+    public void setConsumableTemplates(List<ConsumableTemplate> consumableTemplates) {
+        if (this.consumableTemplates == null) {
+            this.consumableTemplates = new ArrayList<>();
+        } else {
+            this.consumableTemplates.clear();
         }
-        consumableTemplates.add(consumableTemplate);
-    }
-
-    public void addMedicationTemplate(MedicationTemplate medicationTemplate) {
-        if (medicationTemplates == null) {
-            medicationTemplates = new ArrayList<>();
-        }
-        medicationTemplates.add(medicationTemplate);
-    }
-
-    public void addProcedureTemplate(ProcedureTemplate procedureTemplate) {
-        if (procedureTemplates == null) {
-            procedureTemplates = new ArrayList<>();
-        }
-        procedureTemplates.add(procedureTemplate);
-    }
-
-    public void removeConsumableTemplate(ConsumableTemplate consumableTemplate) {
         if (consumableTemplates != null) {
-            consumableTemplates.remove(consumableTemplate);
+            this.consumableTemplates.addAll(consumableTemplates);
         }
     }
-
-    public void removeMedicationTemplate(MedicationTemplate medicationTemplate) {
+    public void setMedicationTemplates(List<MedicationTemplate> medicationTemplates) {
+        if (this.medicationTemplates == null) {
+            this.medicationTemplates = new ArrayList<>();
+        } else {
+            this.medicationTemplates.clear();
+        }
         if (medicationTemplates != null) {
-            medicationTemplates.remove(medicationTemplate);
+            this.medicationTemplates.addAll(medicationTemplates);
         }
     }
-
-    public void removeProcedureTemplate(ProcedureTemplate procedureTemplate) {
+    public void setProcedureTemplates(List<ProcedureTemplate> procedureTemplates) {
+        if (this.procedureTemplates == null) {
+            this.procedureTemplates = new ArrayList<>();
+        } else {
+            this.procedureTemplates.clear();
+        }
         if (procedureTemplates != null) {
-            procedureTemplates.remove(procedureTemplate);
+            this.procedureTemplates.addAll(procedureTemplates);
         }
     }
 }

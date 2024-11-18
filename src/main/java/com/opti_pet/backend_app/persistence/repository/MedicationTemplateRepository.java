@@ -1,6 +1,5 @@
 package com.opti_pet.backend_app.persistence.repository;
 
-import com.opti_pet.backend_app.persistence.model.ConsumableTemplate;
 import com.opti_pet.backend_app.persistence.model.MedicationTemplate;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class JwtServiceHelper {
             claims.put("userId", user.getId().toString());
             claims.put("name", user.getName());
 
-            return generateToken(claims, user);
+            return generateToken(Collections.unmodifiableMap(claims), user);
         } else {
             throw new BadRequestException("Username or password is incorrect!");
         }
