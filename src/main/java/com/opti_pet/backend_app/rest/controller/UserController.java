@@ -1,5 +1,6 @@
 package com.opti_pet.backend_app.rest.controller;
 
+import com.opti_pet.backend_app.rest.request.specification.BaseSpecificationRequest;
 import com.opti_pet.backend_app.rest.request.user.*;
 import com.opti_pet.backend_app.rest.response.RoleResponse;
 import com.opti_pet.backend_app.rest.response.UserResponse;
@@ -48,8 +49,8 @@ public class UserController {
     }
     @GetMapping("")
     @PreAuthorize("@securityService.hasAdministratorAuthority()")
-    public Page<UserResponse> getAllUsers(UserSpecificationRequest userSpecificationRequest) {
-        return userService.getAllUsers(userSpecificationRequest);
+    public Page<UserResponse> getAllUsers(BaseSpecificationRequest specificationRequest) {
+        return userService.getAllUsers(specificationRequest);
     }
 
     @GetMapping("/available-roles")

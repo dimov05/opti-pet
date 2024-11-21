@@ -20,6 +20,7 @@ import com.opti_pet.backend_app.rest.response.UserResponse;
 import com.opti_pet.backend_app.rest.transformer.ClinicTransformer;
 import com.opti_pet.backend_app.rest.transformer.UserTransformer;
 import com.opti_pet.backend_app.util.specifications.ClinicSpecifications;
+import com.opti_pet.backend_app.util.specifications.UserRoleClinicSpecifications;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -109,6 +110,7 @@ public class ClinicService {
                 .stream().toList();
     }
 
+    @Transactional
     public List<ClinicBaseResponse> getAllClinicsBaseResponse() {
         return clinicRepository.findAll()
                 .stream().filter(clinic -> !clinic.getId().equals(DEFAULT_CLINIC_UUID))
@@ -116,6 +118,7 @@ public class ClinicService {
                 .toList();
     }
 
+    @Transactional
     public Page<ClinicResponse> getAllClinicsExtendedResponse(BaseSpecificationRequest specificationRequest) {
         Pageable pageRequest = createPageRequest(specificationRequest);
 
@@ -156,8 +159,17 @@ public class ClinicService {
     }
 
     @Transactional
-    public Page<UserResponse> getAllDiscountsByClinicIdForManager(String clinicId, BaseSpecificationRequest specificationRequest) {
-        return null;
+    public Page<UserResponse> getAllEmployeesByClinicIdForManager(String clinicId, BaseSpecificationRequest specificationRequest) {
+        Pageable pageRequest = createPageRequest(specificationRequest);
+        Clinic clinic = getClinicByIdOrThrowException(UUID.fromString(clinicId));
+        Page<UserResponse> map = userRoleClinicRepository.findAll(getSpecifications(specificationRequest, clinic), pageRequest)
+                .map(UserRoleClinic::getUser)
+                .map(UserTransformer::toResponse)
+                ;
+
+        return userRoleClinicRepository.findAll(getSpecifications(specificationRequest, clinic), pageRequest)
+                .map(UserRoleClinic::getUser)
+                .map(UserTransformer::toResponse);
     }
 
     private void updateClinicField(Supplier<String> newField, Supplier<String> currentField, Consumer<String> updateField) {
@@ -182,6 +194,18 @@ public class ClinicService {
         Specification<Clinic> specification = Specification.where(ClinicSpecifications.clinicIsNotDefaultClinic());
         if (inputText != null) {
             specification = specification.and(ClinicSpecifications.clinicEmailOrNameOrCityOrAddressOrPhoneNumberLike(inputText));
+        }
+
+        return specification;
+    }
+
+    private Specification<UserRoleClinic> getSpecifications(BaseSpecificationRequest specificationRequest, Clinic clinic) {
+        UUID clinicId = clinic.getId();
+        String inputText = specificationRequest.inputText();
+        Specification<UserRoleClinic> specification = UserRoleClinicSpecifications.clinicIdEquals(clinicId);
+
+        if (inputText != null) {
+            specification = specification.and(UserRoleClinicSpecifications.userRoleClinicEmployeeNameOrEmailLike(inputText));
         }
 
         return specification;

@@ -75,6 +75,6 @@ public class ClinicController {
 
     @GetMapping("/clinics/{clinicId}/manager/employees")
     public Page<UserResponse> getAllEmployeesByClinicIdForManager(@PathVariable(name = "clinicId") String clinicId, BaseSpecificationRequest specificationRequest) {
-        return clinicService.getAllDiscountsByClinicIdForManager(clinicId, specificationRequest);
+        return clinicService.getAllEmployeesByClinicIdForManager(clinicId, specificationRequest);
     }
 }

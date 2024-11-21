@@ -48,4 +48,6 @@ public class AppConstants {
     public static final String CONTENT_DISPOSITION_FORMAT_FILE_NAME = "attachment; filename=\"%s%s.xlsx\"";
     public static final String TEMPLATE = "Template";
     public static final String FILE_NAME_TEMPLATE_IMPORT = "%ss_template_import_";
+    public static final String CLINIC_ID_FIELD_NAME = "clinicId";
+    public static final String USER_FIELD_NAME = "user";
 }

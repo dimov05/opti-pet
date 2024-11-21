@@ -9,7 +9,11 @@ import com.opti_pet.backend_app.persistence.model.UserRoleClinic;
 import com.opti_pet.backend_app.persistence.repository.ClinicRepository;
 import com.opti_pet.backend_app.persistence.repository.UserRepository;
 import com.opti_pet.backend_app.rest.request.clinic.ClinicCreateUserRequest;
-import com.opti_pet.backend_app.rest.request.user.*;
+import com.opti_pet.backend_app.rest.request.specification.BaseSpecificationRequest;
+import com.opti_pet.backend_app.rest.request.user.UserChangePasswordRequest;
+import com.opti_pet.backend_app.rest.request.user.UserEditProfileRequest;
+import com.opti_pet.backend_app.rest.request.user.UserRegisterAsAdminRequest;
+import com.opti_pet.backend_app.rest.request.user.UserRegisterRequest;
 import com.opti_pet.backend_app.rest.response.UserResponse;
 import com.opti_pet.backend_app.rest.transformer.UserTransformer;
 import com.opti_pet.backend_app.util.specifications.UserSpecifications;
@@ -151,14 +155,14 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public Page<UserResponse> getAllUsers(UserSpecificationRequest userSpecificationRequest) {
-        Pageable pageRequest = createPageRequest(userSpecificationRequest);
+    public Page<UserResponse> getAllUsers(BaseSpecificationRequest specificationRequest) {
+        Pageable pageRequest = createPageRequest(specificationRequest);
 
-        return userRepository.findAll(getSpecifications(userSpecificationRequest), pageRequest).map(UserTransformer::toResponse);
+        return userRepository.findAll(getSpecifications(specificationRequest), pageRequest).map(UserTransformer::toResponse);
     }
 
-    private Specification<User> getSpecifications(UserSpecificationRequest userSpecificationRequest) {
-        String inputText = userSpecificationRequest.inputText();
+    private Specification<User> getSpecifications(BaseSpecificationRequest specificationRequest) {
+        String inputText = specificationRequest.inputText();
         Specification<User> specification = Specification.where(null);
         if (inputText != null) {
             specification = specification.and(UserSpecifications.userEmailOrFullNameOrPhoneNumberLike(inputText));
@@ -178,9 +182,9 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(UUID.fromString(userId)).orElseThrow(() -> new NotFoundException(USER_ENTITY, UUID_FIELD_NAME, userId));
     }
 
-    private Pageable createPageRequest(UserSpecificationRequest request) {
-        int pageNumber = request.pageNumber() != null ? request.pageNumber() : DEFAULT_PAGE_NUMBER;
-        int pageSize = request.pageSize() != null ? request.pageSize() : DEFAULT_PAGE_SIZE;
+    private Pageable createPageRequest(BaseSpecificationRequest specificationRequest) {
+        int pageNumber = specificationRequest.pageNumber() != null ? specificationRequest.pageNumber() : DEFAULT_PAGE_NUMBER;
+        int pageSize = specificationRequest.pageSize() != null ? specificationRequest.pageSize() : DEFAULT_PAGE_SIZE;
 
         return PageRequest.of(pageNumber, pageSize);
     }

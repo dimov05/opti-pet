@@ -11,9 +11,14 @@ import com.opti_pet.backend_app.rest.transformer.BillTemplateTransformer;
 import com.opti_pet.backend_app.rest.transformer.ConsumableTemplateTransformer;
 import com.opti_pet.backend_app.rest.transformer.MedicationTemplateTransformer;
 import com.opti_pet.backend_app.rest.transformer.ProcedureTemplateTransformer;
+import com.opti_pet.backend_app.util.specifications.BillTemplateSpecifications;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +29,7 @@ import java.util.function.Supplier;
 
 import static com.opti_pet.backend_app.util.AppConstants.*;
 import static com.opti_pet.backend_app.util.ErrorConstants.ENTITY_NOT_FOUND_BY_FIELD_AND_VALUE_EXCEPTION_TEMPLATE;
+import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
 @Service
 @RequiredArgsConstructor
@@ -41,8 +47,11 @@ public class BillTemplateService {
 
     @Transactional
     public Page<BillTemplateResponse> getAllBillTemplatesByClinicIdForManager(String clinicId, SpecificationRequest specificationRequest) {
-        return null;
+        Pageable pageRequest = createPageRequest(specificationRequest);
+        Clinic clinic = clinicService.getClinicByIdOrThrowException(UUID.fromString(clinicId));
 
+        return billTemplateRepository.findAll(getSpecifications(specificationRequest, clinic), pageRequest)
+                .map(BillTemplateTransformer::toResponse);
     }
 
     @Transactional
@@ -148,5 +157,31 @@ public class BillTemplateService {
     private BillTemplate getBillTemplateByIdOrThrowException(UUID billTemplateId) {
         return billTemplateRepository.findById(billTemplateId)
                 .orElseThrow(() -> new NotFoundException(BILL_TEMPLATE_ENTITY, UUID_FIELD_NAME, billTemplateId.toString()));
+    }
+
+    private Pageable createPageRequest(SpecificationRequest specificationRequest) {
+        Sort sort = Sort.unsorted();
+        sort = specificationRequest.sortByAmount() != null ? sort.and(getSort(specificationRequest.sortByAmount(), PRICE_FIELD_NAME)) : sort;
+
+        int pageNumber = specificationRequest.pageNumber() != null ? specificationRequest.pageNumber() : DEFAULT_PAGE_NUMBER;
+        int pageSize = specificationRequest.pageSize() != null ? specificationRequest.pageSize() : DEFAULT_PAGE_SIZE;
+
+        return PageRequest.of(pageNumber, pageSize, sort);
+    }
+
+    private Specification<BillTemplate> getSpecifications(SpecificationRequest specificationRequest, Clinic clinic) {
+        UUID clinicId = clinic.getId();
+        String inputText = specificationRequest.inputText();
+        Specification<BillTemplate> specification = BillTemplateSpecifications.clinicIdEquals(clinicId);
+
+        if (inputText != null) {
+            specification = specification.and(BillTemplateSpecifications.billTemplateNameOrDescriptionLike(inputText));
+        }
+
+        return specification;
+    }
+
+    private Sort getSort(Boolean flag, String fieldName) {
+        return Sort.by(Boolean.TRUE.equals(flag) ? Sort.Direction.ASC : Sort.Direction.DESC, fieldName);
     }
 }
