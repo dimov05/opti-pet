@@ -112,7 +112,7 @@ public class HospitalService {
         return specification;
     }
 
-    private Hospital getHospitalByIdOrThrowException(UUID hospitalId) {
+    public Hospital getHospitalByIdOrThrowException(UUID hospitalId) {
         return hospitalRepository.findById(hospitalId)
                 .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, hospitalId.toString()));
     }

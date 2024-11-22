@@ -48,14 +48,5 @@ public class Discount {
     private Clinic clinic;
 
     @OneToMany(mappedBy = "discount")
-    private List<BilledMedication> billedMedications;
-
-    @OneToMany(mappedBy = "discount")
-    private List<BilledConsumable> billedConsumables;
-
-    @OneToMany(mappedBy = "discount")
-    private List<BilledProcedure> billedProcedures;
-
-    @OneToMany(mappedBy = "discount")
-    private List<BookedHospital> bookedHospitals;
+    private List<Bill> bills;
 }

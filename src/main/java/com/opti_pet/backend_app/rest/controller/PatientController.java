@@ -6,6 +6,7 @@ import com.opti_pet.backend_app.rest.response.PatientResponse;
 import com.opti_pet.backend_app.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/patient")
 @RequiredArgsConstructor
+@Validated
 public class PatientController {
     private final PatientService patientService;
 

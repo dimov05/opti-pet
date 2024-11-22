@@ -35,6 +35,16 @@ public class SecurityService {
         return false;
     }
 
+    public boolean hasAnyAuthorityInClinic(String clinicId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
+            List<String> roles = jwtAuthenticationToken.getToken().getClaim("roles");
+            return roles.stream()
+                    .anyMatch(role -> role.contains(clinicId));
+        }
+        return false;
+    }
+
     public boolean userIdEqualsAuthenticatedUser(String userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication.getPrincipal() == null) {

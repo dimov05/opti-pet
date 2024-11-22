@@ -23,6 +23,10 @@ public class AppConstants {
     public static final String PRICE_FIELD_NAME = "price";
     public static final String DESCRIPTION_FIELD_NAME = "description";
     public static final String CLINIC_FIELD_NAME = "clinic";
+    public static final String PATIENT_FIELD_NAME = "patient";
+    public static final String OWNER_FIELD_NAME = "owner";
+    public static final String CLIENT_FIELD_NAME = "client";
+    public static final String PASSPORT_FIELD_NAME = "passport";
     public static final String CONSUMABLE_ENTITY = "Consumable";
     public static final String PROCEDURE_ENTITY = "Procedure";
     public static final String MEDICATION_ENTITY = "Medication";
@@ -50,4 +54,7 @@ public class AppConstants {
     public static final String FILE_NAME_TEMPLATE_IMPORT = "%ss_template_import_";
     public static final String CLINIC_ID_FIELD_NAME = "clinicId";
     public static final String USER_FIELD_NAME = "user";
+    public static final String AMOUNT_AFTER_TAX_FIELD_NAME = "amountAfterTax";
+    public static final String REMAINING_AMOUNT_FIELD_NAME = "remainingAmount";
+    public static final String OPEN_DATE_FIELD_NAME = "openDate";
 }

@@ -1,9 +1,7 @@
 package com.opti_pet.backend_app.persistence.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +11,8 @@ import java.util.UUID;
 @Table(name = "billed_consumable", schema = "opti-pet")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class BilledConsumable {
     @Id
@@ -49,8 +49,4 @@ public class BilledConsumable {
     @ManyToOne
     @JoinColumn(name = "clinic_id")
     private Clinic clinic;
-
-    @ManyToOne
-    @JoinColumn(name = "discount_id")
-    private Discount discount;
 }

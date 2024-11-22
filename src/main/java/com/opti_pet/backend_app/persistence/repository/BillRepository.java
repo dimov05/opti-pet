@@ -2,8 +2,9 @@ package com.opti_pet.backend_app.persistence.repository;
 
 import com.opti_pet.backend_app.persistence.model.Bill;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.UUID;
 
-public interface BillRepository extends JpaRepository<Bill, UUID> {
+public interface BillRepository extends JpaRepository<Bill, UUID>, JpaSpecificationExecutor<Bill> {
 }

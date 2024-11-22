@@ -114,7 +114,7 @@ public class MedicationService {
         return specification;
     }
 
-    private Medication getMedicationByIdOrThrowException(UUID medicationId) {
+    public Medication getMedicationByIdOrThrowException(UUID medicationId) {
         return medicationRepository.findById(medicationId)
                 .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, medicationId.toString()));
     }

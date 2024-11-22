@@ -77,6 +77,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "owner")
     private List<Patient> patients;
 
+    @OneToMany(mappedBy = "createdByUser")
+    private List<Bill> createdBills;
+
+    @OneToMany(mappedBy = "updatedByUser")
+    private List<Bill> updatedBills;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<UserRoleClinic> userRoleClinics;
 

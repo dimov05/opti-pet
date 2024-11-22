@@ -58,10 +58,6 @@ public class BookedHospital {
     private Clinic clinic;
 
     @ManyToOne
-    @JoinColumn(name = "discount_id")
-    private Discount discount;
-
-    @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
 

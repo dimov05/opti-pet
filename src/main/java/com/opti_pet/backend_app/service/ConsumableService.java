@@ -114,7 +114,7 @@ public class ConsumableService {
         return specification;
     }
 
-    private Consumable getConsumableByIdOrThrowException(UUID consumableId) {
+    public Consumable getConsumableByIdOrThrowException(UUID consumableId) {
         return consumableRepository.findById(consumableId)
                 .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, consumableId.toString()));
     }

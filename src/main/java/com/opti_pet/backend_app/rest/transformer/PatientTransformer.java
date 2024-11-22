@@ -3,6 +3,7 @@ package com.opti_pet.backend_app.rest.transformer;
 import com.opti_pet.backend_app.persistence.model.Patient;
 import com.opti_pet.backend_app.persistence.model.User;
 import com.opti_pet.backend_app.rest.request.patient.PatientCreateRequest;
+import com.opti_pet.backend_app.rest.response.PatientBaseResponse;
 import com.opti_pet.backend_app.rest.response.PatientResponse;
 
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ public class PatientTransformer {
 
     public static PatientResponse toResponse(Patient patient) {
         return PatientResponse.builder()
+                .id(patient.getId().toString())
                 .name(patient.getName())
                 .petType(patient.getPetType().getBreed())
                 .birthdate(patient.getBirthdate().toString())
@@ -41,6 +43,15 @@ public class PatientTransformer {
                 .note(patientCreateRequest.note())
                 .patientAccessCode(patientCreateRequest.patientAccessCode())
                 .owner(owner)
+                .build();
+    }
+
+    public static PatientBaseResponse toBaseResponse(Patient patient) {
+        return PatientBaseResponse.builder()
+                .id(patient.getId().toString())
+                .name(patient.getName())
+                .petType(patient.getPetType().getBreed())
+                .birthdate(patient.getBirthdate().toString())
                 .build();
     }
 }

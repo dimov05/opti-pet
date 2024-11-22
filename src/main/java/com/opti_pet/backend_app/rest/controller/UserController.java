@@ -1,7 +1,10 @@
 package com.opti_pet.backend_app.rest.controller;
 
 import com.opti_pet.backend_app.rest.request.specification.BaseSpecificationRequest;
-import com.opti_pet.backend_app.rest.request.user.*;
+import com.opti_pet.backend_app.rest.request.user.UserChangePasswordRequest;
+import com.opti_pet.backend_app.rest.request.user.UserEditProfileRequest;
+import com.opti_pet.backend_app.rest.request.user.UserRegisterAsAdminRequest;
+import com.opti_pet.backend_app.rest.request.user.UserRegisterRequest;
 import com.opti_pet.backend_app.rest.response.RoleResponse;
 import com.opti_pet.backend_app.rest.response.UserResponse;
 import com.opti_pet.backend_app.service.RoleService;
@@ -10,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
     private final UserService userService;
     private final RoleService roleService;
@@ -33,13 +38,13 @@ public class UserController {
 
     @PutMapping("/{userId}/change-password")
     @PreAuthorize("@securityService.userIdEqualsAuthenticatedUser(#userId) || @securityService.hasAdministratorAuthority()")
-    public UserResponse changePassword(@PathVariable(name = "userId") String userId,@Valid @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
+    public UserResponse changePassword(@PathVariable(name = "userId") String userId, @Valid @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
         return userService.changePassword(userId, userChangePasswordRequest);
     }
 
     @PutMapping("/{userId}/edit-profile")
     @PreAuthorize("@securityService.userIdEqualsAuthenticatedUser(#userId) || @securityService.hasAdministratorAuthority()")
-    public UserResponse editProfile(@PathVariable(name = "userId") String userId,@Valid @RequestBody UserEditProfileRequest userEditProfileRequest) {
+    public UserResponse editProfile(@PathVariable(name = "userId") String userId, @Valid @RequestBody UserEditProfileRequest userEditProfileRequest) {
         return userService.editProfile(userId, userEditProfileRequest);
     }
 
@@ -47,6 +52,7 @@ public class UserController {
     public UserResponse getMyInformation() {
         return userService.getMyInformation();
     }
+
     @GetMapping("")
     @PreAuthorize("@securityService.hasAdministratorAuthority()")
     public Page<UserResponse> getAllUsers(BaseSpecificationRequest specificationRequest) {
@@ -54,7 +60,7 @@ public class UserController {
     }
 
     @GetMapping("/available-roles")
-    public List<RoleResponse> getAllRoles(){
+    public List<RoleResponse> getAllRoles() {
         return roleService.getAllRoles();
     }
 }

@@ -111,7 +111,7 @@ public class ProcedureService {
         return specification;
     }
 
-    private Procedure getProcedureByIdOrThrowException(UUID procedureId) {
+    public Procedure getProcedureByIdOrThrowException(UUID procedureId) {
         return procedureRepository.findById(procedureId)
                 .orElseThrow(() -> new NotFoundException(CLINIC_ENTITY, UUID_FIELD_NAME, procedureId.toString()));
     }

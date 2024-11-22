@@ -1,19 +1,11 @@
 package com.opti_pet.backend_app.persistence.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +13,8 @@ import java.util.UUID;
 @Table(name = "bill", schema = "opti-pet")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Bill {
     @Id
@@ -34,6 +28,9 @@ public class Bill {
     @Column(name = "amount_after_tax")
     private BigDecimal amountAfterTax;
 
+    @Column(name = "amount_before_tax_after_discount")
+    private BigDecimal amountBeforeTaxAfterDiscount;
+
     @Column(name = "paid_amount")
     private BigDecimal paidAmount;
 
@@ -46,6 +43,23 @@ public class Bill {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "open_date")
+    private LocalDateTime openDate;
+
+    @Column(name = "close_date")
+    private LocalDateTime closeDate;
+
+    @Column(name = "updated_date")
+    private LocalDateTime updatedDate;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by_user_id")
+    private User createdByUser;
+
+    @ManyToOne
+    @JoinColumn(name = "updated_by_user_id")
+    private User updatedByUser;
+
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
@@ -53,6 +67,10 @@ public class Bill {
     @ManyToOne
     @JoinColumn(name = "clinic_id")
     private Clinic clinic;
+
+    @ManyToOne
+    @JoinColumn(name = "discount_id")
+    private Discount discount;
 
     @OneToMany(mappedBy = "bill")
     private List<BilledMedication> billedMedications;

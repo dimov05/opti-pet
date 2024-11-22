@@ -28,7 +28,7 @@ public class PatientService {
 
     @Transactional
     public PatientResponse addNewPatient(PatientCreateRequest patientCreateRequest) {
-        User owner = userService.getUserByEmailOrThrowException(patientCreateRequest.ownerEmail());
+        User owner = userService.getUserByPhoneNumberOrThrowException(patientCreateRequest.ownerPhoneNumber());
         Patient patient = PatientTransformer.toEntity(owner, patientCreateRequest);
 
         return PatientTransformer.toResponse(patientRepository.save(patient));
