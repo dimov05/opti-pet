@@ -25,7 +25,7 @@ public class BillSpecifications {
 
         return ((root, query, builder) -> {
             Join<Bill, Patient> billPatientJoin = root.join(PATIENT_FIELD_NAME);
-            Join<Patient, User> patientOwnerJoin = root.join(OWNER_FIELD_NAME);
+            Join<Patient, User> patientOwnerJoin = billPatientJoin.join(OWNER_FIELD_NAME);
 
             return builder.or(
                     builder.like(builder.lower(billPatientJoin.get(NAME_FIELD_NAME)), keyword),

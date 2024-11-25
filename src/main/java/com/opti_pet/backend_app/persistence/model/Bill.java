@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,15 +72,55 @@ public class Bill {
     @JoinColumn(name = "discount_id")
     private Discount discount;
 
-    @OneToMany(mappedBy = "bill")
-    private List<BilledMedication> billedMedications;
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<BilledMedication> billedMedications = new ArrayList<>();
 
-    @OneToMany(mappedBy = "bill")
-    private List<BilledConsumable> billedConsumables;
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<BilledConsumable> billedConsumables = new ArrayList<>();
 
-    @OneToMany(mappedBy = "bill")
-    private List<BilledProcedure> billedProcedures;
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<BilledProcedure> billedProcedures = new ArrayList<>();
 
-    @OneToMany(mappedBy = "bill")
-    private List<BookedHospital> bookedHospitals;
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<BookedHospital> bookedHospitals = new ArrayList<>();
+
+    public void addBilledMedication(BilledMedication medication) {
+        billedMedications.add(medication);
+        medication.setBill(this);
+    }
+
+    public void removeBilledMedication(BilledMedication medication) {
+        billedMedications.remove(medication);
+        medication.setBill(null);
+    }
+
+    public void addBilledConsumable(BilledConsumable consumable) {
+        billedConsumables.add(consumable);
+        consumable.setBill(this);
+    }
+
+    public void removeBilledConsumable(BilledConsumable consumable) {
+        billedConsumables.remove(consumable);
+        consumable.setBill(null);
+    }
+
+    public void addBilledProcedure(BilledProcedure procedure) {
+        billedProcedures.add(procedure);
+        procedure.setBill(this);
+    }
+
+    public void removeBilledProcedure(BilledProcedure procedure) {
+        billedProcedures.remove(procedure);
+        procedure.setBill(null);
+    }
+
+    public void addBookedHospital(BookedHospital hospital) {
+        bookedHospitals.add(hospital);
+        hospital.setBill(this);
+    }
+
+    public void removeBookedHospital(BookedHospital hospital) {
+        bookedHospitals.remove(hospital);
+        hospital.setBill(null);
+    }
 }

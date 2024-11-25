@@ -162,10 +162,6 @@ public class ClinicService {
     public Page<UserResponse> getAllEmployeesByClinicIdForManager(String clinicId, BaseSpecificationRequest specificationRequest) {
         Pageable pageRequest = createPageRequest(specificationRequest);
         Clinic clinic = getClinicByIdOrThrowException(UUID.fromString(clinicId));
-        Page<UserResponse> map = userRoleClinicRepository.findAll(getSpecifications(specificationRequest, clinic), pageRequest)
-                .map(UserRoleClinic::getUser)
-                .map(UserTransformer::toResponse)
-                ;
 
         return userRoleClinicRepository.findAll(getSpecifications(specificationRequest, clinic), pageRequest)
                 .map(UserRoleClinic::getUser)

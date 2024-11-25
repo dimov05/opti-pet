@@ -13,7 +13,9 @@ public class AppConstants {
     public static final String ID_FIELD_NAME = "id";
     public static final String UUID_FIELD_NAME = "UUID";
     public static final String DATE_PATTERN = "dd/MM/yyyy";
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_PATTERN);
+    public static final String DATE_TIME_PATTERN = "HH:mm dd.MM.yyyy";
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_PATTERN);
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
     public static final Integer DEFAULT_PAGE_SIZE = 10;
     public static final Integer DEFAULT_PAGE_NUMBER = 0;
     public static final String USER_ENTITY = "User";

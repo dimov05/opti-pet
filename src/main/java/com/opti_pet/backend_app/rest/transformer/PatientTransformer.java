@@ -8,7 +8,7 @@ import com.opti_pet.backend_app.rest.response.PatientResponse;
 
 import java.time.LocalDate;
 
-import static com.opti_pet.backend_app.util.AppConstants.DATE_TIME_FORMATTER;
+import static com.opti_pet.backend_app.util.AppConstants.DATE_FORMATTER;
 
 public class PatientTransformer {
 
@@ -36,7 +36,7 @@ public class PatientTransformer {
                 .microchip(patientCreateRequest.microchip())
                 .pendant(patientCreateRequest.pendant())
                 .passport(patientCreateRequest.passport())
-                .birthdate(LocalDate.parse(patientCreateRequest.birthdate(), DATE_TIME_FORMATTER))
+                .birthdate(LocalDate.parse(patientCreateRequest.birthdate(), DATE_FORMATTER))
                 .weight(patientCreateRequest.weight())
                 .isDeceased(patientCreateRequest.isDeceased())
                 .isNeutered(patientCreateRequest.isNeutered())

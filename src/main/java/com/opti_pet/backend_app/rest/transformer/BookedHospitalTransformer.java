@@ -3,6 +3,7 @@ package com.opti_pet.backend_app.rest.transformer;
 import com.opti_pet.backend_app.persistence.model.*;
 import com.opti_pet.backend_app.rest.response.BookedHospitalResponse;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -18,12 +19,14 @@ public class BookedHospitalTransformer {
                 .startDate(bookedHospital.getStartDate().toString())
                 .endDate(bookedHospital.getEndDate().toString())
                 .billedDate(bookedHospital.getBilledDate().toString())
-                .discountPercent(bookedHospital.getBill().getDiscount().getPercentHospitals())
+                .discountPercent(bookedHospital.getBill().getDiscount() != null
+                        ? bookedHospital.getBill().getDiscount().getPercentMedications()
+                        : BigDecimal.ZERO)
                 .billingUserName(bookedHospital.getUser().getName())
                 .build();
     }
 
-    public static BookedHospital toEntity(Hospital hospital, User employee, Clinic clinic, Patient patient) {
+    public static BookedHospital toEntity(Hospital hospital, User employee, Clinic clinic, Patient patient, Bill bill) {
         return BookedHospital.builder()
                 .name(hospital.getName())
                 .description(hospital.getDescription())
@@ -33,7 +36,7 @@ public class BookedHospitalTransformer {
                 .endDate(null)
                 .taxRatePercent(hospital.getTaxRatePercent())
                 .billedDate(LocalDateTime.now())
-                .bill(null)
+                .bill(bill)
                 .user(employee)
                 .clinic(clinic)
                 .patient(patient)

@@ -45,7 +45,7 @@ public class PatientService {
             patient.setOwner(userService.getUserByEmailOrThrowException(patientEditRequest.ownerEmail()));
         }
         if (patientEditRequest.birthdate() != null && !patientEditRequest.birthdate().equals(patient.getBirthdate().toString())) {
-            patient.setBirthdate(LocalDate.parse(patientEditRequest.birthdate(), DATE_TIME_FORMATTER));
+            patient.setBirthdate(LocalDate.parse(patientEditRequest.birthdate(), DATE_FORMATTER));
         }
         if (patientEditRequest.weight() != null && patientEditRequest.weight() != patient.getWeight()) {
             patient.setWeight(patientEditRequest.weight());

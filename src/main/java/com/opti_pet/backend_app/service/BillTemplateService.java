@@ -81,8 +81,8 @@ public class BillTemplateService {
         BillTemplate billTemplate = getBillTemplateByIdOrThrowException(UUID.fromString(billTemplateUpdateRequest.id()));
         User authenticatedEmployee = userService.getUserByEmailOrThrowException(jwtService.extractEmailFromToken());
 
-        updateBillTemaplateField(billTemplateUpdateRequest::name, billTemplate::getName, billTemplate::setName);
-        updateBillTemaplateField(billTemplateUpdateRequest::description, billTemplate::getDescription, billTemplate::setDescription);
+        updateBillTemplateField(billTemplateUpdateRequest::name, billTemplate::getName, billTemplate::setName);
+        updateBillTemplateField(billTemplateUpdateRequest::description, billTemplate::getDescription, billTemplate::setDescription);
         if (authenticatedEmployee.getId() != billTemplate.getUser().getId()) {
             billTemplate.setUser(authenticatedEmployee);
         }
@@ -147,14 +147,14 @@ public class BillTemplateService {
         billTemplate.setProcedureTemplates(procedureTemplatesToSet);
     }
 
-    private void updateBillTemaplateField(Supplier<String> newField, Supplier<String> currentField, Consumer<String> updateField) {
+    private void updateBillTemplateField(Supplier<String> newField, Supplier<String> currentField, Consumer<String> updateField) {
         String newValue = newField.get();
         if (newValue != null && !newValue.trim().isEmpty() && !newValue.equals(currentField.get())) {
             updateField.accept(newValue);
         }
     }
 
-    private BillTemplate getBillTemplateByIdOrThrowException(UUID billTemplateId) {
+    public BillTemplate getBillTemplateByIdOrThrowException(UUID billTemplateId) {
         return billTemplateRepository.findById(billTemplateId)
                 .orElseThrow(() -> new NotFoundException(BILL_TEMPLATE_ENTITY, UUID_FIELD_NAME, billTemplateId.toString()));
     }

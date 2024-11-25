@@ -1,11 +1,9 @@
 package com.opti_pet.backend_app.rest.transformer;
 
-import com.opti_pet.backend_app.persistence.model.BilledProcedure;
-import com.opti_pet.backend_app.persistence.model.Clinic;
-import com.opti_pet.backend_app.persistence.model.Procedure;
-import com.opti_pet.backend_app.persistence.model.User;
+import com.opti_pet.backend_app.persistence.model.*;
 import com.opti_pet.backend_app.rest.response.BilledProcedureResponse;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class BilledProcedureTransformer {
@@ -17,13 +15,15 @@ public class BilledProcedureTransformer {
                 .billedPrice(billedProcedure.getBilledPrice())
                 .taxRatePercent(billedProcedure.getTaxRatePercent())
                 .quantity(billedProcedure.getQuantity())
-                .discountPercent(billedProcedure.getBill().getDiscount().getPercentProcedures())
+                .discountPercent(billedProcedure.getBill().getDiscount() != null
+                        ? billedProcedure.getBill().getDiscount().getPercentMedications()
+                        : BigDecimal.ZERO)
                 .billedDate(billedProcedure.getBilledDate().toString())
                 .billingUserName(billedProcedure.getUser().getName())
                 .build();
     }
 
-    public static BilledProcedure toEntity(Long quantity, Procedure procedure, User employee, Clinic clinic) {
+    public static BilledProcedure toEntity(Long quantity, Procedure procedure, User employee, Clinic clinic, Bill bill) {
         return BilledProcedure.builder()
                 .name(procedure.getName())
                 .description(procedure.getDescription())
@@ -31,7 +31,7 @@ public class BilledProcedureTransformer {
                 .taxRatePercent(procedure.getTaxRatePercent())
                 .quantity(quantity)
                 .billedDate(LocalDateTime.now())
-                .bill(null)
+                .bill(bill)
                 .user(employee)
                 .clinic(clinic)
                 .build();

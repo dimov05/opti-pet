@@ -1,12 +1,9 @@
 package com.opti_pet.backend_app.rest.transformer;
 
-import com.opti_pet.backend_app.persistence.model.BilledMedication;
-import com.opti_pet.backend_app.persistence.model.Clinic;
-import com.opti_pet.backend_app.persistence.model.Medication;
-import com.opti_pet.backend_app.persistence.model.User;
-import com.opti_pet.backend_app.rest.request.bill.BilledMedicationRequest;
+import com.opti_pet.backend_app.persistence.model.*;
 import com.opti_pet.backend_app.rest.response.BilledMedicationResponse;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class BilledMedicationTransformer {
@@ -18,13 +15,15 @@ public class BilledMedicationTransformer {
                 .billedPrice(billedMedication.getBilledPrice())
                 .taxRatePercent(billedMedication.getTaxRatePercent())
                 .quantity(billedMedication.getQuantity())
-                .discountPercent(billedMedication.getBill().getDiscount().getPercentMedications())
+                .discountPercent(billedMedication.getBill().getDiscount() != null
+                        ? billedMedication.getBill().getDiscount().getPercentMedications()
+                        : BigDecimal.ZERO)
                 .billedDate(billedMedication.getBilledDate().toString())
                 .billingUserName(billedMedication.getUser().getName())
                 .build();
     }
 
-    public static BilledMedication toEntity(Long quantity, Medication medication, User employee, Clinic clinic) {
+    public static BilledMedication toEntity(Long quantity, Medication medication, User employee, Clinic clinic, Bill bill) {
         return BilledMedication.builder()
                 .name(medication.getName())
                 .description(medication.getDescription())
@@ -32,7 +31,7 @@ public class BilledMedicationTransformer {
                 .taxRatePercent(medication.getTaxRatePercent())
                 .quantity(quantity)
                 .billedDate(LocalDateTime.now())
-                .bill(null)
+                .bill(bill)
                 .user(employee)
                 .clinic(clinic)
                 .build();
