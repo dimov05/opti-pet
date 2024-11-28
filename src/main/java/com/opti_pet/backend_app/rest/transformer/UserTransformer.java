@@ -5,6 +5,7 @@ import com.opti_pet.backend_app.rest.request.clinic.ClinicCreateUserRequest;
 import com.opti_pet.backend_app.rest.request.user.ClinicActivityCreateClientRequest;
 import com.opti_pet.backend_app.rest.request.user.UserRegisterAsAdminRequest;
 import com.opti_pet.backend_app.rest.request.user.UserRegisterRequest;
+import com.opti_pet.backend_app.rest.response.ClientExtendedResponse;
 import com.opti_pet.backend_app.rest.response.ClientResponse;
 import com.opti_pet.backend_app.rest.response.UserResponse;
 
@@ -36,10 +37,10 @@ public class UserTransformer {
                 .name(clinicActivityCreateClientRequest.name())
                 .password(encodedPassword)
                 .phoneNumber(clinicActivityCreateClientRequest.phoneNumber())
-                .jobTitle(null)
+                .jobTitle("Client")
                 .homeAddress(clinicActivityCreateClientRequest.homeAddress())
                 .bulstat(clinicActivityCreateClientRequest.bulstat())
-                .note(null)
+                .note(clinicActivityCreateClientRequest.note())
                 .isActive(true)
                 .notes(new ArrayList<>())
                 .billedMedications(new ArrayList<>())
@@ -113,6 +114,19 @@ public class UserTransformer {
                 .homeAddress(user.getHomeAddress())
                 .bulstat(user.getBulstat())
                 .note(user.getNote())
+                .build();
+    }
+
+    public static ClientExtendedResponse toClientExtendedResponse(User user) {
+        return ClientExtendedResponse.builder()
+                .id(user.getId().toString())
+                .email(user.getEmail())
+                .name(user.getName())
+                .phoneNumber(user.getPhoneNumber())
+                .homeAddress(user.getHomeAddress())
+                .bulstat(user.getBulstat())
+                .note(user.getNote())
+                .patients(user.getPatients().stream().map(PatientTransformer::toResponse).toList())
                 .build();
     }
 }

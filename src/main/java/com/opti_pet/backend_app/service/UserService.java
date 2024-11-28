@@ -11,6 +11,7 @@ import com.opti_pet.backend_app.persistence.repository.UserRepository;
 import com.opti_pet.backend_app.rest.request.clinic.ClinicCreateUserRequest;
 import com.opti_pet.backend_app.rest.request.specification.BaseSpecificationRequest;
 import com.opti_pet.backend_app.rest.request.user.*;
+import com.opti_pet.backend_app.rest.response.ClientExtendedResponse;
 import com.opti_pet.backend_app.rest.response.ClientResponse;
 import com.opti_pet.backend_app.rest.response.UserResponse;
 import com.opti_pet.backend_app.rest.transformer.UserTransformer;
@@ -146,7 +147,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public ClientResponse addNewClient(ClinicActivityCreateClientRequest clinicActivityCreateClientRequest) {
+    public ClientExtendedResponse addNewClient(ClinicActivityCreateClientRequest clinicActivityCreateClientRequest) {
         if (userRepository.existsByPhoneNumber(clinicActivityCreateClientRequest.phoneNumber())) {
             throw new BadRequestException("User with this phone number already exists!");
         }
@@ -160,7 +161,7 @@ public class UserService implements UserDetailsService {
         List<UserRoleClinic> userRoleClinics = userRoleClinicService.saveNewUserRoleClinic(user, clinic, role);
         user.setUserRoleClinics(userRoleClinics);
 
-        return UserTransformer.toClientResponse(userRepository.save(user));
+        return UserTransformer.toClientExtendedResponse(userRepository.save(user));
     }
 
     @Transactional
@@ -187,6 +188,13 @@ public class UserService implements UserDetailsService {
         Pageable pageRequest = createPageRequest(specificationRequest);
 
         return userRepository.findAll(getSpecifications(specificationRequest), pageRequest).map(UserTransformer::toResponse);
+    }
+
+    @Transactional
+    public ClientExtendedResponse findClient(String phoneNumber) {
+        User client = getUserByPhoneNumberOrThrowException(phoneNumber);
+
+        return UserTransformer.toClientExtendedResponse(client);
     }
 
     private Specification<User> getSpecifications(BaseSpecificationRequest specificationRequest) {

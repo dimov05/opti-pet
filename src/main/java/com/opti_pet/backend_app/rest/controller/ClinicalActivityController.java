@@ -2,7 +2,7 @@ package com.opti_pet.backend_app.rest.controller;
 
 import com.opti_pet.backend_app.rest.request.patient.PatientCreateRequest;
 import com.opti_pet.backend_app.rest.request.user.ClinicActivityCreateClientRequest;
-import com.opti_pet.backend_app.rest.response.ClientResponse;
+import com.opti_pet.backend_app.rest.response.ClientExtendedResponse;
 import com.opti_pet.backend_app.rest.response.PatientResponse;
 import com.opti_pet.backend_app.service.PatientService;
 import com.opti_pet.backend_app.service.UserService;
@@ -22,7 +22,7 @@ public class ClinicalActivityController {
 
     @PostMapping("/{clinicId}/add-new-client")
     @PreAuthorize("@securityService.hasAnyAuthorityInClinic(#clinicId)  || @securityService.hasAdministratorAuthority()")
-    public ClientResponse addNewClient(@PathVariable("clinicId") String clinicId, @Valid @RequestBody ClinicActivityCreateClientRequest clinicActivityCreateClientRequest) {
+    public ClientExtendedResponse addNewClient(@PathVariable("clinicId") String clinicId, @Valid @RequestBody ClinicActivityCreateClientRequest clinicActivityCreateClientRequest) {
         return userService.addNewClient(clinicActivityCreateClientRequest);
     }
 
@@ -31,4 +31,11 @@ public class ClinicalActivityController {
     public PatientResponse addNewPatient(@PathVariable("clinicId") String clinicId, @Valid @RequestBody PatientCreateRequest patientCreateRequest) {
         return patientService.addNewPatient(patientCreateRequest);
     }
+
+    @GetMapping("/{clinicId}/find-client/{phoneNumber}")
+    @PreAuthorize("@securityService.hasAnyAuthorityInClinic(#clinicId)  || @securityService.hasAdministratorAuthority()")
+    public ClientExtendedResponse findClient(@PathVariable("clinicId") String clinicId, @PathVariable("phoneNumber") String phoneNumber) {
+        return userService.findClient(phoneNumber);
+    }
+
 }

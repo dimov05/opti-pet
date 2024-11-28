@@ -5,5 +5,5 @@ import lombok.Builder;
 
 @Builder
 public record ClinicActivityCreateClientRequest(String email, @NotBlank String name, @NotBlank String phoneNumber,
-                                                String homeAddress, String bulstat) {
+                                                String homeAddress, String bulstat, String note) {
 }

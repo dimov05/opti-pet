@@ -45,13 +45,13 @@ public class BillTemplate {
     private User user;
 
     @OneToMany(mappedBy = "billTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ConsumableTemplate> consumableTemplates = new ArrayList<>();
+    private List<ConsumableTemplate> consumableTemplates;
 
     @OneToMany(mappedBy = "billTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MedicationTemplate> medicationTemplates = new ArrayList<>();
+    private List<MedicationTemplate> medicationTemplates;
 
     @OneToMany(mappedBy = "billTemplate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProcedureTemplate> procedureTemplates =new ArrayList<>();
+    private List<ProcedureTemplate> procedureTemplates;
 
     public void setConsumableTemplates(List<ConsumableTemplate> consumableTemplates) {
         if (this.consumableTemplates == null) {

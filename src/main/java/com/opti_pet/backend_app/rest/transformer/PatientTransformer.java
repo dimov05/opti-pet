@@ -7,6 +7,7 @@ import com.opti_pet.backend_app.rest.response.PatientBaseResponse;
 import com.opti_pet.backend_app.rest.response.PatientResponse;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static com.opti_pet.backend_app.util.AppConstants.DATE_FORMATTER;
 
@@ -17,7 +18,7 @@ public class PatientTransformer {
                 .id(patient.getId().toString())
                 .name(patient.getName())
                 .petType(patient.getPetType().getBreed())
-                .birthdate(patient.getBirthdate().toString())
+                .birthdate(patient.getBirthdate().format(DATE_FORMATTER))
                 .microchip(patient.getMicrochip())
                 .pendant(patient.getPendant())
                 .passport(patient.getPassport())
@@ -38,10 +39,10 @@ public class PatientTransformer {
                 .passport(patientCreateRequest.passport())
                 .birthdate(LocalDate.parse(patientCreateRequest.birthdate(), DATE_FORMATTER))
                 .weight(patientCreateRequest.weight())
-                .isDeceased(patientCreateRequest.isDeceased())
-                .isNeutered(patientCreateRequest.isNeutered())
+                .isDeceased(Objects.equals(patientCreateRequest.isDeceased(),true))
+                .isNeutered(Objects.equals(patientCreateRequest.isNeutered(),true))
                 .note(patientCreateRequest.note())
-                .patientAccessCode(patientCreateRequest.patientAccessCode())
+                .patientAccessCode("0000")
                 .owner(owner)
                 .build();
     }
@@ -51,7 +52,7 @@ public class PatientTransformer {
                 .id(patient.getId().toString())
                 .name(patient.getName())
                 .petType(patient.getPetType().getBreed())
-                .birthdate(patient.getBirthdate().toString())
+                .birthdate(patient.getBirthdate().format(DATE_FORMATTER))
                 .build();
     }
 }
