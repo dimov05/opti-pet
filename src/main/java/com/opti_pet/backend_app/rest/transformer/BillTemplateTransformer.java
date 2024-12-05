@@ -9,6 +9,8 @@ import com.opti_pet.backend_app.rest.response.BillTemplateResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import static com.opti_pet.backend_app.util.AppConstants.DATE_FORMATTER;
+
 public class BillTemplateTransformer {
     public static BillTemplate toEntity(BillTemplateCreateRequest billTemplateCreateRequest, Clinic clinic, User creator) {
         return BillTemplate.builder()
@@ -31,8 +33,8 @@ public class BillTemplateTransformer {
                 .name(billTemplate.getName())
                 .description(billTemplate.getDescription())
                 .creatorName(billTemplate.getUser().getName())
-                .dateAdded(billTemplate.getDateAdded().toString())
-                .dateUpdated(billTemplate.getDateUpdated().toString())
+                .dateAdded(billTemplate.getDateAdded().format(DATE_FORMATTER))
+                .dateUpdated(billTemplate.getDateUpdated().format(DATE_FORMATTER))
                 .consumables(billTemplate.getConsumableTemplates() != null ? billTemplate.getConsumableTemplates().stream()
                         .map(ConsumableTemplateTransformer::toResponse)
                         .toList() : new ArrayList<>())

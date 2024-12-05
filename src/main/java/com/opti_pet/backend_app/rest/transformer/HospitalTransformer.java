@@ -8,6 +8,8 @@ import com.opti_pet.backend_app.rest.response.HospitalResponse;
 
 import java.time.LocalDate;
 
+import static com.opti_pet.backend_app.util.AppConstants.DATE_FORMATTER;
+
 public class HospitalTransformer {
 
     public static HospitalResponse toResponse(Hospital hospital) {
@@ -18,8 +20,8 @@ public class HospitalTransformer {
                 .price(hospital.getPrice())
                 .finalPrice(hospital.getFinalPrice())
                 .taxRatePercent(hospital.getTaxRatePercent())
-                .dateAdded(hospital.getDateAdded().toString())
-                .dateUpdated(hospital.getDateUpdated().toString())
+                .dateAdded(hospital.getDateAdded().format(DATE_FORMATTER))
+                .dateUpdated(hospital.getDateUpdated().format(DATE_FORMATTER))
                 .clinic(ClinicTransformer.toBaseResponse(hospital.getClinic()))
                 .build();
     }

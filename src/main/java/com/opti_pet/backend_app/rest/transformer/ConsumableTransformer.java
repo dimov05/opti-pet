@@ -7,6 +7,8 @@ import com.opti_pet.backend_app.rest.response.ConsumableResponse;
 
 import java.time.LocalDate;
 
+import static com.opti_pet.backend_app.util.AppConstants.DATE_FORMATTER;
+
 public class ConsumableTransformer {
 
     public static ConsumableResponse toResponse(Consumable consumable) {
@@ -18,8 +20,8 @@ public class ConsumableTransformer {
                 .availableQuantity(consumable.getAvailableQuantity())
                 .finalPrice(consumable.getFinalPrice())
                 .taxRatePercent(consumable.getTaxRatePercent())
-                .dateAdded(consumable.getDateAdded().toString())
-                .dateUpdated(consumable.getDateUpdated().toString())
+                .dateAdded(consumable.getDateAdded().format(DATE_FORMATTER))
+                .dateUpdated(consumable.getDateUpdated().format(DATE_FORMATTER))
                 .clinic(ClinicTransformer.toBaseResponse(consumable.getClinic()))
                 .build();
     }

@@ -6,6 +6,8 @@ import com.opti_pet.backend_app.rest.response.BilledProcedureResponse;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static com.opti_pet.backend_app.util.AppConstants.DATE_FORMATTER;
+
 public class BilledProcedureTransformer {
 
     public static BilledProcedureResponse toResponse(BilledProcedure billedProcedure) {
@@ -18,7 +20,7 @@ public class BilledProcedureTransformer {
                 .discountPercent(billedProcedure.getBill().getDiscount() != null
                         ? billedProcedure.getBill().getDiscount().getPercentMedications()
                         : BigDecimal.ZERO)
-                .billedDate(billedProcedure.getBilledDate().toString())
+                .billedDate(billedProcedure.getBilledDate().format(DATE_FORMATTER))
                 .billingUserName(billedProcedure.getUser().getName())
                 .build();
     }

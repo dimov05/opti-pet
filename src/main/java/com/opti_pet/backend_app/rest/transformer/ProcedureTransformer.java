@@ -7,6 +7,8 @@ import com.opti_pet.backend_app.rest.response.ProcedureResponse;
 
 import java.time.LocalDate;
 
+import static com.opti_pet.backend_app.util.AppConstants.DATE_FORMATTER;
+
 public class ProcedureTransformer {
 
     public static ProcedureResponse toResponse(Procedure procedure) {
@@ -17,8 +19,8 @@ public class ProcedureTransformer {
                 .price(procedure.getPrice())
                 .finalPrice(procedure.getFinalPrice())
                 .taxRatePercent(procedure.getTaxRatePercent())
-                .dateAdded(procedure.getDateAdded().toString())
-                .dateUpdated(procedure.getDateUpdated().toString())
+                .dateAdded(procedure.getDateAdded().format(DATE_FORMATTER))
+                .dateUpdated(procedure.getDateUpdated().format(DATE_FORMATTER))
                 .clinic(ClinicTransformer.toBaseResponse(procedure.getClinic()))
                 .build();
     }

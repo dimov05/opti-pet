@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import static com.opti_pet.backend_app.util.AppConstants.DATE_TIME_FORMATTER;
+
 public class BookedHospitalTransformer {
 
     public static BookedHospitalResponse toResponse(BookedHospital bookedHospital) {
@@ -16,9 +18,9 @@ public class BookedHospitalTransformer {
                 .billedPrice(bookedHospital.getBilledPrice())
                 .taxRatePercent(bookedHospital.getTaxRatePercent())
                 .bookedHours(bookedHospital.getBookedHours())
-                .startDate(bookedHospital.getStartDate().toString())
-                .endDate(bookedHospital.getEndDate().toString())
-                .billedDate(bookedHospital.getBilledDate().toString())
+                .startDate(bookedHospital.getStartDate().format(DATE_TIME_FORMATTER))
+                .endDate(bookedHospital.getEndDate().format(DATE_TIME_FORMATTER))
+                .billedDate(bookedHospital.getBilledDate().format(DATE_TIME_FORMATTER))
                 .discountPercent(bookedHospital.getBill().getDiscount() != null
                         ? bookedHospital.getBill().getDiscount().getPercentMedications()
                         : BigDecimal.ZERO)

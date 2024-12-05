@@ -7,6 +7,8 @@ import com.opti_pet.backend_app.rest.response.DiscountResponse;
 
 import java.time.LocalDate;
 
+import static com.opti_pet.backend_app.util.AppConstants.DATE_FORMATTER;
+
 public class DiscountTransformer {
 
     public static DiscountResponse toResponse(Discount discount) {
@@ -17,8 +19,8 @@ public class DiscountTransformer {
                 .percentHospitals(discount.getPercentHospitals())
                 .percentMedications(discount.getPercentMedications())
                 .percentProcedures(discount.getPercentProcedures())
-                .dateAdded(discount.getDateAdded().toString())
-                .dateUpdated(discount.getDateUpdated().toString())
+                .dateAdded(discount.getDateAdded().format(DATE_FORMATTER))
+                .dateUpdated(discount.getDateUpdated().format(DATE_FORMATTER))
                 .clinic(ClinicTransformer.toBaseResponse(discount.getClinic()))
                 .build();
     }
