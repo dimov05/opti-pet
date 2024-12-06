@@ -2,15 +2,19 @@ package com.opti_pet.backend_app.service;
 
 import com.opti_pet.backend_app.exception.BadRequestException;
 import com.opti_pet.backend_app.persistence.model.*;
-import com.opti_pet.backend_app.persistence.repository.*;
+import com.opti_pet.backend_app.persistence.repository.BillRepository;
+import com.opti_pet.backend_app.persistence.repository.DiscountRepository;
+import com.opti_pet.backend_app.persistence.repository.PatientRepository;
 import com.opti_pet.backend_app.rest.request.bill.BillCreateRequest;
 import com.opti_pet.backend_app.rest.request.specification.BillSpecificationRequest;
 import com.opti_pet.backend_app.rest.response.BillResponse;
-import com.opti_pet.backend_app.rest.transformer.*;
+import com.opti_pet.backend_app.rest.transformer.BillTransformer;
+import com.opti_pet.backend_app.rest.transformer.BilledConsumableTransformer;
+import com.opti_pet.backend_app.rest.transformer.BilledMedicationTransformer;
+import com.opti_pet.backend_app.rest.transformer.BilledProcedureTransformer;
 import com.opti_pet.backend_app.util.specifications.BillSpecifications;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,12 +41,16 @@ public class BillService {
     private final BillTemplateService billTemplateService;
 
     @Transactional
-    public Page<BillResponse> getAllBillsByClinicIdForManager(String clinicId, BillSpecificationRequest billSpecificationRequest) {
-        Pageable pageRequest = createPageRequest(billSpecificationRequest);
+    public List<BillResponse> getAllBillsByClinicId(String clinicId, Boolean includeAll) {
         Clinic clinic = clinicService.getClinicByIdOrThrowException(UUID.fromString(clinicId));
 
-        return billRepository.findAll(getSpecifications(billSpecificationRequest, clinic), pageRequest)
-                .map(BillTransformer::toResponse);
+        List<Bill> bills = includeAll.equals(true)
+                ? billRepository.findAllByClinic_Id(clinic.getId())
+                : billRepository.findTop500ByClinic_IdOrderByOpenDateDesc(clinic.getId());
+
+        return bills.stream()
+                .map(BillTransformer::toResponse)
+                .toList();
     }
 
     @Transactional

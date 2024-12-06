@@ -77,10 +77,10 @@ public class HospitalService {
     }
 
     @Transactional
-    public List<HospitalBaseResponse> getAllHospitalsByClinicId(String clinicId) {
+    public List<HospitalResponse> getAllHospitalsByClinicId(String clinicId) {
         return hospitalRepository.findAllByClinic_Id(UUID.fromString(clinicId))
                 .stream()
-                .map(HospitalTransformer::toBaseResponse)
+                .map(HospitalTransformer::toResponse)
                 .toList();
     }
 

@@ -23,7 +23,7 @@ public class HospitalController {
     private final HospitalService hospitalService;
 
     @GetMapping("/clinics/{clinicId}/hospitals")
-    public List<HospitalBaseResponse> getAllHospitalsByClinicId(@PathVariable(name = "clinicId") String clinicId) {
+    public List<HospitalResponse> getAllHospitalsByClinicId(@PathVariable(name = "clinicId") String clinicId) {
         return hospitalService.getAllHospitalsByClinicId(clinicId);
     }
 
